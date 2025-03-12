@@ -55,6 +55,9 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Listar arquivos depois do build
+        run: ls -lah .github/actions/**/dist/
+
       - name: Commit and Push Dist Changes
         if: env.actions != ''
         run: |
