@@ -41,6 +41,47 @@ jobs:
 
       - name: Commit e Push do Build para a Branch de Origem
         run: |
+
+
+
+      - name: Identify Changed Actions
+        id: changed-actions
+        run: |
+          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^\.github/actions/' | cut -d'/' -f1-3 | sort -u || true)
+          echo "Found changed action directories:"
+          echo "$CHANGED_DIRS"
+          echo "actions=$CHANGED_DIRS" >> "$GITHUB_ENV"
+
+      - name: Process Actions and Commit Changes
+        if: env.actions != ''
+        run: |
+          for action in ${{ env.actions }}; do
+            echo "::group::Processing $action"
+            cd "$action"
+
+            if [ -f package.json ]; then
+              echo "Installing dependencies..."
+              npm install
+
+              echo "Running tests..."
+              npm test
+
+              echo "Building action..."
+              npm run build
+            else
+              echo "Skipping $action (no package.json found)"
+            fi
+
+            cd - > /dev/null
+            echo "::endgroup::"
+          done
+
+      - name: Listar arquivos depois do build
+        run: ls -lah .github/actions/**/dist/
+
+      - name: Commit and Push Dist Changes
+        if: env.actions != ''
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
@@ -48,71 +89,3 @@ jobs:
           git push origin HEAD:${{ github.ref_name }} --force
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-
-      # - name: Identify Changed Actions
-      #   id: changed-actions
-      #   run: |
-      #     CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^\.github/actions/' | cut -d'/' -f1-3 | sort -u || true)
-      #     echo "Found changed action directories:"
-      #     echo "$CHANGED_DIRS"
-      #     echo "actions=$CHANGED_DIRS" >> "$GITHUB_ENV"
-
-      # - name: Process Actions and Commit Changes
-      #   if: env.actions != ''
-      #   run: |
-      #     for action in ${{ env.actions }}; do
-      #       echo "::group::Processing $action"
-      #       cd "$action"
-
-      #       if [ -f package.json ]; then
-      #         echo "Installing dependencies..."
-      #         npm install
-
-      #         echo "Running tests..."
-      #         npm test
-
-      #         echo "Building action..."
-      #         npm run build
-      #       else
-      #         echo "Skipping $action (no package.json found)"
-      #       fi
-
-      #       cd - > /dev/null
-      #       echo "::endgroup::"
-      #     done
-
-      #     git status 
-
-      #     echo "::group::Commit and Push Dist Changes"
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git checkout ${{ github.ref_name }}
-
-      #     if [ "${{ env.actions }}" != "" ]; then
-      #       for action in ${{ env.actions }}; do
-      #         git add -f "$action/dist/" || true
-      #       done
-      #     fi
-
-      #     git status 
-
-      #     git commit -m "chore: update dist for modified actions" || exit 0
-      #     git push origin ${{ github.ref_name }}
-      #     echo "::endgroup::"
-
-      - name: Listar arquivos depois do build
-        run: ls -lah .github/actions/**/dist/
-
-      # - name: Commit and Push Dist Changes
-      #   if: env.actions != ''
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git checkout ${{ github.ref_name }}
-
-      #     for action in ${{ env.actions }}; do
-      #       git add -f "$action/dist/" || true
-      #     done
-
-      #     git commit -m "chore: update dist for modified actions " || exit 0
-      #     git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref_name }}
