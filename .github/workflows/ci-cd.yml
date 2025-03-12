@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Continuous Integration
+    name: CRONICAS CI
     runs-on: ubuntu-latest
     
     steps:
