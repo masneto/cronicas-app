@@ -31,7 +31,7 @@ jobs:
           echo "$CHANGED_DIRS"
           echo "actions=$CHANGED_DIRS" >> "$GITHUB_ENV"
 
-      - name: Process Each Changed Action
+      - name: Process Actions and Commit Changes
         if: env.actions != ''
         run: |
           for action in ${{ env.actions }}; do
@@ -55,19 +55,34 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: Listar arquivos depois do build
-        run: ls -lah .github/actions/**/dist/
-
-      - name: Commit and Push Dist Changes
-        if: env.actions != ''
-        run: |
+          echo "::group::Commit and Push Dist Changes"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout ${{ github.ref_name }}
 
-          for action in ${{ env.actions }}; do
-            git add -f "$action/dist/" || true
-          done
+          if [ "${{ env.actions }}" != "" ]; then
+            for action in ${{ env.actions }}; do
+              git add -f "$action/dist/" || true
+            done
+          fi
 
-          git commit -m "chore: update dist for modified actions " || exit 0
-          git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref_name }}
+          git commit -m "chore: update dist for modified actions" || exit 0
+          git push origin ${{ github.ref_name }}
+          echo "::endgroup::"
+
+      - name: Listar arquivos depois do build
+        run: ls -lah .github/actions/**/dist/
+
+      # - name: Commit and Push Dist Changes
+      #   if: env.actions != ''
+      #   run: |
+      #     git config --global user.name "github-actions[bot]"
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git checkout ${{ github.ref_name }}
+
+      #     for action in ${{ env.actions }}; do
+      #       git add -f "$action/dist/" || true
+      #     done
+
+      #     git commit -m "chore: update dist for modified actions " || exit 0
+      #     git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref_name }}
