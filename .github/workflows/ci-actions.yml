@@ -63,8 +63,8 @@ jobs:
           git checkout ${{ github.ref_name }}
 
           for action in ${{ env.actions }}; do
-            git add "$action/dist/" || true
+            git add -f "$action/dist/" || true
           done
 
-          git commit -m "chore: update dist for modified actions" || exit 0
+          git commit -m "chore: update dist for modified actions PR #${{ github.event.pull_request.number }}" || exit 0
           git push origin ${{ github.ref_name }}

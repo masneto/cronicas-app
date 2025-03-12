@@ -51,7 +51,7 @@ describe('GitHub Action - File Validation', () => {
 
     await run();
 
-    expect(core.warning).toHaveBeenCalledWith('O Dockerfile não contém instrução HEALTHCHECK. Isso é recomendado para containers em produção.');
+    expect(core.warning).toHaveBeenCalledWith('O Dockerfile não contém instrução HEALTHCHECK.  Isso é recomendado para containers em produção.');
   });
 
   test('Deve passar quando todos os arquivos estão presentes e válidos', async () => {
@@ -80,6 +80,6 @@ describe('GitHub Action - File Validation', () => {
 
     await run();
 
-    expect(core.setFailed).toHaveBeenCalledWith('Action falhou com erro: Erro desconhecido.');
+    expect(core.setFailed).toHaveBeenCalledWith('Action falhou com erro: Erro desconhecido');
   });
 });
