@@ -11,7 +11,7 @@ export async function run(): Promise<void> {
       'src/app.js',
       'src/server.js',
       'src/public/index.html',
-      'src/public/styles.css',
+      'src/public/style.css',
       'test/app.test.js',
       '.aws/task-definition.json'
     ];
