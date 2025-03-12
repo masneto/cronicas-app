@@ -39,7 +39,7 @@ jobs:
           cp -r src/ package.json package-lock.json Dockerfile build/
           
       - name: Create Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-build
           path: build/
