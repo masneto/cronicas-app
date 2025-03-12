@@ -9,6 +9,7 @@ jobs:
   ci:
     name: Cronicas CI
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -30,3 +31,27 @@ jobs:
         
       - name: Run Tests
         run: npm test
+
+      - name: Build Application
+        run: |
+          npm prune --production
+          mkdir -p build
+          cp -r src/ package.json package-lock.json Dockerfile build/
+          
+      - name: Create Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-build
+          path: build/
+          
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          TAG_NAME="v${{ github.run_number }}"
+          RELEASE_NAME="Release v${{ github.run_number }}"
+          API_URL="https://api.github.com/repos/${{ github.repository }}/releases"
+          AUTH_HEADER="Authorization: token ${{ secrets.PAT_GITHUB_TOKEN }}"
+          
+          curl -X POST -H "$AUTH_HEADER" -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$RELEASE_NAME\",\"draft\":false,\"prerelease\":false}" \
+            $API_URL

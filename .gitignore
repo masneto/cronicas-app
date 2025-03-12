@@ -25,3 +25,4 @@ logs
 # Sistema operacional
 .DS_Store
 Thumbs.db
+node_modules
