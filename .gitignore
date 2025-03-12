@@ -7,6 +7,10 @@ yarn-error.log
 # Coverage directory
 coverage/
 
+# Build directory
+build/
+dist/
+
 # Arquivos de ambiente
 .env
 .env.local

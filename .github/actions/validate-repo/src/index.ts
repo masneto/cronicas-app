@@ -59,7 +59,7 @@ export async function run(): Promise<void> {
     if (error instanceof Error) {
       core.setFailed(`Action falhou com erro: ${error.message}`);
     } else {
-      core.setFailed(`Action falhou com erro desconhecido`);
+      core.setFailed(`Action falhou com um erro desconhecido`);
     }
   }
 }
