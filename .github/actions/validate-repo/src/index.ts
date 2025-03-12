@@ -27,7 +27,7 @@ export async function run(): Promise<void> {
       }
     }
     
-    // Em caso de arquivo faltante, falha a action
+    // Em caso de arquivo faltante, falha a action 
     if (missingFiles.length > 0) {
       const errorMessage = `Os seguintes arquivos necessários estão faltando: ${missingFiles.join(', ')}`;
       core.setFailed(errorMessage);
