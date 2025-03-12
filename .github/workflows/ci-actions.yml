@@ -47,7 +47,7 @@ jobs:
 
               echo "Running linter..."
               npm run lint
-              
+
               echo "Running tests..."
               npm test
 
@@ -66,6 +66,7 @@ jobs:
 
       - name: Commit and Push Dist Changes
         if: env.actions != ''
+        continue-on-error: true
         run: |
           echo "::group::Commit and Push Dist Changes"
           git config --global user.name "github-actions[bot]"
