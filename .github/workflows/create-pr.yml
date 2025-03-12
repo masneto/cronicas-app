@@ -1,6 +1,6 @@
 name: "[Cronicas] Create Pull Request"
 
-run-name: "Create Pull Request to main SHA: ${{ github.sha }}"
+run-name: "Create Pull Request to main #${{ github.sha[0:7] }}"
 
 on:
   push:

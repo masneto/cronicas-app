@@ -1,6 +1,6 @@
 name: "[Cronicas] CI Actions"
 
-run-name: "Validate & Build Changed Actions SHA: ${{ github.sha }}"
+run-name: "Validate & Build Changed Actions #${{ github.sha[0:7] }}"
 
 on:
   push:
