@@ -1,0 +1,25 @@
+name: "[Cronicas] Create Pull Request"
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+
+jobs:
+  create-pull-request:
+    name: Create Pull Request
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.PAT_GITHUB_TOKEN }}
+        base: main
+        branch: ${{ github.ref }}
+        title: 'PR criado automaticamente -> main'
+        body: 'This PR was automatically created by GitHub Actions.'
+        draft: false
