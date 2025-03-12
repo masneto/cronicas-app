@@ -45,6 +45,9 @@ jobs:
               echo "Installing dependencies..."
               npm install
 
+              echo "Running linter..."
+              npm run lint
+              
               echo "Running tests..."
               npm test
 
