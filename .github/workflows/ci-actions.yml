@@ -1,0 +1,72 @@
+name: "[Cronicas] CI Actions"
+
+on:
+  push:
+    branches: 
+      - 'feature/*'
+    paths:
+      - '.github/actions/**'
+
+jobs:
+  validate-and-build-actions:
+    name: Validate & Build Changed Actions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Identify Changed Actions
+        id: changed-actions
+        run: |
+          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^\.github/actions/' | cut -d'/' -f1-3 | sort -u || true)
+          echo "Found changed action directories:"
+          echo "$CHANGED_DIRS"
+          echo "actions=$CHANGED_DIRS" >> "$GITHUB_ENV"
+
+      - name: Process Each Changed Action
+        if: env.actions != ''
+        run: |
+          for action in ${{ env.actions }}; do
+            echo "Processing $action..."
+            cd "$action"
+
+            if [ -f package.json ]; then
+              echo "Installing dependencies..."
+              npm install
+
+              echo "Running linter..."
+              npm run lint
+
+              echo "Running tests..."
+              npm test
+
+              echo "Building action..."
+              npm run build
+            else
+              echo "Skipping $action (no package.json found)"
+            fi
+
+            cd - > /dev/null
+          done
+
+      - name: Commit and Push Dist Changes
+        if: env.actions != ''
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout ${{ github.ref_name }}
+
+          for action in ${{ env.actions }}; do
+            git add "$action/dist/" || true
+          done
+
+          git commit -m "chore: update dist for modified actions" || exit 0
+          git push origin ${{ github.ref_name }}
