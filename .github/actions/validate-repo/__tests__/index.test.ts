@@ -73,7 +73,7 @@ describe('GitHub Action - File Validation', () => {
     expect(core.info).toHaveBeenCalledWith('Todos os arquivos necessários foram encontrados e validados com sucesso.');
   });
 
-  test('Deve falhar com erro desconhecido', async () => {
+  test('Deve falhar com erro desconhecido.', async () => {
     (fs.existsSync as jest.Mock).mockImplementation(() => {
       throw new Error('Erro desconhecido');
     });

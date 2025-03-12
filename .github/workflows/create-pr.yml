@@ -1,6 +1,6 @@
 name: "[Cronicas] Create Pull Request"
 
-run-name: "Create Pull Request to main #${{ github.sha[0:7] }}"
+run-name: "Create PR ${{ github.ref_name }} to main. #${{ github.run_number }} by ${{ github.actor }}"
 
 on:
   push:
