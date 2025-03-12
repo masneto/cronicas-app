@@ -35,7 +35,7 @@ jobs:
         if: env.actions != ''
         run: |
           for action in ${{ env.actions }}; do
-            echo "Processing $action..."
+            echo "::group::Processing $action"
             cd "$action"
 
             if [ -f package.json ]; then
@@ -52,6 +52,7 @@ jobs:
             fi
 
             cd - > /dev/null
+            echo "::endgroup::"
           done
 
       - name: Commit and Push Dist Changes

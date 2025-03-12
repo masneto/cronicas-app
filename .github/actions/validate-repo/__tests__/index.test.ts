@@ -80,6 +80,6 @@ describe('GitHub Action - File Validation', () => {
 
     await run();
 
-    expect(core.setFailed).toHaveBeenCalledWith('Action falhou com erro: Erro desconhecido');
+    expect(core.setFailed).toHaveBeenCalledWith('Action falhou com erro: Erro desconhecido.');
   });
 });
