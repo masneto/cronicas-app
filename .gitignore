@@ -9,7 +9,7 @@ coverage/
 
 # Build directory
 build/
-dist/
+# dist/
 
 # Arquivos de ambiente
 .env

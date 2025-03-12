@@ -22,9 +22,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build Application
-        run: npm run build
-        
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
 
