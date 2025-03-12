@@ -15,7 +15,7 @@ describe('GitHub Action - File Validation', () => {
   });
 
   test('Deve falhar quando arquivos obrigatórios estão ausentes', async () => {
-    (fs.existsSync as jest.Mock).mockImplementation((filePath) => !filePath.includes('Dockerfile'));
+    (fs.existsSync as jest.Mock).mockImplementation((filePath: string) => !filePath.includes('Dockerfile'));
 
     await run();
 
@@ -24,7 +24,7 @@ describe('GitHub Action - File Validation', () => {
 
   test('Deve falhar quando package.json não contém os scripts necessários', async () => {
     (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.readFileSync as jest.Mock).mockImplementation((filePath) => {
+    (fs.readFileSync as jest.Mock).mockImplementation((filePath: string) => {
       if (filePath.includes('package.json')) {
         return JSON.stringify({ scripts: { start: 'node server.js' } });
       }
@@ -38,7 +38,7 @@ describe('GitHub Action - File Validation', () => {
 
   test('Deve gerar um warning se o Dockerfile não contiver HEALTHCHECK', async () => {
     (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.readFileSync as jest.Mock).mockImplementation((filePath) => {
+    (fs.readFileSync as jest.Mock).mockImplementation((filePath: string) => {
       if (filePath.includes('package.json')) {
         return JSON.stringify({ scripts: { test: 'jest', start: 'node server.js' } });
       }
@@ -55,7 +55,7 @@ describe('GitHub Action - File Validation', () => {
 
   test('Deve passar quando todos os arquivos estão presentes e válidos.', async () => {
     (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.readFileSync as jest.Mock).mockImplementation((filePath) => {
+    (fs.readFileSync as jest.Mock).mockImplementation((filePath: string) => {
       if (filePath.includes('package.json')) {
         return JSON.stringify({ scripts: { test: 'jest', start: 'node server.js' } });
       }
