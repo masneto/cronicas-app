@@ -1,5 +1,7 @@
 name: "[Cronicas] Create Pull Request"
 
+run-name: "Create PR to main. #${{ github.run_number }} by ${{ github.actor }}"
+
 on:
   push:
     branches:
