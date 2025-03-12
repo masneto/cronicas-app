@@ -23,22 +23,23 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - run: |
+          cd .github/actions 
+          ls -lah
+
       - name: Instalar Dependências
-        working-directory: .github/actions
         run: |
           if [ -f package.json ]; then
             npm install
           fi
 
       - name: Validar Builds das Actions Internas
-        working-directory: .github/actions
         run: |
           if [ -f package.json ]; then
             npm run build
           fi
 
       - name: Commit e Push do Build para a Branch de Origem
-        working-directory: .github/actions
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
