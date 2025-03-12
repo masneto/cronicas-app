@@ -1,5 +1,7 @@
 name: "[Cronicas] CI Actions"
 
+run-name: "Validate & Build Changed Actions SHA: ${{ github.sha }}"
+
 on:
   push:
     branches: 
