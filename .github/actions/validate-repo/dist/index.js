@@ -73,7 +73,7 @@ function run() {
                 core.setFailed('O arquivo package.json não contém os scripts necessários (test e start)');
                 return;
             }
-            // Verificação do arquivo Dockerfile
+            // Verificação do arquivo Dockerfile 
             const dockerfilePath = path.join(process.env.GITHUB_WORKSPACE || '', 'Dockerfile');
             const dockerfileContent = fs.readFileSync(dockerfilePath, 'utf8');
             if (!dockerfileContent.includes('HEALTHCHECK')) {
