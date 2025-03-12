@@ -54,7 +54,7 @@ describe('GitHub Action - File Validation', () => {
     expect(core.warning).toHaveBeenCalledWith('O Dockerfile não contém instrução HEALTHCHECK. Isso é recomendado para containers em produção.');
   });
 
-  test('Deve passar quando todos os arquivos estão presentes e válidos.', async () => {
+  test('Deve passar quando todos os arquivos estão presentes e válidos. ', async () => {
     (fs.existsSync as jest.Mock).mockReturnValue(true);
     (fs.readFileSync as jest.Mock).mockImplementation((filePath) => {
       if (filePath.includes('package.json')) {

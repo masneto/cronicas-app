@@ -69,4 +69,4 @@ jobs:
           done
 
           git commit -m "chore: update dist for modified actions " || exit 0
-          git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
