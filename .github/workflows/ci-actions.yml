@@ -23,27 +23,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: |
-          cd .github/actions 
-          ls -lah
-
-      - name: Instalar Dependências
-        run: |
-          if [ -f package.json ]; then
-            npm install
-          fi
-
-      - name: Validar Builds das Actions Internas
-        run: |
-          if [ -f package.json ]; then
-            npm run build
-          fi
-
-      - name: Commit e Push do Build para a Branch de Origem
-        run: |
-
-
-
       - name: Identify Changed Actions
         id: changed-actions
         run: |
