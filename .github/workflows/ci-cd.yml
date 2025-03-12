@@ -1,5 +1,7 @@
 name: "[Cronicas] CI/CD"
 
+run-name: "Push commit ${GITHUB_SHA::7} to main by ${GITHUB_ACTOR}"
+
 on:
   push:
     branches: 
