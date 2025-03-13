@@ -117,13 +117,12 @@ jobs:
           aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
           aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
 
-
       - name: Get Application URL
         id: app-url
         run: |
-          APP_URL=$(eb open --region sa-east-1 | grep -oP '(http[s]?://[^ ]+)')
+          APP_URL=$(aws elasticbeanstalk describe-environments --environment-names cronicas-app-env --query 'Environments[0].CNAME' --output text)
           echo "Application URL: $APP_URL"
-          echo "app-url=$APP_URL" >> $GITHUB_ENV
+          echo "app-url=http://$APP_URL" >> $GITHUB_ENV
 
       - name: Post-deploy Status
         run: |
