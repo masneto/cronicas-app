@@ -108,7 +108,7 @@ jobs:
       - name: Deploy from S3 to Elastic Beanstalk
         run: |
           ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
-          eb deploy cronicas-app-env --region sa-east-1 --staged --artifact $ARTIFACT_URL
+          eb deploy cronicas-app-env --region sa-east-1 --production --artifact $ARTIFACT_URL
 
       - name: Get Application URL
         id: app-url
