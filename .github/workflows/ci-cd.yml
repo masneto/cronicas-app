@@ -37,6 +37,10 @@ jobs:
           docker build -t cronicas-app .
 
       - name: Save Docker Image
+        run: |
+          docker save cronicas-app -o cronicas-app-image-v${{ github.run_number }}.tar
+
+      - name: Upload Docker Image
         uses: actions/upload-artifact@v4
         with:
           name: cronicas-app-image
