@@ -100,9 +100,11 @@ jobs:
         run: |
           if ! eb list | grep -q "cronicas-app"; then
             eb init -p node.js cronicas-app --region sa-east-1
+          fi
+          if ! eb status cronicas-app-env; then
             eb create cronicas-app-env --region sa-east-1
           else
-            echo "Elastic Beanstalk application 'cronicas-app' already exists."
+            echo "Elastic Beanstalk environment 'cronicas-app-env' already exists."
           fi
 
       - name: Deploy from S3 to Elastic Beanstalk
