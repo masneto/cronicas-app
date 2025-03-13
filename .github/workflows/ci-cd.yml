@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -45,16 +45,28 @@ jobs:
           path: build/
           
       - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          TAG_NAME="v${{ github.run_number }}"
-          RELEASE_NAME="Release v${{ github.run_number }}"
-          API_URL="https://api.github.com/repos/${{ github.repository }}/releases"
-          AUTH_HEADER="Authorization: token ${{ secrets.PAT_GITHUB_TOKEN }}"
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: build/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+      # - name: Create GitHub Release
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   run: |
+      #     TAG_NAME="v${{ github.run_number }}"
+      #     RELEASE_NAME="Release v${{ github.run_number }}"
+      #     API_URL="https://api.github.com/repos/${{ github.repository }}/releases"
+      #     AUTH_HEADER="Authorization: token ${{ secrets.PAT_GITHUB_TOKEN }}"
           
-          curl -X POST -H "$AUTH_HEADER" -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$RELEASE_NAME\",\"draft\":false,\"prerelease\":false}" \
-            $API_URL
+      #     curl -X POST -H "$AUTH_HEADER" -H "Content-Type: application/json" \
+      #       -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$RELEASE_NAME\",\"draft\":false,\"prerelease\":false}" \
+      #       $API_URL
   cd:
     name: Cronicas CD
     needs: ci
@@ -70,4 +82,15 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-build            
+          name: app-build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2          
