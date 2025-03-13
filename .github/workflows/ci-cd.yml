@@ -45,6 +45,7 @@ jobs:
         with:
           name: cronicas-app-image
           path: ./cronicas-app-image-v${{ github.run_number }}.tar
+          retention-days: 3
 
       # - name: Build Application
       #   run: |
@@ -104,8 +105,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
-
-
 
       - name: SSH to EC2 and Deploy Docker
         run: |
