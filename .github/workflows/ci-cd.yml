@@ -32,17 +32,27 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Build Application
+      - name: Create Docker Image
         run: |
-          npm prune --production
-          mkdir -p build
-          cp -r src/ package.json package-lock.json Dockerfile build/
-          
-      - name: Create Artifact
+          docker build -t cronicas-app .
+
+      - name: Save Docker Image
         uses: actions/upload-artifact@v4
         with:
-          name: app-build
-          path: build/
+          name: cronicas-app-image
+          path: ./cronicas-app-image.tar
+
+      # - name: Build Application
+      #   run: |
+      #     npm prune --production
+      #     mkdir -p build
+      #     cp -r src/ package.json package-lock.json Dockerfile build/
+          
+      # - name: Create Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-build
+      #     path: build/
           
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -85,45 +95,61 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
 
-      - name: Upload Artifact to S3
-        run: |
-          cd build/
-          zip -r ../cronicas-app-v${{ github.run_number }}.zip .
-          cd ..
-          aws s3 cp cronicas-app-v${{ github.run_number }}.zip s3://cronicas-app-bucket/
+      - name: Download Docker Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cronicas-app-image
+          path: ./docker-image
 
-      - name: Install Elastic Beanstalk CLI
+      - name: SSH to EC2 and Deploy Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install awsebcli --upgrade --user
-          export PATH=$PATH:$HOME/.local/bin          
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
+            # Passos para parar e rodar o contêiner
+            cd /home/ec2-user/cronicas-app || exit
+            docker-compose down || true
+            docker load -i ./docker-image/cronicas-app-image.tar
+            docker-compose up -d
+          EOF
 
-      - name: Create Elastic Beanstalk Application (if not exists)
-        run: |
-          if ! eb list | grep -q "cronicas-app"; then
-            eb init -p node.js cronicas-app --region sa-east-1
-          fi
-          if ! eb status cronicas-app-env; then
-            eb create cronicas-app-env --region sa-east-1
-          else
-            echo "Elastic Beanstalk environment 'cronicas-app-env' already exists."
-          fi
+      # - name: Upload Artifact to S3
+      #   run: |
+      #     cd build/
+      #     zip -r ../cronicas-app-v${{ github.run_number }}.zip .
+      #     cd ..
+      #     aws s3 cp cronicas-app-v${{ github.run_number }}.zip s3://cronicas-app-bucket/
 
-      - name: Deploy from S3 to Elastic Beanstalk
-        run: |
-          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
-          aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}.zip
-          aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
-          aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
+      # - name: Install Elastic Beanstalk CLI
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y python3-pip
+      #     pip3 install awsebcli --upgrade --user
+      #     export PATH=$PATH:$HOME/.local/bin          
 
-      - name: Get Application URL
-        id: app-url
-        run: |
-          APP_URL=$(aws elasticbeanstalk describe-environments --environment-names cronicas-app-env --query 'Environments[0].CNAME' --output text)
-          echo "Application URL: $APP_URL"
-          echo "app-url=http://$APP_URL" >> $GITHUB_ENV
+      # - name: Create Elastic Beanstalk Application (if not exists)
+      #   run: |
+      #     if ! eb list | grep -q "cronicas-app"; then
+      #       eb init -p node.js cronicas-app --region sa-east-1
+      #     fi
+      #     if ! eb status cronicas-app-env; then
+      #       eb create cronicas-app-env --region sa-east-1
+      #     else
+      #       echo "Elastic Beanstalk environment 'cronicas-app-env' already exists."
+      #     fi
 
-      - name: Post-deploy Status
-        run: |
-          echo "Application successfully deployed to ${{ env.app-url }}"       
+      # - name: Deploy from S3 to Elastic Beanstalk
+      #   run: |
+      #     ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
+      #     aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}.zip
+      #     aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
+      #     aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
+
+      # - name: Get Application URL
+      #   id: app-url
+      #   run: |
+      #     APP_URL=$(aws elasticbeanstalk describe-environments --environment-names cronicas-app-env --query 'Environments[0].CNAME' --output text)
+      #     echo "Application URL: $APP_URL"
+      #     echo "app-url=http://$APP_URL" >> $GITHUB_ENV
+
+      # - name: Post-deploy Status
+      #   run: |
+      #     echo "Application successfully deployed to ${{ env.app-url }}"       
