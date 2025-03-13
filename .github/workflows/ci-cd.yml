@@ -87,7 +87,14 @@ jobs:
 
       - name: Upload Artifact to S3
         run: |
-          aws s3 cp build/ s3://cronicas-app-bucket/cronicas-app.zip --recursive
+          aws s3 cp build/ s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip --recursive
+
+      - name: Install Elastic Beanstalk CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install awsebcli --upgrade --user
+          export PATH=$PATH:$HOME/.local/bin          
 
       - name: Create Elastic Beanstalk Application (if not exists)
         run: |
@@ -100,7 +107,7 @@ jobs:
 
       - name: Deploy from S3 to Elastic Beanstalk
         run: |
-          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app.zip"
+          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
           eb deploy cronicas-app-env --region sa-east-1 --staged --artifact $ARTIFACT_URL
 
       - name: Get Application URL
