@@ -87,9 +87,7 @@ jobs:
 
       - name: Upload Artifact to S3
         run: |
-          BUCKET_NAME="cronicas-app-bucket"
-          ARTIFACT_NAME="cronicas-app.zip"
-          aws s3 cp build/ $BUCKET_NAME/$ARTIFACT_NAME --recursive
+          aws s3 cp build/ s3://cronicas-app-bucket/cronicas-app.zip --recursive
 
       - name: Create Elastic Beanstalk Application (if not exists)
         run: |
