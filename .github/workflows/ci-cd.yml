@@ -32,32 +32,33 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Create Docker Image
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Login no AWS ECR
+        run: |
+          aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com
+
+      - name: Build e Push para o ECR
         run: |
           docker build -t cronicas-app .
+          docker tag cronicas-app:${{ github.run_number }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
 
       - name: Save Docker Image
         run: |
           docker save cronicas-app -o cronicas-app-image-v${{ github.run_number }}.tar
 
-      - name: Upload Docker Image
-        uses: actions/upload-artifact@v4
-        with:
-          name: cronicas-app-image
-          path: ./cronicas-app-image-v${{ github.run_number }}.tar
-          retention-days: 3
-
-      # - name: Build Application
-      #   run: |
-      #     npm prune --production
-      #     mkdir -p build
-      #     cp -r src/ package.json package-lock.json Dockerfile build/
-          
-      # - name: Create Artifact
+      # - name: Upload Docker Image
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: app-build
-      #     path: build/
+      #     name: cronicas-app-image
+      #     path: ./cronicas-app-image-v${{ github.run_number }}.tar
+      #     retention-days: 3
           
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -67,7 +68,7 @@ jobs:
           name: Release v${{ github.run_number }}
           draft: false
           prerelease: false
-          files: build/**/*
+          files: cronicas-app-image-v${{ github.run_number }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
@@ -80,25 +81,6 @@ jobs:
       name: production
       url: ${{ steps.deploy.outputs.app-url }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: cronicas-app-image
-          path: ./docker-image
-
-      # - name: Download Artifact
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: app-build
-      #     path: build
-
-      - name: Mask AWS Account ID
-        run: |
-          echo "::add-mask::${{ secrets.AWS_ACCOUNT_ID }}"
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -106,54 +88,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
 
-      - name: SSH to EC2 and Deploy Docker
+      - name: Deploy via AWS SSM
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
-            cd /home/ec2-user/cronicas-app || exit
-            docker-compose down || true
-            docker load -i ./docker-image/cronicas-app-image-v${{ github.run_number }}.tar
-            docker-compose up -d
-          EOF
-
-      # - name: Upload Artifact to S3
-      #   run: |
-      #     cd build/
-      #     zip -r ../cronicas-app-v${{ github.run_number }}.zip .
-      #     cd ..
-      #     aws s3 cp cronicas-app-v${{ github.run_number }}.zip s3://cronicas-app-bucket/
-
-      # - name: Install Elastic Beanstalk CLI
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y python3-pip
-      #     pip3 install awsebcli --upgrade --user
-      #     export PATH=$PATH:$HOME/.local/bin          
-
-      # - name: Create Elastic Beanstalk Application (if not exists)
-      #   run: |
-      #     if ! eb list | grep -q "cronicas-app"; then
-      #       eb init -p node.js cronicas-app --region sa-east-1
-      #     fi
-      #     if ! eb status cronicas-app-env; then
-      #       eb create cronicas-app-env --region sa-east-1
-      #     else
-      #       echo "Elastic Beanstalk environment 'cronicas-app-env' already exists."
-      #     fi
-
-      # - name: Deploy from S3 to Elastic Beanstalk
-      #   run: |
-      #     ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
-      #     aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}.zip
-      #     aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
-      #     aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
-
-      # - name: Get Application URL
-      #   id: app-url
-      #   run: |
-      #     APP_URL=$(aws elasticbeanstalk describe-environments --environment-names cronicas-app-env --query 'Environments[0].CNAME' --output text)
-      #     echo "Application URL: $APP_URL"
-      #     echo "app-url=http://$APP_URL" >> $GITHUB_ENV
-
-      # - name: Post-deploy Status
-      #   run: |
-      #     echo "Application successfully deployed to ${{ env.app-url }}"       
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters 'commands=["aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com", "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest", "docker-compose down", "docker-compose up -d"]' \
+            --region sa-east-1
