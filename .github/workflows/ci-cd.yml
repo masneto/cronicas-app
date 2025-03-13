@@ -135,4 +135,4 @@ jobs:
         id: app-url
         run: |
           APP_URL=$(aws elbv2 describe-load-balancers --names cronicas-app-lb --query 'LoadBalancers[0].DNSName' --output text)
-          echo "app-url=http://$APP_URL" >> $GITHUB_OUTPUT                    
+          echo "http://$APP_URL" >> $GITHUB_SUMMARY
