@@ -120,9 +120,7 @@ jobs:
         with:
           task-definition: .aws/task-definition.json
           container-name: cronicas-app-container
-          image: ${{ steps.build-image.outputs.image }}
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}                   
+          image: ${{ steps.build-image.outputs.image }}                  
 
       - name: Deploy to Amazon ECS
         id: deploy
@@ -131,9 +129,7 @@ jobs:
           task-definition: .aws/task-definition.json
           service: cronicas-app-service
           cluster: cronicas-app-cluster
-          wait-for-service-stability: true
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}     
+          wait-for-service-stability: true   
           
       - name: Get Application URL
         id: app-url
