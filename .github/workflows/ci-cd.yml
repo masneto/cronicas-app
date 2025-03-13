@@ -56,17 +56,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      # - name: Create GitHub Release
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #   run: |
-      #     TAG_NAME="v${{ github.run_number }}"
-      #     RELEASE_NAME="Release v${{ github.run_number }}"
-      #     API_URL="https://api.github.com/repos/${{ github.repository }}/releases"
-      #     AUTH_HEADER="Authorization: token ${{ secrets.PAT_GITHUB_TOKEN }}"
-          
-      #     curl -X POST -H "$AUTH_HEADER" -H "Content-Type: application/json" \
-      #       -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$RELEASE_NAME\",\"draft\":false,\"prerelease\":false}" \
-      #       $API_URL
   cd:
     name: Cronicas CD
     needs: ci
@@ -96,43 +85,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: cronicas-app
-          IMAGE_TAG: ${{ github.run_number }}
+      - name: Upload Artifact to S3
         run: |
-          cd build
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          BUCKET_NAME="cronicas-app-bucket"
+          ARTIFACT_NAME="cronicas-app.zip"
+          aws s3 cp build/ $BUCKET_NAME/$ARTIFACT_NAME --recursive
 
-      - name: Fill in the ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: .aws/task-definition.json
-          container-name: cronicas-app-container
-          image: ${{ steps.build-image.outputs.image }}                  
+      - name: Create Elastic Beanstalk Application (if not exists)
+        run: |
+          if ! eb list | grep -q "cronicas-app"; then
+            eb init -p node.js cronicas-app --region sa-east-1
+            eb create cronicas-app-env --region sa-east-1
+          else
+            echo "Elastic Beanstalk application 'cronicas-app' already exists."
+          fi
 
-      - name: Deploy to Amazon ECS
-        id: deploy
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: .aws/task-definition.json
-          service: cronicas-app-service
-          cluster: cronicas-app-cluster
-          wait-for-service-stability: true   
-          
+      - name: Deploy from S3 to Elastic Beanstalk
+        run: |
+          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app.zip"
+          eb deploy cronicas-app-env --region sa-east-1 --staged --artifact $ARTIFACT_URL
+
       - name: Get Application URL
         id: app-url
         run: |
-          APP_URL=$(aws elbv2 describe-load-balancers --names cronicas-app-lb --query 'LoadBalancers[0].DNSName' --output text)
-          echo "http://$APP_URL" >> $GITHUB_SUMMARY
+          APP_URL=$(eb open --region sa-east-1 | grep -oP '(http[s]?://[^ ]+)')
+          echo "Application URL: $APP_URL"
+          echo "app-url=$APP_URL" >> $GITHUB_ENV
+
+      - name: Post-deploy Status
+        run: |
+          echo "Application successfully deployed to ${{ env.app-url }}"       
