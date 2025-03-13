@@ -84,6 +84,10 @@ jobs:
         with:
           name: app-build
 
+      - name: Mask AWS Account ID
+        run: |
+          echo "::add-mask::${{ secrets.AWS_ACCOUNT_ID }}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
