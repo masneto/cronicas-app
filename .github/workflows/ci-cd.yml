@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -55,3 +55,19 @@ jobs:
           curl -X POST -H "$AUTH_HEADER" -H "Content-Type: application/json" \
             -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$RELEASE_NAME\",\"draft\":false,\"prerelease\":false}" \
             $API_URL
+  cd:
+    name: Cronicas CD
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.app-url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+            
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build            

@@ -43,7 +43,7 @@ jobs:
 
             if [ -f package.json ]; then
               echo "Installing dependencies..."
-              npm install
+              npm ci
 
               echo "Running linter..."
               npm run lint
