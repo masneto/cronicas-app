@@ -112,6 +112,8 @@ jobs:
           ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
           aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}.zip
           aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
+          aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
+
 
       - name: Get Application URL
         id: app-url
