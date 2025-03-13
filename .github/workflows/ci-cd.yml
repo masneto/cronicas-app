@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload Artifact to S3
         run: |
-          aws s3 cp build/ s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip --recursive
+          aws s3 cp build/ s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }} --recursive
 
       - name: Install Elastic Beanstalk CLI
         run: |
@@ -109,8 +109,8 @@ jobs:
 
       - name: Deploy from S3 to Elastic Beanstalk
         run: |
-          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}.zip"
-          aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}.zip
+          ARTIFACT_URL="s3://cronicas-app-bucket/cronicas-app-v${{ github.run_number }}"
+          aws elasticbeanstalk create-application-version --application-name cronicas-app --version-label v${{ github.run_number }} --source-bundle S3Bucket=cronicas-app-bucket,S3Key=cronicas-app-v${{ github.run_number }}
           aws elasticbeanstalk update-environment --environment-name cronicas-app-env --version-label v${{ github.run_number }}
           aws elasticbeanstalk wait environment-updated --environment-name cronicas-app-env
 
