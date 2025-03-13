@@ -108,11 +108,7 @@ jobs:
 
       - name: SSH to EC2 and Deploy Docker
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/cronicas-key.pem
-          chmod 600 ~/.ssh/cronicas-key.pem
-          
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/cronicas-key.pem ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
-            # Navega para o diretório de aplicação
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
             cd /home/ec2-user/cronicas-app || exit
             docker-compose down || true
             docker load -i ./docker-image/cronicas-app-image-v${{ github.run_number }}.tar
