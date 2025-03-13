@@ -77,12 +77,18 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-            
-      - name: Download Artifact
+
+      - name: Download Docker Image Artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-build
-          path: build
+          name: cronicas-app-image
+          path: ./docker-image
+
+      # - name: Download Artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: app-build
+      #     path: build
 
       - name: Mask AWS Account ID
         run: |
@@ -95,11 +101,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
 
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: cronicas-app-image
-          path: ./docker-image
+
 
       - name: SSH to EC2 and Deploy Docker
         run: |
