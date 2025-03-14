@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm instal
+        run: npm installation #npm install
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
