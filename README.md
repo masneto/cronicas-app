@@ -4,6 +4,7 @@
 ## Descrição do Projeto
 O Crônicas App é uma aplicação web que centraliza conteúdos do projeto "Crônicas do Nada Ver". A aplicação exibe informações, links para redes sociais e outros conteúdos relacionados. O projeto utiliza uma arquitetura moderna com integração contínua (CI) e entrega contínua (CD) para garantir qualidade e automação no desenvolvimento e deploy.
 
+![Cronicas APP](images/cronicas-0.png)
 ---
 
 ## Estrutura do Projeto
@@ -29,7 +30,7 @@ cronicas-app/
 │   ├── server.js          # Configuração do servidor
 │   └── public/            # Arquivos públicos (HTML, CSS)
 │       ├── index.html     # Página inicial
-│       └── style.css      # Estilos da aplicação
+│       └── styles.css      # Estilos da aplicação
 ├── test/                  # Testes automatizados
 │   └── app.test.js        # Testes unitários/integrados
 └── coverage/              # Relatórios de cobertura de testes
@@ -60,7 +61,7 @@ O workflow de CD realiza o deploy da aplicação na AWS. As etapas incluem:
   - Iniciar um novo container com a aplicação.
 - **Notificação de Falha**: Em caso de erro, envia um e-mail para os responsáveis.
 
-## 3. Validação e Build das Actions
+### 3. Validação e Build das Actions
 
 O workflow `ci-actions.yml` é responsável por validar e buildar as actions personalizadas do repositório. Ele executa as seguintes etapas:
 
@@ -69,10 +70,11 @@ O workflow `ci-actions.yml` é responsável por validar e buildar as actions per
 - **Executar Linter e Testes**: Garante que o código das actions segue os padrões e está funcionando corretamente.
 - **Build das Actions**: Gera os arquivos necessários para execução das actions.
 - **Commit e Push**: Atualiza os arquivos de build no repositório.
+- **Notificação de Falha**: Em caso de erro, envia um e-mail para os responsáveis.
 
 ---
 
-## 4. Criação Automática de Pull Requests
+### 4. Criação Automática de Pull Requests
 
 O workflow `create-pr.yml` cria automaticamente pull requests para a branch `main` quando há alterações em branches `feature/*`. Ele executa as seguintes etapas:
 
@@ -88,6 +90,7 @@ O workflow `create-pr.yml` cria automaticamente pull requests para a branch `mai
 - Instância EC2
 - Docker instalado na EC2
 - AWS CLI configurado na EC2
+- Repositório no ECR
 - Git
 
 ### Passos

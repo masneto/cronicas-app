@@ -46,7 +46,7 @@ function run() {
                 'src/app.js',
                 'src/server.js',
                 'src/public/index.html',
-                'src/public/style.css',
+                'src/public/styles.css',
                 'test/app.test.js'
             ];
             // Processo para validar cada arquivo
