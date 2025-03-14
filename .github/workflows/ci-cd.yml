@@ -98,7 +98,7 @@ jobs:
             --region sa-east-1
 
   notify-failure:
-    name: Send Notification
+    name: Cronicas Send E-mail
     needs: [ci, cd]
     if: always() && failure() || cancelled()
     runs-on: ubuntu-latest
