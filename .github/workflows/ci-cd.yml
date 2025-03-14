@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm instal
+        run: npm installation #npm install
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -117,5 +117,5 @@ jobs:
             📌 Branch: ${{ github.ref_name }}
             📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
             🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          to: ${{ github.event.pusher.email }} 
+          to: ${{ secrets.MAIL_USERNAME }} 
           from: ${{ secrets.MAIL_USERNAME }} 
