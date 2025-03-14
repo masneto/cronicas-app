@@ -9,6 +9,7 @@ jobs:
   ci:
     name: Cronicas CI
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -20,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm install
+        run: npm instal
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -30,3 +31,91 @@ jobs:
         
       - name: Run Tests
         run: npm test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Login no AWS ECR
+        run: |
+          aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com
+
+      - name: Build e Push para o ECR
+        run: |
+          docker build -t cronicas-app:${{ github.run_number }} .
+          docker tag cronicas-app:${{ github.run_number }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
+          docker tag cronicas-app:${{ github.run_number }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest
+
+      - name: Save Docker Image
+        run: |
+          docker save cronicas-app:${{ github.run_number }} -o cronicas-app-image-v${{ github.run_number }}.tar
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: cronicas-app-image-v${{ github.run_number }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+  cd:
+    name: Cronicas CD
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.app-url }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Deploy and Run Docker Image
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters 'commands=[
+              "aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com",
+              "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest",
+              "docker stop cronicas-app || true",
+              "docker rm cronicas-app || true",
+              "docker run -d -p 3000:3000 --name cronicas-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest"
+            ]' \
+            --region sa-east-1
+
+  notify-failure:
+    name: Cronicas Send E-mail
+    needs: [ci, cd]
+    if: always() && failure() || cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }} 
+          subject: "🚨 Falha no Pipeline CI/CD"
+          body: |
+            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
+            📌 Repositório: ${{ github.repository }}
+            📌 Branch: ${{ github.ref_name }}
+            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
+            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ github.event.pusher.email }} 
+          from: ${{ secrets.MAIL_USERNAME }} 

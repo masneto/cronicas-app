@@ -12,11 +12,10 @@ export async function run(): Promise<void> {
       'src/server.js',
       'src/public/index.html',
       'src/public/style.css',
-      'test/app.test.js',
-      '.aws/task-definition.json'
+      'test/app.test.js'
     ];
     
-    // Processo para validar cada arquivo
+    // Processo para validar cada arquivo 
     const missingFiles: string[] = [];
     
     for (const file of requiredFiles) {
