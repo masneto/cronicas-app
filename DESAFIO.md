@@ -24,7 +24,7 @@ Acesse [Crônicas APP](http://54.233.49.246:3000/).
 ✅ Build da aplicação  
 ✅ Armazenamento de artefatos como release do GitHub  
 ✅ Uso de environments para aprovação de deploy  
-✅ Deploy em ambiente de teste após sucesso  
+✅ Deploy em ambiente de produção após sucesso  
 ✅ Notificação por e-mail em caso de falha  
 
 ### Funcionalidades Adicionais (Plus)
