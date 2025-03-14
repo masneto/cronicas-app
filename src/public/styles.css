@@ -79,13 +79,24 @@ h2 {
 }
 
 .button:hover {
-  background-color: #00fff2; /* Cor de fundo mais clara */
-  color: #333; /* Cor do texto mais escura */
+  background-color: #00fff2;
+  color: #333; 
   transform: scale(1.05);
 }
 
 .button:active {
-  background-color: #00f2ff; /* Cor de fundo mais escura ao clicar */
-  color: #333; /* Cor do texto permanece visível */
+  background-color: #00f2ff;
+  color: #333;
   transform: scale(0.95);
+}
+
+iframe {
+  width: 100%; 
+  max-width: 560px;
+  height: 240px; 
+  border: none; 
+  margin: 20px auto; 
+  display: block; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
