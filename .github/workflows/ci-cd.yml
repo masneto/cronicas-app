@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm install
+        run: npm instal
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -50,12 +50,6 @@ jobs:
           docker tag cronicas-app:${{ github.run_number }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest
-
-      # - name: Build e Push para o ECR
-      #   run: |
-      #     docker build -t cronicas-app:${{ github.run_number }} .
-      #     docker tag cronicas-app:${{ github.run_number }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
-      #     docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:${{ github.run_number }}
 
       - name: Save Docker Image
         run: |
@@ -103,10 +97,25 @@ jobs:
             ]' \
             --region sa-east-1
 
-      # - name: Deploy via AWS SSM
-      #   run: |
-      #     aws ssm send-command \
-      #       --document-name "AWS-RunShellScript" \
-      #       --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
-      #       --parameters 'commands=["aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com", "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/cronicas-app:latest", "docker-compose down", "docker-compose up -d"]' \
-      #       --region sa-east-1
+  notify-failure:
+    name: Send Notification
+    needs: [ci, cd]
+    if: always() && failure() || cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }} 
+          subject: "🚨 Falha no Pipeline CI/CD"
+          body: |
+            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
+            📌 Repositório: ${{ github.repository }}
+            📌 Branch: ${{ github.ref_name }}
+            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
+            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ github.event.pusher.email }} 
+          from: ${{ secrets.MAIL_USERNAME }} 
