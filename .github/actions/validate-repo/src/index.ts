@@ -15,7 +15,7 @@ export async function run(): Promise<void> {
       'test/app.test.js'
     ];
     
-    // Processo para validar cada arquivo.
+    // Processo para validar cada arquivo
     const missingFiles: string[] = [];
     
     for (const file of requiredFiles) {
