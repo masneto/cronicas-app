@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm installation #npm install
+        run: npm install
 
       - name: Validate Repository Structure
         uses: ./.github/actions/validate-repo
@@ -112,7 +112,7 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }} 
           subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
           body: |
-            
+
             O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
             📌 Repositório: ${{ github.repository }}
             📌 Branch: ${{ github.ref_name }}
