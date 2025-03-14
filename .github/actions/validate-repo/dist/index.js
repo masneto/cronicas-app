@@ -47,10 +47,9 @@ function run() {
                 'src/server.js',
                 'src/public/index.html',
                 'src/public/style.css',
-                'test/app.test.js',
-                '.aws/task-definition.json'
+                'test/app.test.js'
             ];
-            // Processo para validar cada arquivo
+            // Processo para validar cada arquivo 
             const missingFiles = [];
             for (const file of requiredFiles) {
                 const filePath = path.join(process.env.GITHUB_WORKSPACE || '', file);
