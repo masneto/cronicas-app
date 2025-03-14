@@ -185,3 +185,5 @@ Somente os usuários abaixo podem aprovar pull requests para Main e o Deploy em 
 2. **Expandir Testes**: Adicionar testes de integração e end-to-end.
 3. **Documentação Avançada**: Criar uma documentação detalhada para desenvolvedores e usuários finais.
 4. **Criação de Fluxos**: Criar workflows que entreguem em etapas anteriores a produção, permitindo a realização de testes necessários para os desenvolvedores conseguirem subir com qualidade e segurança.
+5. **Observabilidade e Monitoramento**: Implementar ferramentas como Grafana e Prometheus, Datadog para a observabilidade e monitoramento da aplicação.
+6. **Gerenciamento via Kubernetes**: Gerenciar a imagem via Kubernetes garantindo a escabilidade e segurança da aplicação dentro da EC2.
