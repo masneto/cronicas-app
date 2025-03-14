@@ -11,7 +11,7 @@ export async function run(): Promise<void> {
       'src/app.js',
       'src/server.js',
       'src/public/index.html',
-      'src/public/style.css',
+      'src/public/styles.css',
       'test/app.test.js'
     ];
     

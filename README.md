@@ -30,7 +30,7 @@ cronicas-app/
 │   ├── server.js          # Configuração do servidor
 │   └── public/            # Arquivos públicos (HTML, CSS)
 │       ├── index.html     # Página inicial
-│       └── style.css      # Estilos da aplicação
+│       └── styles.css      # Estilos da aplicação
 ├── test/                  # Testes automatizados
 │   └── app.test.js        # Testes unitários/integrados
 └── coverage/              # Relatórios de cobertura de testes
