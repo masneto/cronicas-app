@@ -112,6 +112,7 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }} 
           subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
           body: |
+            
             O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
             📌 Repositório: ${{ github.repository }}
             📌 Branch: ${{ github.ref_name }}
