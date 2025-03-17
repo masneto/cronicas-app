@@ -20,13 +20,16 @@ jobs:
         run: |
           previous_commit=$(git log --skip=1 -n 1 --pretty=format:"%H")
           previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
-          echo "commit_type=$previous_commit_message" >> $GITHUB_OUTPUT
+          echo "$previous_commit_message"
+          echo "commit=$previous_commit_message | awk -F ': ' '{print $1}"
+          echo "commit = $commit"
+          echo "commit_type: $commit" >> $GITHUB_OUTPUT
 
       - name: Commit type
         id: commit_type
         if: (contains(${{ github.event.head_commit.message }}, 'cnv-deploy')) && (steps.commit_type_previous.outcome == 'failure') || (steps.commit_type_previous.outcome == 'skipped')
         run: |
-          commit=$(echo '${{ ${{ github.event.head_commit.message }} }}' | awk -F ': ' '{print $1}')
+          commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
           echo "commit_type: $commit" >> $GITHUB_OUTPUT
 
