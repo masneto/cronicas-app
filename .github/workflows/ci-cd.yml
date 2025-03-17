@@ -9,34 +9,42 @@ jobs:
   commit-type: 
     name: Cronicas Test
     runs-on: ubuntu-latest
-    if: (contains(${{ github.event.head_commit.message }}, 'cnv-deploy')) || (contains(${{ github.event.head_commit.message }}, 'Merge pull request'))
+    if: contains(github.event.head_commit.message, 'cnv-deploy') || contains(github.event.head_commit.message, 'Merge pull request')
+    outputs:
+      commit_type: ${{ steps.commit_type.outputs.commit_type }}
+      commit_tp: ${{ steps.commit_type_previous.outputs.commit_tp }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - run: |
+          echo "${{ github.event.head_commit.message }}"
+
       - name: Get Previous Commit
         id: commit_type_previous
-        if: (contains(${{ github.event.head_commit.message }}, 'Merge pull request'))
+        if: contains(github.event.head_commit.message, 'Merge pull request')
         run: |
           previous_commit=$(git log --skip=1 -n 1 --pretty=format:"%H")
           previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
-          echo "commit_type=$previous_commit_message" >> $GITHUB_OUTPUT
+          echo "$previous_commit_message"
+          commit=$(echo "$previous_commit_message" | awk -F ': ' '{print $1}')
+          echo "commit = $commit"
+          echo "commit_tp=$(echo "$commit")" >> $GITHUB_OUTPUT
 
       - name: Commit type
         id: commit_type
-        if: (contains(${{ github.event.head_commit.message }}, 'cnv-deploy')) && (steps.commit_type_previous.outcome == 'failure') || (steps.commit_type_previous.outcome == 'skipped')
+        if: contains(${{ github.event.head_commit.message }}, 'cnv-deploy') && steps.commit_type_previous.outcome == 'failure' || steps.commit_type_previous.outcome == 'skipped'
         run: |
-          commit=$(echo '${{ ${{ github.event.head_commit.message }} }}' | awk -F ': ' '{print $1}')
+          commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
-          echo "commit_type: $commit" >> $GITHUB_OUTPUT
-
-          exit 1
-          
+          echo "commit_type=$(echo "$commit")" >> $GITHUB_OUTPUT
+         
   ci:
     name: Cronicas CI
-    needs: test
+    needs: commit-type
     runs-on: ubuntu-latest
     permissions: write-all
+    if: needs.commit-type.outputs.commit_type == 'cnv-deploy' || needs.commit-type.outputs.commit_tp == 'cnv-deploy'
     environment:
       name: production
     steps:
