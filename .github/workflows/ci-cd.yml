@@ -16,24 +16,37 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - run: |
-          echo "${{ github.event.head_commit.message }}"
+        with:
+          fetch-depth: 0
 
       - name: Get Previous Commit
         id: commit_type_previous
         if: contains(github.event.head_commit.message, 'Merge pull request')
         run: |
-          previous_commit=$(git log --skip=1 -n 1 --pretty=format:"%H")
+          merge_commit=$(git log --merges --pretty=format:"%H" -n 1)
+          echo "Último Merge Commit: $merge_commit"
+
+          # Obtém o commit antes do merge
+          previous_commit2=$(git log --pretty=format:"%H" $merge_commit^2 -n 1)
+          echo "Commit Antes do Merge: $previous_commit2" 
+
+          previous_commit_message2=$(git log --pretty=format:"%H" $merge_commit^2 -n 1)
+          echo "Mensagem do Commit Anterior = $previous_commit_message2"
+          commit2=$(echo "$previous_commit_message2" | awk -F '[][]' '{print $2}')
+          echo "commit2 = $commit2"
+
+          previous_commit=$(git rev-parse HEAD^)
+          echo "1 = $previous_commit"
           previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
-          echo "$previous_commit_message"
+          echo "2 = $previous_commit_message"
+
           commit=$(echo "$previous_commit_message" | awk -F '[][]' '{print $2}')
           echo "commit = $commit"
           echo "commit_tp=$(echo "$commit")" >> $GITHUB_OUTPUT
 
       - name: Commit type
         id: commit_type
-        if: contains(${{ github.event.head_commit.message }}, 'cnv-deploy') && steps.commit_type_previous.outcome == 'failure' || steps.commit_type_previous.outcome == 'skipped'
+        if: contains(github.event.head_commit.message, 'cnv-deploy')
         run: |
           commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
@@ -67,7 +80,7 @@ jobs:
         run: npm run lint
         
       - name: Run Tests
-        run: npm test
+        run: npm test 
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
