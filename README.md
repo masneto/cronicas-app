@@ -83,6 +83,14 @@ O workflow `create-pr.yml` cria automaticamente pull requests para a branch `mai
 
 ---
 
+### 5. Tipos de Commits
+
+Aqui estão 3 padrões de commit que devem ser utilizados com o prefixo cnv-*:
+
+- `cnv-upd`: Commit para atualização de arquivos.
+- `cnv-deploy`: Commit para iniciar workflow CI/CD.
+- `cnv-docs`: Commit para atualização de documentação.
+
 ## Como Executar Localmente
 
 ### Pré-requisitos

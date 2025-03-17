@@ -7,16 +7,13 @@ on:
     branches:
       - 'feature/*'
 
-env:
-  commit_type: ${{ github.event.head_commit.message }}
-
 jobs:
   create-pull-request:
     name: Create Pull Request
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Commit type: ${{ env.commit_type }}"
+        echo "commit_type: $(echo "${{ github.event.head_commit.message }}" | cut -d ':' -f 1)" >> GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -27,6 +24,10 @@ jobs:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
         base: main
         branch: ${{ github.ref }}
-        title: 'PR criado automaticamente -> main'
+        title: '[${{ env.commit_type }}] PR criado automaticamente -> main'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
+
+    - name: TESTE IF
+      if: ${{ !contains(github.event.head_commit.message, 'cnv-deploy') }}
+      run: echo "cnv-deploy não encontrado"
