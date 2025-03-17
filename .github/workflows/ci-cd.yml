@@ -19,17 +19,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: |
-          echo "${{ github.event.head_commit.message }}"
-
       - name: Get Previous Commit
         id: commit_type_previous
         if: contains(github.event.head_commit.message, 'Merge pull request')
         run: |
+
+          previous_commit2=$(git log --skip=1 -n 1 --pretty=format:"%H")
+          echo "Commit Anterior = $previous_commit2"      
+          previous_commit_message2=$(git log -1 --pretty=format:"%s" $previous_commit)
+          echo "Mensagem do Commit Anterior = $previous_commit_message2"
+          commit2=$(echo "$previous_commit_message2" | awk -F '[][]' '{print $2}')
+          echo "commit2 = $commit2"
+
           previous_commit=$(git rev-parse HEAD^)
           echo "1 = $previous_commit"
           previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
           echo "2 = $previous_commit_message"
+
           commit=$(echo "$previous_commit_message" | awk -F '[][]' '{print $2}')
           echo "commit = $commit"
           echo "commit_tp=$(echo "$commit")" >> $GITHUB_OUTPUT
