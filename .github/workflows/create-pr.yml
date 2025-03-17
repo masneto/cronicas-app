@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "commit_type: $(echo "${{ github.event.head_commit.message }}" | cut -d ':' -f 1)" >> GITHUB_ENV
+        echo "commit_type: $(echo '${{ github.event.head_commit.message }}' | cut -d ':' -f 1)" >> GITHUB_ENV
 
     - run: |
        echo "commit_type: ${{ env.commit_type }}"
