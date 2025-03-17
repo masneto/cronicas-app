@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit type
         id: commit_type
-        if: contains(${{ github.event.head_commit.message }}, 'cnv-deploy') && steps.commit_type_previous.outcome == 'failure' || steps.commit_type_previous.outcome == 'skipped'
+        if: contains(github.event.head_commit.message, 'cnv-deploy') && steps.commit_type_previous.outcome == 'failure' || steps.commit_type_previous.outcome == 'skipped'
         run: |
           commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
