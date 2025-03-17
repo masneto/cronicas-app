@@ -9,7 +9,7 @@ jobs:
   commit-type: 
     name: Cronicas Test
     runs-on: ubuntu-latest
-    if: (contains(${{ github.event.head_commit.message }}, 'cnv-deploy')) || (contains(${{ github.event.head_commit.message }}, 'Merge pull request'))
+    if: contains(${{ github.event.head_commit.message }}, 'cnv-deploy') || contains(${{ github.event.head_commit.message }}, 'Merge pull request')
     outputs:
       commit_type: ${{ steps.commit_type.outputs.commit_type }}
       commit_tp: ${{ steps.commit_type_previous.outputs.commit_tp }}
