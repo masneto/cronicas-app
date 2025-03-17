@@ -108,8 +108,12 @@ h2 {
 .playlist {
   display: flex;
   justify-content: center;
-  gap: 10px; 
+  gap: 5px; /* Reduzido o espaçamento entre botões */
   margin-top: 20px;
+  flex-wrap: nowrap; /* Força os itens a permanecerem em uma única linha */
+  overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
+  padding-bottom: 10px; /* Espaço para a barra de rolagem */
+  width: 100%; /* Garante que use toda a largura disponível */
 }
 
 /* Estilo dos botões de seleção de música */
@@ -186,33 +190,34 @@ iframe {
 
   /* Ajusta os botões de seleção de música */
   .button-music {
-    width: 40px; /* Botões menores em telas pequenas */
+    width: 40px; 
     height: 40px;
     font-size: 0.9rem;
   }
 
   /* Ajusta o iframe do player */
   iframe {
-    height: 200px; /* Reduz a altura do player */
+    height: 200px; 
   }
 }
 
 @media (max-width: 480px) {
   /* Ajusta os botões de seleção de música */
   .button-music {
-    width: 35px; /* Botões ainda menores */
-    height: 35px;
+    width: 32px; 
+    height: 32px;
     font-size: 0.8rem;
+    min-width: 32px;
   }
 
   /* Ajusta o iframe do player */
   iframe {
-    height: 180px; /* Reduz ainda mais a altura do player */
+    height: 180px; 
   }
 
   /* Ajusta o layout da playlist */
-  .playlist {
-    gap: 5px; /* Reduz o espaçamento entre os botões */
-    flex-wrap: wrap; /* Permite que os botões quebrem linha em telas muito pequenas */
+    .playlist {
+      gap: 3px; 
+      flex-wrap: nowrap; 
+    }
   }
-}
