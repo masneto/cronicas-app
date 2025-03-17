@@ -21,7 +21,7 @@ jobs:
           previous_commit=$(git log --skip=1 -n 1 --pretty=format:"%H")
           previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
           echo "$previous_commit_message"
-          echo "commit=$previous_commit_message | awk -F ': ' '{print $1}"
+          echo "commit=$(echo '$previous_commit_message' | awk -F ': ' '{print $1}')"
           echo "commit = $commit"
           echo "commit_type: $commit" >> $GITHUB_OUTPUT
 
