@@ -44,6 +44,7 @@ jobs:
     needs: commit-type
     runs-on: ubuntu-latest
     permissions: write-all
+    if: needs.commit-type.outputs.commit_type == 'cnv-deploy' || needs.commit-type.outputs.commit_tp == 'cnv-deploy' }}
     environment:
       name: production
     steps:
