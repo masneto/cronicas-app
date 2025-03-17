@@ -5,6 +5,9 @@ on:
     branches: 
       - main
 
+env:
+  commit_type: ${{ github.event.head_commit.message }}
+
 jobs:
   ci:
     name: Cronicas CI

@@ -7,12 +7,17 @@ on:
     branches:
       - 'feature/*'
 
+env:
+  commit_type: ${{ github.event.head_commit.message }}
+
 jobs:
   create-pull-request:
     name: Create Pull Request
     runs-on: ubuntu-latest
-
     steps:
+    - run: |
+        echo "Commit type: ${{ env.commit_type }}"
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
