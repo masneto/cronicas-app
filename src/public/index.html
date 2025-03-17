@@ -1,45 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crônicas do Nada Ver</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
-    <img src="https://yt3.googleusercontent.com/j4Vp91H-ovvWBjzZIUNU7kXB1gi2usOToJlSnQbnjbtvQdxWHImBSoS0ZkvoQaM7XQH-ftzBsZc=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="Crônicas do Nada Ver"/>
+    <img
+      src="https://yt3.googleusercontent.com/j4Vp91H-ovvWBjzZIUNU7kXB1gi2usOToJlSnQbnjbtvQdxWHImBSoS0ZkvoQaM7XQH-ftzBsZc=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+      alt="Crônicas do Nada Ver" />
     <h1>Crônicas do Nada Ver</h1>
     <h2>O que é engraçado, é o que não faz sentido!!!</h2>
     <div class="sidebar">
       <ul>
-        <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button">Youtube</a></li>
-        <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button">Tik Tok</a></li>
-        <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button-link">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button-link">TikTok</a></li>
+        <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button-link">Instagram</a></li>
       </ul>
     </div>
     <br>
     <h3>Top 10 músicas</h3>
     <div class="playlist">
-      <button class="button" onclick="playSong('https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628')">1</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b')">2</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674')">3</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237')">4</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8')">5</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511')">6</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217')">7</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8')">8</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909')">9</button>
-      <button class="button" onclick="playSong('https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da')">10</button>
+      <button class="button-music" onclick="playSong(0)">1</button>
+      <button class="button-music" onclick="playSong(1)">2</button>
+      <button class="button-music" onclick="playSong(2)">3</button>
+      <button class="button-music" onclick="playSong(3)">4</button>
+      <button class="button-music" onclick="playSong(4)">5</button>
+      <button class="button-music" onclick="playSong(5)">6</button>
+      <button class="button-music" onclick="playSong(6)">7</button>
+      <button class="button-music" onclick="playSong(7)">8</button>
+      <button class="button-music" onclick="playSong(8)">9</button>
+      <button class="button-music" onclick="playSong(9)">10</button>
     </div>
-    
-    <iframe id="musicPlayer" src="https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628" width="560" height="240"></iframe>
-    
+    <br>
+    <div class="controls">
+      <button class="button-link" onclick="previousSong()">Anterior</button>
+      <button class="button-link" onclick="nextSong()">Próxima</button>
+    </div>
+
+    <iframe id="musicPlayer" src="https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628"></iframe>
+
     <script>
-      function playSong(url) {
-        document.getElementById('musicPlayer').src = url;
+      // Lista de URLs das músicas
+      const songs = [
+        "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
+        "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
+        "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
+        "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
+        "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
+        "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
+        "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
+        "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
+        "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
+        "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
+      ];
+
+      let currentSongIndex = 0;
+
+      // Função para tocar uma música específica
+      function playSong(index) {
+        currentSongIndex = index;
+        const player = document.getElementById("musicPlayer");
+        player.src = songs[currentSongIndex];
+
+        // Atualizar o botão ativo
+        updateActiveButton(index);
       }
-    </script>    
+
+      function updateActiveButton(index) {
+        const buttons = document.querySelectorAll(".playlist .button-music"); // Corrigido para usar a classe correta
+        buttons.forEach((button, i) => {
+          // Remove a imagem de todos os botões
+          button.innerHTML = i + 1; // Restaura o número no botão
+
+          // Adiciona a classe "active" ao botão correspondente
+          if (i === index) {
+            button.classList.add("active");
+
+            // Substitui o número pela imagem no botão ativo
+            const logo = document.createElement("img");
+            logo.src = "./images/cnv-logo.png"; // Certifique-se de que o caminho está correto
+            button.innerHTML = ""; // Limpa o conteúdo do botão
+            button.appendChild(logo); // Adiciona a imagem ao botão
+          } else {
+            button.classList.remove("active");
+          }
+        });
+      }
+
+      // Função para tocar a música anterior
+      function previousSong() {
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length; // Volta para a última música se estiver na primeira
+        playSong(currentSongIndex);
+      }
+
+      // Função para tocar a próxima música
+      function nextSong() {
+        currentSongIndex = (currentSongIndex + 1) % songs.length; // Vai para a primeira música se estiver na última
+        playSong(currentSongIndex);
+      }
+
+      // Inicializar o botão ativo na primeira música
+      updateActiveButton(0);
+    </script>
   </div>
 </body>
+
 </html>

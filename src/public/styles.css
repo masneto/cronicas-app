@@ -1,3 +1,4 @@
+/* Estilo geral do corpo da página */
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -10,6 +11,7 @@ body {
   color: #333;
 }
 
+/* Estilo do contêiner principal */
 .container {
   text-align: center;
   background: #ffffff;
@@ -20,6 +22,7 @@ body {
   width: 90%;
 }
 
+/* Estilo das imagens dentro do contêiner */
 .container img {
   max-width: 100%;
   height: auto;
@@ -27,31 +30,37 @@ body {
   margin-bottom: 20px;
 }
 
+/* Estilo do título principal */
 h1 {
   font-size: 2rem;
   color: #333;
   margin-bottom: 10px;
 }
 
+/* Estilo do subtítulo */
 h2 {
   font-size: 1.2rem;
   color: #555;
   margin-bottom: 20px;
 }
 
+/* Estilo da barra lateral */
 .sidebar {
   margin-top: 20px;
 }
 
+/* Estilo da lista na barra lateral */
 .sidebar ul {
   list-style-type: none;
   padding: 0;
 }
 
+/* Estilo dos itens da lista */
 .sidebar li {
   margin: 10px 0;
 }
 
+/* Estilo dos links na barra lateral */
 .sidebar a {
   text-decoration: none;
   color: #ffffff;
@@ -59,12 +68,14 @@ h2 {
   transition: color 0.3s ease;
 }
 
+/* Estilo dos links ao passar o mouse */
 .sidebar a:hover {
   color: #0056b3;
   text-decoration: underline;
 }
 
-.button {
+/* Estilo dos botões de links */
+.button-link {
   display: inline-block;
   padding: 10px 20px;
   font-size: 1rem;
@@ -76,27 +87,132 @@ h2 {
   text-align: center;
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
 }
 
-.button:hover {
+/* Estilo dos botões de links ao passar o mouse */
+.button-link:hover {
   background-color: #00fff2;
-  color: #333; 
+  color: #333;
   transform: scale(1.05);
 }
 
-.button:active {
+/* Estilo dos botões de links ao serem clicados */
+.button-link:active {
   background-color: #00f2ff;
   color: #333;
   transform: scale(0.95);
 }
 
+/* Estilo do contêiner de botões de seleção de música */
+.playlist {
+  display: flex;
+  justify-content: center;
+  gap: 10px; 
+  margin-top: 20px;
+}
+
+/* Estilo dos botões de seleção de música */
+.button-music {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px; 
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Estilo dos botões de seleção de música ao passar o mouse */
+.button-music:hover {
+  background-color: #00fff2;
+  color: #333;
+  transform: scale(1.05);
+}
+
+/* Estilo dos botões de seleção de música ao serem clicados */
+.button-music:active {
+  background-color: #00f2ff;
+  color: #333;
+  transform: scale(0.95);
+}
+
+/* Estilo do botão ativo de seleção de música */
+.button-music.active {
+  background-color: #00f2ff;
+  transform: scale(1.1);
+}
+
+/* Estilo para a imagem no botão ativo de seleção de música */
+.button-music img {
+  position: absolute;
+  width: 100%;  
+  height: 100%;
+  object-fit: contain; 
+  border-radius: 50%; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Estilo do iframe */
 iframe {
-  width: 100%; 
+  width: 100%;
   max-width: 560px;
-  height: 240px; 
-  border: none; 
-  margin: 20px auto; 
-  display: block; 
-  border-radius: 10px; 
+  height: 200px;
+  border: none;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+  /* Ajusta o contêiner principal */
+  .container {
+    padding: 20px;
+    width: 95%;
+  }
+
+  /* Ajusta os botões de seleção de música */
+  .button-music {
+    width: 40px; /* Botões menores em telas pequenas */
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  /* Ajusta o iframe do player */
+  iframe {
+    height: 200px; /* Reduz a altura do player */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ajusta os botões de seleção de música */
+  .button-music {
+    width: 35px; /* Botões ainda menores */
+    height: 35px;
+    font-size: 0.8rem;
+  }
+
+  /* Ajusta o iframe do player */
+  iframe {
+    height: 180px; /* Reduz ainda mais a altura do player */
+  }
+
+  /* Ajusta o layout da playlist */
+  .playlist {
+    gap: 5px; /* Reduz o espaçamento entre os botões */
+    flex-wrap: wrap; /* Permite que os botões quebrem linha em telas muito pequenas */
+  }
 }
