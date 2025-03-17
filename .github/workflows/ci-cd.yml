@@ -39,25 +39,10 @@ jobs:
             echo "Branch commit message: $branch_commit_message"
             
             # Extrai o tipo do commit entre colchetes se existir
-            commit_type=$(echo "$branch_commit_message" | grep -o '\[.*\]' | tr -d '[]')
+            commit_type=$(echo "$branch_commit_message" | awk -F '[][]' '{print $2}')
             echo "Commit type: $commit_type"
             
-            # Define as saídas
-            echo "previous_commit=$branch_head" >> $GITHUB_OUTPUT
-            echo "previous_message=$branch_commit_message" >> $GITHUB_OUTPUT
-            echo "commit_type=$commit_type" >> $GITHUB_OUTPUT
-          else
-            echo "Não é um commit de merge"
-            
-            # Para commits não-merge, simplesmente pegue o commit anterior
-            previous_commit=$(git rev-parse HEAD^)
-            previous_message=$(git log -1 --pretty=format:"%s" $previous_commit)
-            
-            commit_type=$(echo "$previous_message" | grep -o '\[.*\]' | tr -d '[]')
-            
-            echo "previous_commit=$previous_commit" >> $GITHUB_OUTPUT
-            echo "previous_message=$previous_message" >> $GITHUB_OUTPUT
-            echo "commit_type=$commit_type" >> $GITHUB_OUTPUT
+            echo "commit_tp=$commit_type" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit type
