@@ -16,7 +16,7 @@ jobs:
         echo "commit_type: $(echo '${{ github.event.head_commit.message }}' | cut -d ':' -f 1)" >> GITHUB_ENV
 
     - run: |
-       echo "commit_type: ${{ env.commit_type }}"
+       echo "commit_type: ${{ env.commit_type }}" 
 
     - name: Checkout repository
       uses: actions/checkout@v4
