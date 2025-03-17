@@ -11,8 +11,20 @@ jobs:
   create-pull-request:
     name: Create Pull Request
     runs-on: ubuntu-latest
-
     steps:
+    - run: |
+        commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
+        echo "commit: $commit" 
+
+        if [[ $commit == cnv-* ]]; then
+          echo "commit_type=$(echo $commit)" >> $GITHUB_ENV
+        else
+          echo "commit_type=cnv-commit" >> $GITHUB_ENV
+        fi
+
+    - run: |
+       echo "commit_type: ${{ env.commit_type }}" 
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -22,6 +34,11 @@ jobs:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
         base: main
         branch: ${{ github.ref }}
-        title: 'PR criado automaticamente -> main'
+        title: '[${{ env.commit_type }}] PR criado automaticamente -> main'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
+
+    - name: TESTE IF
+      if: ${{ !contains(github.event.head_commit.message, 'cnv-deploy') }}
+      run: |
+        echo "cnv-deploy não encontrado na mensagem do commit: ${{ github.event.head_commit.message }}"
