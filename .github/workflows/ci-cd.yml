@@ -26,7 +26,7 @@ jobs:
           echo "$previous_commit_message"
           commit=$(echo "$previous_commit_message" | awk -F ': ' '{print $1}')
           echo "commit = $commit"
-          echo "commit_type:$commit" >> $GITHUB_OUTPUT
+          echo "commit_type:$(echo "$commit")" >> $GITHUB_OUTPUT
 
       - name: Commit type
         id: commit_type
@@ -34,7 +34,7 @@ jobs:
         run: |
           commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
-          echo "commit_type: $commit" >> $GITHUB_OUTPUT
+          echo "commit_type:$(echo "$commit")" >> $GITHUB_OUTPUT
 
           exit 1
           
