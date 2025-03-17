@@ -14,11 +14,12 @@ jobs:
     steps:
     - run: |
         commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
+        echo "commit: $commit"
 
         if [[ $commit == cnv-* ]]; then
           echo "commit_type=$(echo $commit)" >> $GITHUB_ENV
         else
-          echo "commit_type=cnv" >> $GITHUB_ENV
+          echo "commit_type=cnv-commit" >> $GITHUB_ENV
         fi
 
     - run: |
