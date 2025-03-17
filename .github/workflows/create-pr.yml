@@ -15,6 +15,9 @@ jobs:
     - run: |
         echo "commit_type: $(echo "${{ github.event.head_commit.message }}" | cut -d ':' -f 1)" >> GITHUB_ENV
 
+    - run: |
+       echo "commit_type: ${{ env.commit_type }}"
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -30,4 +33,5 @@ jobs:
 
     - name: TESTE IF
       if: ${{ !contains(github.event.head_commit.message, 'cnv-deploy') }}
-      run: echo "cnv-deploy não encontrado"
+      run: |
+        echo "cnv-deploy não encontrado na mensagem do commit: ${{ github.event.head_commit.message }}"
