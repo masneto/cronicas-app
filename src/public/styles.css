@@ -1,6 +1,6 @@
 /* Estilo geral do corpo da página */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
   margin: 0;
   padding: 0;
   display: flex;
@@ -18,8 +18,10 @@ body {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  max-width: 500px;
   width: 90%;
+  overflow: hidden; /* Evita que o conteúdo transborde */
+  margin: 0 auto; /* Centraliza o contêiner horizontalmente */
 }
 
 /* Estilo das imagens dentro do contêiner */
@@ -28,6 +30,9 @@ body {
   height: auto;
   border-radius: 10px;
   margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Estilo do título principal */
@@ -108,12 +113,12 @@ h2 {
 .playlist {
   display: flex;
   justify-content: center;
-  gap: 5px; /* Reduzido o espaçamento entre botões */
+  gap: 5px;
   margin-top: 20px;
-  flex-wrap: nowrap; /* Força os itens a permanecerem em uma única linha */
-  overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
-  padding-bottom: 10px; /* Espaço para a barra de rolagem */
-  width: 100%; /* Garante que use toda a largura disponível */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  width: 100%;
 }
 
 /* Estilo dos botões de seleção de música */
@@ -122,7 +127,7 @@ h2 {
   justify-content: center;
   align-items: center;
   width: 50px;
-  height: 50px; 
+  height: 50px;
   font-size: 1rem;
   font-weight: bold;
   color: #ffffff;
@@ -159,13 +164,13 @@ h2 {
 /* Estilo para a imagem no botão ativo de seleção de música */
 .button-music img {
   position: absolute;
-  width: 100%;  
+  width: 100%;
   height: 100%;
-  object-fit: contain; 
-  border-radius: 50%; 
+  object-fit: contain;
+  border-radius: 50%;
   top: 50%;
-  left: 50%; 
-  transform: translate(-50%, -50%); 
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Estilo do iframe */
@@ -182,35 +187,43 @@ iframe {
 
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
+
   /* Ajusta o contêiner principal */
   .container {
     padding: 20px;
     width: 95%;
   }
 
-  /* Ajusta os botões de seleção de música */
-  .button-music {
-    width: 40px; 
-    height: 40px;
-    font-size: 0.9rem;
-  }
-
-  /* Ajusta os botões de links */
-  .button-link {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  /* Ajusta o iframe do player */
-  iframe {
-    height: 200px; 
+  .container img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
+/* Ajusta os botões de seleção de música */
+.button-music {
+  width: 40px;
+  height: 40px;
+  font-size: 0.9rem;
+}
+
+/* Ajusta os botões de links */
+.button-link {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* Ajusta o iframe do player */
+iframe {
+  height: 200px;
+}
+
+
 @media (max-width: 480px) {
+
   /* Ajusta os botões de seleção de música */
   .button-music {
-    width: 32px; 
+    width: 32px;
     height: 32px;
     font-size: 0.8rem;
     min-width: 32px;
@@ -224,12 +237,21 @@ iframe {
 
   /* Ajusta o iframe do player */
   iframe {
-    height: 180px; 
+    height: 180px;
   }
 
   /* Ajusta o layout da playlist */
-    .playlist {
-      gap: 3px; 
-      flex-wrap: nowrap; 
-    }
+  .playlist {
+    gap: 3px;
+    flex-wrap: nowrap;
   }
+  .container {
+    padding: 15px;
+    width: 100%;
+  }
+
+  .container img {
+    max-width: 100%;
+    height: auto;
+  }
+}
