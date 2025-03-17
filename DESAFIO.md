@@ -4,6 +4,7 @@ Este documento apresenta uma solução completa de pipeline CI/CD usando GitHub 
 ![Cronicas APP](images/cronicas-0.png).
 
 Acesse [Crônicas APP](http://54.233.1.42:3000/).
+- IMPORTANTE: Para não ter recursos rodando 24 horas, acabo desligando na AWS. Mas subo a aplicação caso precise. O IP sempre muda ao reiniciar a instância EC2.
 
 ## Índice
 
