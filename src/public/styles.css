@@ -195,6 +195,12 @@ iframe {
     font-size: 0.9rem;
   }
 
+  /* Ajusta os botões de links */
+  .button-link {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
   /* Ajusta o iframe do player */
   iframe {
     height: 200px; 
@@ -208,6 +214,12 @@ iframe {
     height: 32px;
     font-size: 0.8rem;
     min-width: 32px;
+  }
+
+  /* Ajusta os botões de links */
+  .button-link {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 
   /* Ajusta o iframe do player */
