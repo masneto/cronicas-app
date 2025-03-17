@@ -17,32 +17,48 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Importante para ter o histórico completo
 
-      - name: Get Previous Commit
-        id: commit_type_previous
-        if: contains(github.event.head_commit.message, 'Merge pull request')
+      - name: Get Previous Commit Message
+        id: commit_info
         run: |
-          merge_commit=$(git log --merges --pretty=format:"%H" -n 1)
-          echo "Último Merge Commit: $merge_commit"
-
-          # Obtém o commit antes do merge
-          previous_commit2=$(git log --pretty=format:"%H" $merge_commit^2 -n 1)
-          echo "Commit Antes do Merge: $previous_commit2" 
-
-          previous_commit_message2=$(git log -1 --pretty=format:"%s" $previous_commit2)
-          echo "Mensagem do Commit Anterior = $previous_commit_message2"
-          commit2=$(echo "$previous_commit_message2" | awk -F '[][]' '{print $2}')
-          echo "commit2 = $commit2"
-
-          previous_commit=$(git rev-parse HEAD^)
-          echo "1 = $previous_commit"
-          previous_commit_message=$(git log -1 --pretty=format:"%s" $previous_commit)
-          echo "2 = $previous_commit_message"
-
-          commit=$(echo "$previous_commit_message" | awk -F '[][]' '{print $2}')
-          echo "commit = $commit"
-          echo "commit_tp=$(echo "$commit")" >> $GITHUB_OUTPUT
+          # Verifique se o commit atual é um merge
+          if [[ "$(git log -1 --pretty=%p | wc -w)" -gt 1 ]]; then
+            echo "É um commit de merge"
+            
+            # Obtenha o SHA do commit de merge (HEAD)
+            merge_commit=$(git rev-parse HEAD)
+            echo "Merge commit SHA: $merge_commit"
+            
+            # Obtenha o último commit da branch que foi mergeada (o segundo parent do merge)
+            branch_head=$(git rev-parse HEAD^2)
+            echo "Branch head SHA: $branch_head"
+            
+            # Obtenha a mensagem desse commit
+            branch_commit_message=$(git log -1 --pretty=format:"%s" $branch_head)
+            echo "Branch commit message: $branch_commit_message"
+            
+            # Extrai o tipo do commit entre colchetes se existir
+            commit_type=$(echo "$branch_commit_message" | grep -o '\[.*\]' | tr -d '[]')
+            echo "Commit type: $commit_type"
+            
+            # Define as saídas
+            echo "previous_commit=$branch_head" >> $GITHUB_OUTPUT
+            echo "previous_message=$branch_commit_message" >> $GITHUB_OUTPUT
+            echo "commit_type=$commit_type" >> $GITHUB_OUTPUT
+          else
+            echo "Não é um commit de merge"
+            
+            # Para commits não-merge, simplesmente pegue o commit anterior
+            previous_commit=$(git rev-parse HEAD^)
+            previous_message=$(git log -1 --pretty=format:"%s" $previous_commit)
+            
+            commit_type=$(echo "$previous_message" | grep -o '\[.*\]' | tr -d '[]')
+            
+            echo "previous_commit=$previous_commit" >> $GITHUB_OUTPUT
+            echo "previous_message=$previous_message" >> $GITHUB_OUTPUT
+            echo "commit_type=$commit_type" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit type
         id: commit_type
