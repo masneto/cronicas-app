@@ -30,7 +30,7 @@ jobs:
           previous_commit2=$(git log --pretty=format:"%H" $merge_commit^2 -n 1)
           echo "Commit Antes do Merge: $previous_commit2" 
 
-          previous_commit_message2=$(git log --pretty=format:"%H" $merge_commit^2 -n 1)
+          previous_commit_message2=$(git log -1 --pretty=format:"%s" $previous_commit2)
           echo "Mensagem do Commit Anterior = $previous_commit_message2"
           commit2=$(echo "$previous_commit_message2" | awk -F '[][]' '{print $2}')
           echo "commit2 = $commit2"
