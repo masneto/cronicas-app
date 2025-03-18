@@ -48,7 +48,7 @@ jobs:
         run: |
           commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
-          echo "commit_type=$(echo "$commit")" >> $GITHUB_OUTPUT
+          echo "commit_type=$(echo "$commit")" >> $GITHUB_OUTPUT 
 
   ci:
     name: Cronicas CI
