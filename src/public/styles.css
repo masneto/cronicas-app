@@ -58,6 +58,10 @@ h2 {
 .sidebar ul {
   list-style-type: none;
   padding: 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Estilo dos itens da lista */
@@ -71,12 +75,16 @@ h2 {
   color: #ffffff;
   font-weight: bold;
   transition: color 0.3s ease;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+    
 }
 
 /* Estilo dos links ao passar o mouse */
 .sidebar a:hover {
-  color: #0056b3;
-  text-decoration: underline;
+  background-color: #00fff2;
+  color: #333;
 }
 
 /* Estilo dos botões de links */
@@ -255,3 +263,4 @@ iframe {
     height: auto;
   }
 }
+
