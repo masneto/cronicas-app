@@ -41,6 +41,8 @@ jobs:
     needs: bump-version
     runs-on: ubuntu-latest
     permissions: write-all
+    env:
+      version: ${{ needs.bump-version.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -62,6 +64,8 @@ jobs:
 
       - name: Run Tests
         run: npm test
+      
+      - run: echo "${{ env.version }}"
 
       # - name: Login GitHub Container Registry
       #   run: |
