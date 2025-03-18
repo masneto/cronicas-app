@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     outputs:
-      version: ${{ steps.tag.outputs.version }}
+      version: ${{ steps.tag.outputs.new_version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -33,12 +33,15 @@ jobs:
         with:
           tag_prefix: "v"
           tag: ${{ env.last_tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          release_branches: "develop, release/v*, main"
 
       - name: Output the new version
         run: |
-          echo "New version: ${{ steps.tag.outputs.version }}"
+          echo "New version: ${{ steps.tag.outputs.new_version }}"
+          echo "New tag: ${{ steps.tag.outputs.new_tag }}"
+          echo "Previous tag: ${{ steps.tag.outputs.previous_tag }}"
+          echo "Previous version: ${{ steps.tag.outputs.previous_version }}"
 
   ci:
     name: Cronicas CI
