@@ -30,8 +30,8 @@ jobs:
             commit_type=$(echo "$branch_commit_message" | awk -F ': ' '{print $1}')
             echo "Commit type: $commit_type"
           fi
-            echo "commit_tp=$commit_type" >> $GITHUB_OUTPUT
-            
+            echo "commit_tp=$(echo $commit_type") >> $GITHUB_OUTPUT
+
       - name: Commit type
         id: commit_type
         if: contains(github.event.head_commit.message, 'cnv-deploy:')
