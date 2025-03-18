@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Get Previous Commit Message
-        id: commit_info
+        id: commit_type_previous
         if: contains(github.event.head_commit.message, 'Merge pull request')
         run: |
           if [[ "$(git log -1 --pretty=%p | wc -w)" -gt 1 ]]; then
@@ -29,8 +29,9 @@ jobs:
             branch_commit_message=$(git log -1 --pretty=format:"%s" $branch_head)
             commit_type=$(echo "$branch_commit_message" | awk -F ': ' '{print $1}')
             echo "Commit type: $commit_type"
+            echo "commit_tp=$(echo "$commit_type")" >> $GITHUB_OUTPUT            
           fi
-            echo "commit_tp=$(echo "$commit_type")" >> $GITHUB_OUTPUT
+
 
       - name: Commit type
         id: commit_type
