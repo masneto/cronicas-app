@@ -37,6 +37,7 @@ jobs:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
           release_branches: "develop, release/v*, main"
+          dry_run: true
 
       - name: Output the new version
         run: |
