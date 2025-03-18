@@ -7,9 +7,9 @@ on:
 
 jobs:
   commit-type:
-    name: Cronicas Test
+    name: Cronicas Commit Message Type
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'cnv-deploy') || contains(github.event.head_commit.message, 'Merge pull request')
+    if: contains(github.event.head_commit.message, 'cnv-deploy:') || contains(github.event.head_commit.message, 'Merge pull request')
     outputs:
       commit_type: ${{ steps.commit_type.outputs.commit_type }}
       commit_tp: ${{ steps.commit_type_previous.outputs.commit_tp }}
@@ -21,6 +21,7 @@ jobs:
 
       - name: Get Previous Commit Message
         id: commit_info
+        if: contains(github.event.head_commit.message, 'Merge pull request')
         run: |
           # Verifique se o commit atual é um merge
           if [[ "$(git log -1 --pretty=%p | wc -w)" -gt 1 ]]; then
@@ -43,7 +44,7 @@ jobs:
 
       - name: Commit type
         id: commit_type
-        if: contains(github.event.head_commit.message, 'cnv-deploy')
+        if: contains(github.event.head_commit.message, 'cnv-deploy:')
         run: |
           commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
           echo "commit: $commit" 
