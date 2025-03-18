@@ -1,0 +1,160 @@
+name: "[Cronicas] Development CI/CD"
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+jobs:
+  bump-version:
+    name: Cronicas Bump Version
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Get Last Tag
+        id: get-last-tag
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          echo "Last tag: $LAST_TAG"
+          echo "last_tag=$LAST_TAG" >> $GITHUB_ENV
+
+      - name: Bump Version (if needed)
+        id: tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          tag_prefix: "v"
+          tag: ${{ env.last_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Output the new version
+        run: |
+          echo "New version: ${{ steps.tag.outputs.version }}"
+
+  ci:
+    name: Cronicas CI
+    needs: bump-version
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20-alphine"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Validate Repository Structure
+        uses: ./.github/actions/validate-repo
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build e Push para o GHCR
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/cronicas-app
+          docker build -t $IMAGE_NAME:${{ github.run_number }} .
+          docker tag $IMAGE_NAME:${{ github.run_number }} $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:${{ github.run_number }}
+          docker push $IMAGE_NAME:latest
+
+      - name: Save Docker Image
+        run: |
+          docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ github.run_number }} -o cronicas-app-image-v${{ github.run_number }}.tar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: cronicas-app-image-v${{ github.run_number }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+  cd:
+    name: Cronicas CD
+    needs: [bump-version, ci]
+    runs-on: ubuntu-latest
+    if: always() && success()
+    environment:
+      name: development
+    env:
+      commit-type: $(echo ${{ github.event.pull_request.title }} | awk -F '[][]' '{print $2}')
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Deploy and Run Docker Image
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters 'commands=[
+              "echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin",
+              "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:latest",
+              "docker stop cronicas-app || true",
+              "docker rm cronicas-app || true",
+              "docker run -d -p 3001:3001 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
+            ]' \
+            --region sa-east-1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          base: develop
+          branch: ${{ github.ref }}
+          title: '[${{ env.commit_type }}] PR criado automaticamente -> release/v${{ needs.bump-version.outputs.version }} by ${{ github.actor }}'
+          body: 'This PR was automatically created by GitHub Actions.'
+          draft: false
+
+  notify-failure:
+    name: Cronicas Send E-mail
+    needs: [bump-version, ci, cd]
+    if: always() && failure() || cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
+          body: |
+
+            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
+            📌 Repositório: ${{ github.repository }}
+            📌 Branch: ${{ github.ref_name }}
+            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
+            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}

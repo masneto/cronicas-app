@@ -1,0 +1,74 @@
+name: "[Cronicas] Homologation CD"
+
+on:
+  pull_request:
+    branches:
+      - 'release/v*'
+    types:
+      - closed
+
+jobs:
+  cd:
+    name: Cronicas CD
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    environment:
+      name: homologation
+    env:
+      commit-type: $(echo ${{ github.event.pull_request.title }} | awk -F '[][]' '{print $2}')      
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Deploy and Run Docker Image
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters 'commands=[
+              "echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin",
+              "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:latest",
+              "docker stop cronicas-app || true",
+              "docker rm cronicas-app || true",
+              "docker run -d -p 3002:3002 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
+            ]' \
+            --region sa-east-1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          base: develop
+          branch: ${{ github.ref }}
+          title: '[${{ env.commit_type }}] PR criado automaticamente -> main by ${{ github.actor }}'
+          body: 'This PR was automatically created by GitHub Actions.'
+          draft: false
+
+  notify-failure:
+    name: Cronicas Send E-mail
+    needs: [cd]
+    if: always() && failure() || cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
+          body: |
+
+            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
+            📌 Repositório: ${{ github.repository }}
+            📌 Branch: ${{ github.ref_name }}
+            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
+            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
