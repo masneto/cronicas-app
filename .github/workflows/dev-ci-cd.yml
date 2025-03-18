@@ -34,8 +34,7 @@ jobs:
           tag_prefix: "v"
           tag: ${{ env.last_tag }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
       - name: Output the new version
         run: |
