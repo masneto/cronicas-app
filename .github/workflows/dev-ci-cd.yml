@@ -90,6 +90,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -111,6 +113,17 @@ jobs:
               "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
             ]' \
             --region sa-east-1
+
+      - name: Create Branch release/v${{ env.version }}
+        run: |
+          git fetch origin
+          if ! git rev-parse --verify origin/release/v${{ env.version }} >/dev/null 2>&1; then
+            echo "Branch release/v${{ env.version }} não foi encontrada. Criando a branch..."
+            git checkout -b release/v${{ env.version }}
+            git push -u origin release/v${{ env.version }}
+          else
+            echo "Branch release/v${{ env.version }} já existe."
+          fi
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
