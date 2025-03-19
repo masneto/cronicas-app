@@ -75,27 +75,3 @@ jobs:
           git commit -m "Atualização de build da(s) action(s): ${{ env.actions }}"
           git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }} --force
           echo "::endgroup::"
-
-  notify-failure:
-    name: Cronicas Send E-mail
-    needs: validate-and-build-actions
-    if: always() && failure() || cancelled()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Email Notification
-        uses: dawidd6/action-send-mail@v4
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }} 
-          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
-          body: |
-            
-            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
-            📌 Repositório: ${{ github.repository }}
-            📌 Branch: ${{ github.ref_name }}
-            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
-            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          to: ${{ secrets.MAIL_USERNAME }} 
-          from: ${{ secrets.MAIL_USERNAME }}           

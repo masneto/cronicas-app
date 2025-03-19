@@ -14,13 +14,19 @@ jobs:
     if: github.event.pull_request.merged == true
     outputs:
       version: ${{ steps.tag.outputs.new_version }}
-    steps:
+    steps:    
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Bump Version (if needed)
+      - run: |
+          echo "Version: ${{ env.version }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Target: ${{ github.base_ref }}"
+          echo "Source: ${{ github.head_ref }}"
+
+      - name: Bump Version
         id: tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
@@ -38,7 +44,7 @@ jobs:
 
   ci:
     name: Cronicas CI
-    needs: bump-version
+    needs: bump-version2
     runs-on: ubuntu-latest
     permissions: write-all
     env:
@@ -64,8 +70,6 @@ jobs:
 
       - name: Run Tests
         run: npm test
-      
-      - run: echo "${{ env.version }}"
 
       - name: Login GitHub Container Registry
         run: |
@@ -79,21 +83,6 @@ jobs:
           docker push $IMAGE_NAME:${{ env.version }}
           docker push $IMAGE_NAME:latest
 
-      # - name: Save Docker Image
-      #   run: |
-      #     docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }} -o cronicas-app-image-v${{ env.version }}.tar
-
-      # - name: Create GitHub Release
-      #   uses: softprops/action-gh-release@v2
-      #   with:
-      #     tag_name: v${{ env.version }}
-      #     name: Release v${{ env.version }}
-      #     draft: false
-      #     prerelease: false
-      #     files: cronicas-app-image-v${{ env.version }}.tar
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-
   cd:
     name: Cronicas CD
     needs: [bump-version, ci]
@@ -102,7 +91,6 @@ jobs:
     environment:
       name: development
     env:
-      commit-type: $(echo ${{ github.event.pull_request.title }} | awk -F '[][]' '{print $2}')
       version: ${{ needs.bump-version.outputs.version }}
     steps:
       - name: Configure AWS credentials
@@ -130,32 +118,8 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          base: develop
-          branch: ${{ github.ref }}
-          title: '[${{ env.commit_type }}] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}'
+          base: 'release/v${{ env.version }}'
+          branch: develop
+          title: '[CRÔNICAS] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}'
           body: 'This PR was automatically created by GitHub Actions.'
           draft: false
-
-  notify-failure:
-    name: Cronicas Send E-mail
-    needs: [bump-version, ci, cd]
-    if: always() && failure() || cancelled()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Email Notification
-        uses: dawidd6/action-send-mail@v4
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
-          body: |
-
-            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
-            📌 Repositório: ${{ github.repository }}
-            📌 Branch: ${{ github.ref_name }}
-            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
-            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          to: ${{ secrets.MAIL_USERNAME }}
-          from: ${{ secrets.MAIL_USERNAME }}

@@ -10,14 +10,19 @@ on:
 jobs:
   cd:
     name: Cronicas CD
-    needs: ci
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     environment:
       name: homologation
     env:
-      commit-type: $(echo ${{ github.event.pull_request.title }} | awk -F '[][]' '{print $2}')      
+      version: $(echo ${{ github.ref_name }} | sed 's|release/v||)      
     steps:
+      - run: |
+          echo "Version: ${{ env.version }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Target: ${{ github.base_ref }}"
+          echo "Source: ${{ github.head_ref }}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -43,32 +48,8 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          base: develop
-          branch: ${{ github.ref }}
-          title: '[${{ env.commit_type }}] PR criado automaticamente -> main by ${{ github.actor }}'
+          base: main
+          branch: 'release/v${{ env.version }}'
+          title: '[CRÔNICAS] PR criado automaticamente -> main by ${{ github.actor }}'
           body: 'This PR was automatically created by GitHub Actions.'
           draft: false
-
-  notify-failure:
-    name: Cronicas Send E-mail
-    needs: [cd]
-    if: always() && failure() || cancelled()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Email Notification
-        uses: dawidd6/action-send-mail@v4
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
-          body: |
-
-            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
-            📌 Repositório: ${{ github.repository }}
-            📌 Branch: ${{ github.ref_name }}
-            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
-            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          to: ${{ secrets.MAIL_USERNAME }}
-          from: ${{ secrets.MAIL_USERNAME }}

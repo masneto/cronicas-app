@@ -1,0 +1,34 @@
+name: "[Cronicas] Release Tag"
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  release:
+    name: Cronicas Release Tag
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    permissions: write-all
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Save Docker Image
+        run: |
+          docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ github.run_number }} -o cronicas-app-image-v${{ github.run_number }}.tar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: cronicas-app-image-v${{ github.run_number }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}

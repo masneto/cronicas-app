@@ -9,79 +9,14 @@ on:
       - edited
 
 jobs:
-  commit-type:
-    name: Cronicas Commit Msg Type
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.action == 'edited' && contains(github.event.head_commit.message, 'cnv-deploy:') || contains(github.event.head_commit.message, 'Merge pull request')
-    outputs:
-      commit_type: ${{ steps.commit_type.outputs.commit_type }}
-      commit_tp: ${{ steps.commit_type_previous.outputs.commit_tp }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Get Previous Commit Message
-        id: commit_type_previous
-        if: contains(github.event.head_commit.message, 'Merge pull request')
-        run: |
-          if [[ "$(git log -1 --pretty=%p | wc -w)" -gt 1 ]]; then
-            merge_commit=$(git rev-parse HEAD)
-            branch_head=$(git rev-parse HEAD^2)
-            branch_commit_message=$(git log -1 --pretty=format:"%s" $branch_head)
-            commit_type=$(echo "$branch_commit_message" | awk -F ': ' '{print $1}')
-            echo "Commit type: $commit_type"
-            echo "commit_tp=$(echo "$commit_type")" >> $GITHUB_OUTPUT            
-          fi
-
-      - name: Commit type
-        id: commit_type
-        if: contains(github.event.head_commit.message, 'cnv-deploy:')
-        run: |
-          commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
-          echo "commit: $commit" 
-          echo "commit_type=$(echo "$commit")" >> $GITHUB_OUTPUT 
-
-  ci:
+  release:
     name: Cronicas CI
-    needs: commit-type
     runs-on: ubuntu-latest
+    if: github.event.pull_request.action == 'edited'
     permissions: write-all
-    if: needs.commit-type.outputs.commit_type == 'cnv-deply' || needs.commit-type.outputs.commit_tp == 'cnv-deply' # OBS: retornar para deploy
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Validate Repository Structure
-        uses: ./.github/actions/validate-repo
-
-      - name: Run Linter
-        run: npm run lint
-
-      - name: Run Tests
-        run: npm test
-
-      - name: Login GitHub Container Registry
-        run: |
-          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build e Push para o GHCR
-        run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/cronicas-app
-          docker build -t $IMAGE_NAME:${{ github.run_number }} .
-          docker tag $IMAGE_NAME:${{ github.run_number }} $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:${{ github.run_number }}
-          docker push $IMAGE_NAME:latest
 
       - name: Save Docker Image
         run: |
@@ -127,27 +62,3 @@ jobs:
               "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
             ]' \
             --region sa-east-1
-
-  notify-failure:
-    name: Cronicas Send E-mail
-    needs: [ci, cd]
-    if: always() && failure() || cancelled()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Email Notification
-        uses: dawidd6/action-send-mail@v4
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Pipeline CI/CD"
-          body: |
-
-            O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
-            📌 Repositório: ${{ github.repository }}
-            📌 Branch: ${{ github.ref_name }}
-            📌 Autor: ${{ github.event.pusher.name }} - ${{ github.event.pusher.email }}
-            🔗 Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          to: ${{ secrets.MAIL_USERNAME }}
-          from: ${{ secrets.MAIL_USERNAME }}
