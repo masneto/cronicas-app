@@ -11,7 +11,7 @@ jobs:
   create-tag:
     name: Cronicas Bump Version
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.merged == true
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v4
