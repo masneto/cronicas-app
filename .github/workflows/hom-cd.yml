@@ -25,7 +25,7 @@ jobs:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
           default_prerelease_bump: false
-          release_branches: "develop, main, release/v[0-9]+\\.[0-9]+\\.[0-9]+" # regex to match release branches
+          release_branches: "develop, main, release/v*"
           dry_run: false
 
       - name: Output the new version
@@ -34,9 +34,10 @@ jobs:
           echo "New tag: ${{ steps.tag.outputs.new_tag }}"
           echo "Previous tag: ${{ steps.tag.outputs.previous_tag }}"
           echo "Previous version: ${{ steps.tag.outputs.previous_version }}"
+          
   cd:
     name: Cronicas CD
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest          
     permissions: write-all
     needs: create-tag
     if: github.event.pull_request.merged == false #VOLTAR PARA TRUE
