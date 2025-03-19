@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     permissions: write-all
- 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,11 +23,11 @@ jobs:
 
       - name: Login GitHub Container Registry
         run: |
-          echo "version=${{ env.version }}"
           echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Save Docker Image
         run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}
           docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }} -o cronicas-app-image-v${{ env.version }}.tar
 
       - name: Create GitHub Release
