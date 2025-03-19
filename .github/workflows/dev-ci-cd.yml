@@ -118,9 +118,10 @@ jobs:
 
       - name: Create Branch release/v${{ env.version }}
         run: |
-          git fetch origin main
+          git fetch origin
           if ! git rev-parse --verify origin/release/v${{ env.version }} >/dev/null 2>&1; then
             echo "Branch release/v${{ env.version }} não foi encontrada. Criando a branch..."
+            git checkout main && git pull
             git checkout -b release/v${{ env.version }}
             git push -u origin release/v${{ env.version }}
           else
