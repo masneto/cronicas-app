@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     needs: create-tag
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == false #VOLTAR PARA TRUE
     environment:
       name: homologation
     env:
