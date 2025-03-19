@@ -34,9 +34,9 @@ jobs:
             --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
             --parameters 'commands=[
               "echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin",
-              "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:latest",
+              "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}",
               "docker stop cronicas-app || true",
               "docker rm cronicas-app || true",
-              "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
+              "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}"
             ]' \
             --region sa-east-1
