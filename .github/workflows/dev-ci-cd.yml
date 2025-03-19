@@ -117,16 +117,12 @@ jobs:
             --region sa-east-1
 
       - name: Create Branch release/v${{ env.version }}
+        continue-on-error: true
         run: |
-          git fetch origin --all
-          if ! git rev-parse --verify origin/release/v${{ env.version }} >/dev/null 2>&1; then
-            echo "Branch release/v${{ env.version }} não foi encontrada. Criando a branch..."
-            git checkout main && git pull
-            git checkout -b release/v${{ env.version }}
-            git push origin release/v${{ env.version }}
-          else
-            echo "Branch release/v${{ env.version }} já existe."
-          fi
+          echo "Criando a branch... release/v${{ env.version }}. "
+          git checkout main && git pull
+          git checkout -b release/v${{ env.version }}
+          git push origin release/v${{ env.version }}
 
       - name: Create Pull Request
         run: |
