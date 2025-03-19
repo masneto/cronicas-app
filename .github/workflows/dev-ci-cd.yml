@@ -71,6 +71,7 @@ jobs:
           echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build e Push para o GHCR
+        if: github.event_name == 'push' #REMOVER DEPOIS      
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/cronicas-app
           docker build -t $IMAGE_NAME:${{ env.version }} .
