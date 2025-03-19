@@ -20,13 +20,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Bump Version
-        id: tag
+      - name: Check Next Version
+        id: check_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          release_branches: "develop, main, release/v${{ env.version }}"
+          release_branches: "develop, main, release*"
+          dry_run: true
+
+      - name: Apply New Tag
+        id: apply_tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          tag_prefix: "v"
+          github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          release_branches: "develop, main, release*"
+          dry_run: false
+
+      - name: Output New Version
+        run: |
+          echo "Next version (dry-run): ${{ steps.check_version.outputs.new_version }}"
+          echo "Final tagged version: ${{ steps.apply_tag.outputs.new_version }}"
 
       - name: Output the new version
         run: |
