@@ -44,7 +44,8 @@ jobs:
 
   ci:
     name: Cronicas CI
-    needs: bump-version2
+    needs: bump-version
+    if: always() && failure() #REMOVER CONDIÇÃO DE FALHA
     runs-on: ubuntu-latest
     permissions: write-all
     env:
