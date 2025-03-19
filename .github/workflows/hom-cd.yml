@@ -25,7 +25,6 @@ jobs:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
           default_prerelease_bump: false
-          append_to_pre_release_tag: ""
           release_branches: "develop, main, release/v[0-9]+\\.[0-9]+\\.[0-9]+" # regex to match release branches
           dry_run: false
 
