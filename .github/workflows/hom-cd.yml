@@ -74,13 +74,13 @@ jobs:
             ]" \
             --region sa-east-1
 
-      - name: Criar Pull Request Automaticamente
+      - name: Create PR to main
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
           script: |
-            const base = `main`;
-            const head = 'release/v${{ env.version }}';
+            const base = 'main';
+            const head = `release/v${process.env.version}`;
             const title = `[PRD] PR criado automaticamente -> ${base} by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
