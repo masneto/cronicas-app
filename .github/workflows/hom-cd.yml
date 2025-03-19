@@ -33,8 +33,6 @@ jobs:
         run: |
           echo "New version: ${{ steps.tag.outputs.new_version }}"
           echo "New tag: ${{ steps.tag.outputs.new_tag }}"
-          echo "Previous tag: ${{ steps.tag.outputs.previous_tag }}"
-          echo "Previous version: ${{ steps.tag.outputs.previous_version }}"
 
   cd:
     name: Cronicas CD
