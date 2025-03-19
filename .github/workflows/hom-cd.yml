@@ -1,0 +1,58 @@
+name: "[Cronicas] Homologation CD"
+
+on:
+  pull_request:
+    branches:
+      - 'release/v*'
+    types:
+      - closed
+
+jobs:
+  cd:
+    name: Cronicas CD
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    permissions: write-all
+    environment:
+      name: homologation
+    env:
+      version: $(echo ${{ github.base_ref }} | sed 's|release/v||)      
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Deploy and Run Docker Image
+        run: |
+          export VERSION=${{ env.version }}
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters "commands=[
+              \"echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin\",
+              \"docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\",
+              \"docker stop cronicas-app || true\",
+              \"docker rm cronicas-app || true\",
+              \"docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\"
+            ]" \
+            --region sa-east-1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          base: main
+          branch: 'release/v${{ env.version }}'
+          title: '[CRÔNICAS] PR criado automaticamente -> main by ${{ github.actor }}'
+          body: 'This PR was automatically created by GitHub Actions.'
+          draft: false

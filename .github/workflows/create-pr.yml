@@ -1,6 +1,6 @@
 name: "[Cronicas] Create Pull Request"
 
-run-name: "Create PR to main. #${{ github.run_number }} by ${{ github.actor }}"
+run-name: "Create PR to develop. #${{ github.run_number }} by ${{ github.actor }}"
 
 on:
   push:
@@ -12,19 +12,6 @@ jobs:
     name: Create Pull Request
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        commit=$(echo '${{ github.event.head_commit.message }}' | awk -F ': ' '{print $1}')
-        echo "commit: $commit" 
-
-        if [[ $commit == cnv-* ]]; then
-          echo "commit_type=$(echo $commit)" >> $GITHUB_ENV
-        else
-          echo "commit_type=cnv-commit" >> $GITHUB_ENV
-        fi
-
-    - run: |
-       echo "commit_type: ${{ env.commit_type }}" 
-
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -32,13 +19,8 @@ jobs:
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
-        base: main
+        base: develop
         branch: ${{ github.ref }}
-        title: '[${{ env.commit_type }}] PR criado automaticamente -> main'
+        title: '[CRÔNICAS] PR criado automaticamente -> develop by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
-
-    - name: TESTE IF
-      if: ${{ !contains(github.event.head_commit.message, 'cnv-deploy') }}
-      run: |
-        echo "cnv-deploy não encontrado na mensagem do commit: ${{ github.event.head_commit.message }}"
