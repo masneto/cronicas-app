@@ -17,6 +17,9 @@ jobs:
     env:
       version: $(echo ${{ github.base_ref }} | sed 's|release/v||)      
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+            
       - name: Login GitHub Container Registry
         run: |
           echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
