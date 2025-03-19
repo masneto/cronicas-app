@@ -80,7 +80,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
           script: |
-            const version = process.env.release-version;
+            const version = `${{ env.release-version }}`;
             console.log('Version:', version);
             const base = 'main';
             const head = `release/v${version}`;
