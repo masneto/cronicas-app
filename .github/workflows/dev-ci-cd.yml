@@ -118,7 +118,7 @@ jobs:
 
       - name: Create Branch release/v${{ env.version }}
         run: |
-          git fetch origin
+          git fetch origin --all
           if ! git rev-parse --verify origin/release/v${{ env.version }} >/dev/null 2>&1; then
             echo "Branch release/v${{ env.version }} não foi encontrada. Criando a branch..."
             git checkout main && git pull
@@ -129,11 +129,22 @@ jobs:
           fi
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          base: 'release/v${{ env.version }}'
-          branch: develop
-          title: '[CRÔNICAS] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}'
-          body: 'This PR was automatically created by GitHub Actions.'
-          draft: false
+        run: |
+          gh auth login --with-token <<< "${{ secrets.PAT_GITHUB_TOKEN }}"
+          gh pr create \
+            --base "release/v${{ env.version }}" \
+            --head "develop" \
+            --title "[CRÔNICAS] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}" \
+            --body "This PR was automatically created by GitHub Actions."
+        env:
+          GH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v7
+      #   with:
+      #     token: ${{ secrets.PAT_GITHUB_TOKEN }}
+      #     base: 'release/v${{ env.version }}'
+      #     branch: develop
+      #     title: '[CRÔNICAS] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}'
+      #     body: 'This PR was automatically created by GitHub Actions.'
+      #     draft: false
