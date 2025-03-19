@@ -32,7 +32,6 @@ jobs:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           tag_name: v${{ env.version }}
           name: Release v${{ env.version }}
