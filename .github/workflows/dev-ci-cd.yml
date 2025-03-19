@@ -20,12 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: |
-          echo "Version: ${{ env.version }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "Target: ${{ github.base_ref }}"
-          echo "Source: ${{ github.head_ref }}"
-
       - name: Bump Version
         id: tag
         uses: mathieudutour/github-tag-action@v6.2
@@ -45,7 +39,6 @@ jobs:
   ci:
     name: Cronicas CI
     needs: bump-version
-    if: always() && failure() #REMOVER CONDIÇÃO DE FALHA
     runs-on: ubuntu-latest
     permissions: write-all
     env:

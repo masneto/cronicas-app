@@ -9,39 +9,17 @@ on:
       - edited
 
 jobs:
-  release:
-    name: Cronicas CI
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.action == 'edited'
-    permissions: write-all
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Save Docker Image
-        run: |
-          docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ github.run_number }} -o cronicas-app-image-v${{ github.run_number }}.tar
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
-          draft: false
-          prerelease: false
-          files: cronicas-app-image-v${{ github.run_number }}.tar
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-
   cd:
     name: Cronicas CD
-    needs: ci
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event.pull_request.action == 'edited' && contains(github.head_ref, 'release/v')
     environment:
       name: production
     steps:
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

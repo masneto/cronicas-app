@@ -13,22 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     permissions: write-all
+    env:
+      version: $(echo ${{ github.head_ref }} | sed 's|release/v||)      
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Save Docker Image
         run: |
-          docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ github.run_number }} -o cronicas-app-image-v${{ github.run_number }}.tar
+          docker save ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }} -o cronicas-app-image-v${{ env.version }}.tar
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
+          tag_name: v${{ env.version }}
+          name: Release v${{ env.version }}
           draft: false
           prerelease: false
-          files: cronicas-app-image-v${{ github.run_number }}.tar
+          files: cronicas-app-image-v${{ env.version }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}

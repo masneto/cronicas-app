@@ -15,13 +15,11 @@ jobs:
     environment:
       name: homologation
     env:
-      version: $(echo ${{ github.ref_name }} | sed 's|release/v||)      
+      version: $(echo ${{ github.base_ref }} | sed 's|release/v||)      
     steps:
-      - run: |
-          echo "Version: ${{ env.version }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "Target: ${{ github.base_ref }}"
-          echo "Source: ${{ github.head_ref }}"
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
