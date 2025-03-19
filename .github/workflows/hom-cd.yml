@@ -25,8 +25,7 @@ jobs:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
           default_prerelease_bump: false
-          release_branches: "develop, main, release/v*"
-          dry_run: false
+          release_branches: "develop, main, release*"
 
       - name: Output the new version
         run: |
@@ -34,7 +33,7 @@ jobs:
           echo "New tag: ${{ steps.tag.outputs.new_tag }}"
           echo "Previous tag: ${{ steps.tag.outputs.previous_tag }}"
           echo "Previous version: ${{ steps.tag.outputs.previous_version }}"
-          
+
   cd:
     name: Cronicas CD
     runs-on: ubuntu-latest          
