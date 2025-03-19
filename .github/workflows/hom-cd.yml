@@ -24,8 +24,6 @@ jobs:
         with:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          release_branches: "develop, main"
-          default_prerelease_bump: 'release/v*'
 
       - name: Output the new version
         run: |
