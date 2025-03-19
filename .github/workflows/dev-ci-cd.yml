@@ -113,8 +113,9 @@ jobs:
               "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:{{ env.version }}",
               
               "IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' | grep 'ghcr.io/${{ github.repository_owner }}/cronicas-app' | sort -r -k2)",
-              "COUNT=$(echo \"$IMAGES\" | wc -l)",
-              "if [ \"$COUNT\" -gt 2 ]; then echo \"$IMAGES\" | awk 'NR>2 {print $1}' | xargs -r docker rmi; fi"
+              "COUNT=$(echo \\\"$IMAGES\\\" | wc -l)",
+              "if [ \\\"$COUNT\\\" -gt 2 ]; then echo \\\"$IMAGES\\\" | awk 'NR>2 {print $1}' | xargs -r docker rmi; fi",
+              "\""
             ]' \
             --region sa-east-1
 
