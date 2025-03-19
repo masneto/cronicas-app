@@ -124,17 +124,17 @@ jobs:
           git checkout -b release/v${{ env.version }}
           git push origin release/v${{ env.version }}
 
-      - name: Create Pull Request via GitHub Script
+      - name: Criar Pull Request Automaticamente
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
           script: |
-            const base = `release/v${{ env.version }}`; // Branch base
-            const head = 'develop'; // Branch de origem
+            const base = `release/v${{ env.version }}`;
+            const head = 'develop';
             const title = `[CRÔNICAS] PR criado automaticamente -> ${base} by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
-            // Verifica se o Pull Request já existe
-            const { data: existingPRs } = await github.pulls.list({
+            const { data: existingPRs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               base,
@@ -144,8 +144,7 @@ jobs:
             if (existingPRs.length > 0) {
               console.log(`Pull Request já existe: ${existingPRs[0].html_url}`);
             } else {
-              // Cria o Pull Request
-              const { data: pullRequest } = await github.pulls.create({
+              const { data: pullRequest } = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 base,
