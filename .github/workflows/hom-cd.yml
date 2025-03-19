@@ -53,6 +53,6 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_TOKEN }}
           base: main
           branch: 'release/v${{ env.version }}'
-          title: '[CRÔNICAS] PR criado automaticamente -> main by ${{ github.actor }}'
+          title: '[PROD] PR criado automaticamente -> main by ${{ github.actor }}'
           body: 'This PR was automatically created by GitHub Actions.'
           draft: false
