@@ -110,12 +110,7 @@ jobs:
               "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:{{ env.version }}",
               "docker stop cronicas-app || true",
               "docker rm cronicas-app || true",
-              "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:{{ env.version }}",
-              
-              "IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' | grep 'ghcr.io/${{ github.repository_owner }}/cronicas-app' | sort -r -k2)",
-              "COUNT=$(echo \\\"$IMAGES\\\" | wc -l)",
-              "if [ \\\"$COUNT\\\" -gt 2 ]; then echo \\\"$IMAGES\\\" | awk 'NR>2 {print $1}' | xargs -r docker rmi; fi",
-              "\""
+              "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:{{ env.version }}"
             ]' \
             --region sa-east-1
 
