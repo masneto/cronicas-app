@@ -124,12 +124,35 @@ jobs:
           git checkout -b release/v${{ env.version }}
           git push origin release/v${{ env.version }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+      - name: Create Pull Request via GitHub Script
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          base: 'release/v${{ env.version }}'
-          branch: develop
-          title: '[CRÔNICAS] PR criado automaticamente -> release/v${{ env.version }} by ${{ github.actor }}'
-          body: 'This PR was automatically created by GitHub Actions.'
-          draft: false
+          script: |
+            const base = `release/v${{ env.version }}`; // Branch base
+            const head = 'develop'; // Branch de origem
+            const title = `[CRÔNICAS] PR criado automaticamente -> ${base} by ${context.actor}`;
+            const body = 'This PR was automatically created by GitHub Actions.';
+
+            // Verifica se o Pull Request já existe
+            const { data: existingPRs } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              base,
+              head,
+            });
+
+            if (existingPRs.length > 0) {
+              console.log(`Pull Request já existe: ${existingPRs[0].html_url}`);
+            } else {
+              // Cria o Pull Request
+              const { data: pullRequest } = await github.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base,
+                head,
+                title,
+                body,
+              });
+
+              console.log(`Pull Request criado com sucesso: ${pullRequest.html_url}`);
+            }
