@@ -79,8 +79,10 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
           script: |
+            const version = process.env.version;
+            console.log('Version:', version);
             const base = 'main';
-            const head = `release/v${process.env.version}`;
+            const head = `release/v${version}`;
             const title = `[PRD] PR criado automaticamente -> ${base} by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
