@@ -123,7 +123,7 @@ jobs:
             echo "Branch release/v${{ env.version }} não foi encontrada. Criando a branch..."
             git checkout main && git pull
             git checkout -b release/v${{ env.version }}
-            git push -u origin release/v${{ env.version }}
+            git push origin release/v${{ env.version }}
           else
             echo "Branch release/v${{ env.version }} já existe."
           fi
