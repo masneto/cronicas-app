@@ -14,7 +14,7 @@ jobs:
     if: github.event.pull_request.merged == true
     permissions: write-all
     env:
-      version: $(echo ${{ github.head_ref }} | sed 's|release/v||)      
+      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')      
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
