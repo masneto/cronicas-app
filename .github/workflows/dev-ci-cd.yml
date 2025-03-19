@@ -104,7 +104,7 @@ jobs:
               "docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:latest",
               "docker stop cronicas-app || true",
               "docker rm cronicas-app || true",
-              "docker run -d -p 3001:3001 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
+              "docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:latest"
             ]' \
             --region sa-east-1
 
