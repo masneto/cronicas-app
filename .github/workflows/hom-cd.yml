@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check Next Version
-        id: check_version
+        id: tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
           tag_prefix: "v"
@@ -29,24 +29,17 @@ jobs:
           release_branches: 'release*'
           dry_run: false
 
-      - name: Output New Version
-        run: |
-          echo "Next version (dry-run): ${{ steps.check_version.outputs.new_version }}"
-          echo "Final tagged version: ${{ steps.apply_tag.outputs.new_version }}"
-
       - name: Output the new version
         run: |
           echo "New version: ${{ steps.tag.outputs.new_version }}"
           echo "New tag: ${{ steps.tag.outputs.new_tag }}"
-          echo "Previous tag: ${{ steps.tag.outputs.previous_tag }}"
-          echo "Previous version: ${{ steps.tag.outputs.previous_version }}"
 
   cd:
     name: Cronicas CD
     runs-on: ubuntu-latest          
     permissions: write-all
     needs: create-tag
-    if: github.event.pull_request.merged == false #VOLTAR PARA TRUE
+    if: github.event.pull_request.merged == true
     environment:
       name: homologation
     env:
@@ -81,12 +74,34 @@ jobs:
             ]" \
             --region sa-east-1
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+      - name: Criar Pull Request Automaticamente
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          base: main
-          branch: 'release/v${{ env.version }}'
-          title: '[PROD] PR criado automaticamente -> main by ${{ github.actor }}'
-          body: 'This PR was automatically created by GitHub Actions.'
-          draft: false
+          github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          script: |
+            const base = `main`;
+            const head = 'release/v${{ env.version }}';
+            const title = `[PRD] PR criado automaticamente -> ${base} by ${context.actor}`;
+            const body = 'This PR was automatically created by GitHub Actions.';
+
+            const { data: existingPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              base,
+              head,
+            });
+
+            if (existingPRs.length > 0) {
+              console.log(`Pull Request já existe: ${existingPRs[0].html_url}`);
+            } else {
+              const { data: pullRequest } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base,
+                head,
+                title,
+                body,
+              });
+
+              console.log(`Pull Request criado com sucesso: ${pullRequest.html_url}`);
+            }

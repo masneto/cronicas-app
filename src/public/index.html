@@ -72,10 +72,10 @@
       }
 
       function updateActiveButton(index) {
-        const buttons = document.querySelectorAll(".playlist .button-music"); // Corrigido para usar a classe correta
+        const buttons = document.querySelectorAll(".playlist .button-music");
         buttons.forEach((button, i) => {
           // Remove a imagem de todos os botões
-          button.innerHTML = i + 1; // Restaura o número no botão
+          button.innerHTML = i + 1; 
 
           // Adiciona a classe "active" ao botão correspondente
           if (i === index) {
@@ -83,9 +83,9 @@
 
             // Substitui o número pela imagem no botão ativo
             const logo = document.createElement("img");
-            logo.src = "./images/cnv-logo.png"; // Certifique-se de que o caminho está correto
-            button.innerHTML = ""; // Limpa o conteúdo do botão
-            button.appendChild(logo); // Adiciona a imagem ao botão
+            logo.src = "./images/cnv-logo.png";
+            button.innerHTML = ""; 
+            button.appendChild(logo); 
           } else {
             button.classList.remove("active");
           }
@@ -94,19 +94,19 @@
 
       // Função para tocar a música anterior
       function previousSong() {
-        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length; // Volta para a última música se estiver na primeira
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         playSong(currentSongIndex);
       }
 
       // Função para tocar a próxima música
       function nextSong() {
-        currentSongIndex = (currentSongIndex + 1) % songs.length; // Vai para a primeira música se estiver na última
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
         playSong(currentSongIndex);
       }
 
       // Inicializar o botão ativo na primeira música
       updateActiveButton(0);
-    </script>
+    </script>    
   </div>
 </body>
 
