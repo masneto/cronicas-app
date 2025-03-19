@@ -38,6 +38,7 @@ jobs:
     name: Cronicas CD
     runs-on: ubuntu-latest
     permissions: write-all
+    needs: create-tag
     environment:
       name: homologation
     env:
