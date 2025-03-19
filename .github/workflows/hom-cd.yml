@@ -12,6 +12,8 @@ jobs:
     name: Cronicas Bump Version
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    env:
+      version: $(echo ${{ github.base_ref }} | sed 's|release/v||')    
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v4
