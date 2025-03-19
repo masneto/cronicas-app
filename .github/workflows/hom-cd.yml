@@ -12,8 +12,8 @@ jobs:
     name: Cronicas Bump Version
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
-    env:
-      version: $(echo ${{ github.base_ref }} | sed 's|release/v||')    
+    outputs:
+      version: ${{ steps.tag.outputs.new_version }}   
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -43,7 +43,8 @@ jobs:
     environment:
       name: homologation
     env:
-      version: $(echo ${{ github.base_ref }} | sed 's|release/v||')      
+      version: $(echo ${{ github.base_ref }} | sed 's|release/v||')
+      release-version: ${{ needs.create-tag.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -79,7 +80,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
           script: |
-            const version = process.env.version;
+            const version = process.env.release-version;
             console.log('Version:', version);
             const base = 'main';
             const head = `release/v${version}`;
