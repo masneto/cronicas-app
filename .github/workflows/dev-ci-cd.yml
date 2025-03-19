@@ -82,6 +82,7 @@ jobs:
     needs: [bump-version, ci]
     runs-on: ubuntu-latest
     if: always() && success()
+    permissions: write-all
     environment:
       name: development
     env:
@@ -89,7 +90,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-            
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
