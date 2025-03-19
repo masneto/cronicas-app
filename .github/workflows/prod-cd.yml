@@ -1,0 +1,44 @@
+name: "[Cronicas] Production CD"
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - edited
+
+jobs:
+  cd:
+    name: Cronicas CD
+    runs-on: ubuntu-latest
+    if: contains(github.head_ref, 'release/v')
+    environment:
+      name: production
+    env:
+      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')       
+    steps:
+      - name: Login GitHub Container Registry
+        run: |
+          echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
+
+      - name: Deploy and Run Docker Image
+        run: |
+          export VERSION=${{ env.version }}
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+            --parameters "commands=[
+              \"echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin\",
+              \"docker pull ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\",
+              \"docker stop cronicas-app || true\",
+              \"docker rm cronicas-app || true\",
+              \"docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\"
+            ]" \
+            --region sa-east-1
