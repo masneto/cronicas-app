@@ -16,7 +16,7 @@ jobs:
     environment:
       name: homologation
     env:
-      version: $(echo ${{ github.base_ref }} | sed 's|release/v||)      
+      version: $(echo ${{ github.base_ref }} | sed 's|release/v||')      
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
