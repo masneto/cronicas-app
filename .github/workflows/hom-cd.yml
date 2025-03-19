@@ -24,7 +24,8 @@ jobs:
         with:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          release_branches: "develop, main, 'release/v*'"
+          release_branches: "develop, main"
+          default_prerelease_bump: 'release/v*'
 
       - name: Output the new version
         run: |
@@ -36,6 +37,7 @@ jobs:
     name: Cronicas CD
     runs-on: ubuntu-latest
     permissions: write-all
+    needs: create-tag
     if: github.event.pull_request.merged == true
     environment:
       name: homologation
