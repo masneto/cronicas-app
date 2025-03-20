@@ -50,7 +50,7 @@ O pipeline foi estruturado com os respectivos temas:
 
 ## Workflow de CI/CD
 
-Arquivo: `.github/workflows/ci-cd.yml`
+Arquivo: `.github/workflows-backup/ci-cd-aws.yml`
 
 ## Configuração de Ambientes e Aprovações
 
