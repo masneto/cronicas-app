@@ -3,7 +3,7 @@
 Este documento apresenta uma solução completa de pipeline CI/CD usando GitHub Actions para o projeto de aplicação web "Crônicas App", atendendo a todos os requisitos especificados no desafio.
 ![Cronicas APP](images/cronicas-0.png).
 
-Acesse [Crônicas APP](http://54.233.1.42:3000/).
+Acesse [Crônicas APP](http://18.228.118.250:3000/).
 - IMPORTANTE: Para não ter recursos rodando 24 horas, acabo desligando na AWS. Mas subo a aplicação caso precise. O IP sempre muda ao reiniciar a instância EC2.
 
 ## Índice
@@ -50,7 +50,7 @@ O pipeline foi estruturado com os respectivos temas:
 
 ## Workflow de CI/CD
 
-Arquivo: `.github/workflows/ci-cd.yml`
+Arquivo: `.github/workflows-backup/ci-cd-aws.yml`
 
 ## Configuração de Ambientes e Aprovações
 
