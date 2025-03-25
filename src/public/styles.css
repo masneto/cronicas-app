@@ -264,7 +264,7 @@ h3 {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .container {
       padding: 20px;
       width: 95%;
@@ -337,8 +337,6 @@ h3 {
   .button-link {
     padding: 6px 12px;
     font-size: 0.8rem;
-    flex: 1 1 calc(33.33% - 10px);
-    text-align: center;  
   }  
 
   #musicPlayer {
