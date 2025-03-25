@@ -1,5 +1,7 @@
 name: "[Cronicas] Release Tag"
 
+run-name: "Release Tag #{{ github.head_ref }} | by ${{ github.actor }}"
+
 on:
   pull_request:
     branches:
