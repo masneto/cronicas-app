@@ -175,6 +175,13 @@ h3 {
   display: inline-block;
 }
 
+.button-container {
+  display: flex;
+  flex-wrap: wrap; /* Permite que quebrem linha se necessário */
+  justify-content: center; /* Alinha ao centro */
+  gap: 10px; /* Adiciona espaço entre os botões */
+}
+
 .button-link {
   display: inline-block;
   padding: 8px 15px; /* Reduced padding */
@@ -188,6 +195,7 @@ h3 {
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .button-link:hover {
@@ -304,6 +312,10 @@ h3 {
 
 
 @media (max-width: 480px) {
+
+  .button-container {
+    flex-wrap: wrap; /* Permite que os botões se ajustem se não houver espaço suficiente */
+  }
 
   .container {
     padding: 15px;
