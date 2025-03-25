@@ -75,7 +75,19 @@ jobs:
             ]" \
             --region sa-east-1
 
-      - name: Create PR to main
+  create-prod-pr:
+    name: Cronicas PR to Main
+    needs: [create-tag, cd]
+    runs-on: ubuntu-latest
+    if: always() && success()
+    permissions: write-all    
+    env:
+      release-version: ${{ needs.create-tag.outputs.version }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4      
+        
+      - name: Criar PR para main
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PAT_GITHUB_TOKEN }}
