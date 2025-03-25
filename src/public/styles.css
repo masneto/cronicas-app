@@ -143,8 +143,32 @@ h3 {
   list-style-type: none;
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
   flex-wrap: wrap;
+  padding: 0;
+}
+
+/* Estilo dos itens da lista */
+.sidebar li {
+  margin: 10px 0;
+}
+
+/* Estilo dos links na barra lateral */
+.sidebar a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+}
+
+/* Estilo dos links ao passar o mouse */
+.sidebar a:hover {
+  background-color: #00fff2;
+  color: #333;
 }
 
 .sidebar ul li {
@@ -152,29 +176,43 @@ h3 {
 }
 
 .button-link {
-  text-decoration: none;
   display: inline-block;
-  padding: 10px 15px;
-  background: #007bff;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
   color: #ffffff;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  background-color: #007bff;
   border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
 }
 
 .button-link:hover {
   background-color: #5eeffa;
   color: #ffffff;
-  transform: scale(1.1);
+  transform: scale(1.05);
+}
+
+/* Estilo dos botões de links ao serem clicados */
+.button-link:active {
+  background-color: #00f2ff;
+  color: #333;
+  transform: scale(0.95);
 }
 
 /* Playlist Buttons */
 .playlist {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  width: 100%;
 }
 
 .button-music {
@@ -193,9 +231,17 @@ h3 {
   font-family: 'Press Start 2P', cursive;
 }
 
+.button-music:hover {
+  background-color: #5eeffa;
+  color: #333;
+  transform: scale(1.05);
+}
+
+/* Estilo dos botões de seleção de música ao serem clicados */
 .button-music.active {
   background-color: #5eeffa;
-  transform: scale(1.1);
+  color: #333;
+  transform: scale(0.95);
 }
 
 .button-music.active img {
@@ -207,49 +253,38 @@ h3 {
 /* Music Player */
 #musicPlayer {
   width: 100%;
-  max-width: 500px;
+  max-width: 560px;
   height: 200px;
   border: none;
-  border-radius: 15px;
-  margin: 20px 0;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-}
-
-/* Controls */
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.controls .button-link {
-  background: #007bff;
-  padding: 10px 15px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #ffffff;
-  transition: all 0.3s ease;
-}
-
-.controls .button-link:hover {
-  background-color: #5eeffa;
-  color: #ffffff;
-  transform: scale(1.1);
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    width: 95%;
-    padding: 20px;
+      padding: 20px;
+      width: 95%;
+    }
+  
+    .container img {
+      max-width: 100%;
+      height: auto;
+    }
   }
 
   h1 {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   h2 {
     font-size: 0.9rem;
+  }
+
+  h3 {
+    font-size: 1rem;
   }
 
   .button-music {
@@ -258,12 +293,28 @@ h3 {
     font-size: 0.9rem;
   }
 
+  .button-link {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
   #musicPlayer {
     height: 180px;
   }
-}
+
 
 @media (max-width: 480px) {
+
+  .container {
+    padding: 15px;
+    width: 100%;
+  }
+
+  .container img {
+    max-width: 100%;
+    height: auto;
+  }
+    
   .sidebar ul {
     flex-direction: column;
     align-items: center;
@@ -271,15 +322,31 @@ h3 {
 
   .playlist {
     justify-content: center;
+    gap: 3px;
+    flex-wrap: nowrap;
   }
 
   .button-music {
     width: 30px;
     height: 30px;
     font-size: 0.8rem;
+    min-width: 32px;
   }
+
+  .button-link {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }  
 
   #musicPlayer {
     height: 150px;
   }
+
+  h1 {
+    font-size: 0.8rem;
+  }
+
+  h2 {
+    font-size: 0.5rem;
+  }  
 }
