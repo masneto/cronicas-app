@@ -10,9 +10,8 @@
 
 <body>
   <div class="container">
-    <img
-      src="./images/cnv-img.png"
-      alt="Crônicas do Nada Ver" />
+    <button id="themeToggle" class="theme-toggle">🌞</button>    
+    <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
     <h1>Crônicas do Nada Ver</h1>
     <h2>O que é engraçado, é o que não faz sentido!!!</h2>
     <div class="sidebar">
@@ -75,7 +74,7 @@
         const buttons = document.querySelectorAll(".playlist .button-music");
         buttons.forEach((button, i) => {
           // Remove a imagem de todos os botões
-          button.innerHTML = i + 1; 
+          button.innerHTML = i + 1;
 
           // Adiciona a classe "active" ao botão correspondente
           if (i === index) {
@@ -84,8 +83,8 @@
             // Substitui o número pela imagem no botão ativo
             const logo = document.createElement("img");
             logo.src = "./images/cnv-logo.png";
-            button.innerHTML = ""; 
-            button.appendChild(logo); 
+            button.innerHTML = "";
+            button.appendChild(logo);
           } else {
             button.classList.remove("active");
           }
@@ -106,7 +105,15 @@
 
       // Inicializar o botão ativo na primeira música
       updateActiveButton(0);
-    </script>    
+
+      // Alternância de tema claro e escuro
+      const themeToggle = document.getElementById("themeToggle");
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-theme");
+        const isDarkTheme = document.body.classList.contains("dark-theme");
+        themeToggle.textContent = isDarkTheme ? "🌙" : "🌞";
+      });
+    </script>
   </div>
 </body>
 
