@@ -1,266 +1,285 @@
-/* Estilo geral do corpo da página */
-body {
-  font-family: 'Trebuchet MS', sans-serif;
+/* Import retro gamer font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  color: #1a1a1a;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #f0f0f0, #d6e4f0);
-  color: #333;
+  overflow-x: hidden;
+  padding: 20px;
 }
 
-/* Estilo do contêiner principal */
+/* Dark Theme Color Adjustments */
+body.dark-theme {
+  background: linear-gradient(135deg, #121212, #1e1e1e);
+  color: #00fff2;
+}
+
+body.dark-theme .container {
+  background: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+body.dark-theme .button-link {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-link:hover {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .button-music {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-music.active {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .theme-toggle {
+  color: #00fff2;
+}
+
+body.dark-theme h1 {
+  color: #00fff2;
+  text-shadow: 0 0 8px #00fff2;
+}
+
+body.dark-theme h2 {
+  color: #ffffff;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme h3 {
+  color: #00fff2;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme .container>img {
+  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
+}
+
+body.dark-theme #musicPlayer {
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+/* Container */
 .container {
-  text-align: center;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 100%;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
-  overflow: hidden;
-  margin: 0 auto;
+  text-align: center;
 }
 
-/* Estilo das imagens dentro do contêiner */
-.container img {
+/* Main image */
+.container>img {
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 15px;
   margin-bottom: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Estilo do título principal */
+/* Theme Toggle */
+.theme-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #007c9e;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.2);
+}
+
+/* Headings */
 h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+  text-shadow: none;
 }
 
-/* Estilo do subtítulo */
 h2 {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 1rem;
+  color: #1a1a1a;
   margin-bottom: 20px;
+  text-shadow: none;
 }
 
-/* Estilo da barra lateral */
-.sidebar {
-  margin-top: 20px;
+h3 {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin: 20px 0 15px;
+  text-shadow: none;
 }
 
-/* Estilo da lista na barra lateral */
+/* Sidebar (Social Links) */
 .sidebar ul {
   list-style-type: none;
-  padding: 0;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  gap: 15px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
-/* Estilo dos itens da lista */
-.sidebar li {
-  margin: 10px 0;
-}
-
-/* Estilo dos links na barra lateral */
-.sidebar a {
-  text-decoration: none;
-  color: #ffffff;
-  font-weight: bold;
-  transition: color 0.3s ease;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-    
-}
-
-/* Estilo dos links ao passar o mouse */
-.sidebar a:hover {
-  background-color: #00fff2;
-  color: #333;
-}
-
-/* Estilo dos botões de links */
-.button-link {
+.sidebar ul li {
   display: inline-block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  cursor: pointer;
 }
 
-/* Estilo dos botões de links ao passar o mouse */
+.button-link {
+  text-decoration: none;
+  display: inline-block;
+  padding: 10px 15px;
+  background: #007bff;
+  color: #ffffff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
 .button-link:hover {
-  background-color: #00fff2;
-  color: #333;
-  transform: scale(1.05);
-}
-
-/* Estilo dos botões de links ao serem clicados */
-.button-link:active {
-  background-color: #00f2ff;
-  color: #333;
-  transform: scale(0.95);
-}
-
-/* Estilo do contêiner de botões de seleção de música */
-.playlist {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 20px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  width: 100%;
-}
-
-/* Estilo dos botões de seleção de música */
-.button-music {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  font-size: 1rem;
-  font-weight: bold;
+  background-color: #5eeffa;
   color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-/* Estilo dos botões de seleção de música ao passar o mouse */
-.button-music:hover {
-  background-color: #00fff2;
-  color: #333;
-  transform: scale(1.05);
-}
-
-/* Estilo dos botões de seleção de música ao serem clicados */
-.button-music:active {
-  background-color: #00f2ff;
-  color: #333;
-  transform: scale(0.95);
-}
-
-/* Estilo do botão ativo de seleção de música */
-.button-music.active {
-  background-color: #00f2ff;
   transform: scale(1.1);
 }
 
-/* Estilo para a imagem no botão ativo de seleção de música */
-.button-music img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* Playlist Buttons */
+.playlist {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-/* Estilo do iframe */
-iframe {
-  width: 100%;
-  max-width: 560px;
-  height: 200px;
-  border: none;
-  margin: 20px auto;
-  display: block;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsividade para dispositivos móveis */
-@media (max-width: 768px) {
-
-  /* Ajusta o contêiner principal */
-  .container {
-    padding: 20px;
-    width: 95%;
-  }
-
-  .container img {
-    max-width: 100%;
-    height: auto;
-  }
-}
-
-/* Ajusta os botões de seleção de música */
 .button-music {
   width: 40px;
   height: 40px;
-  font-size: 0.9rem;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-family: 'Press Start 2P', cursive;
 }
 
-/* Ajusta os botões de links */
-.button-link {
-  padding: 8px 16px;
-  font-size: 0.9rem;
+.button-music.active {
+  background-color: #5eeffa;
+  transform: scale(1.1);
 }
 
-/* Ajusta o iframe do player */
-iframe {
+.button-music.active img {
+  max-width: 30px;
+  max-height: 30px;
+  border-radius: 50%;
+}
+
+/* Music Player */
+#musicPlayer {
+  width: 100%;
+  max-width: 500px;
   height: 200px;
+  border: none;
+  border-radius: 15px;
+  margin: 20px 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
 }
 
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
 
-@media (max-width: 480px) {
+.controls .button-link {
+  background: #007bff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
 
-  /* Ajusta os botões de seleção de música */
+.controls .button-link:hover {
+  background-color: #5eeffa;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 0.9rem;
+  }
+
   .button-music {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
-    min-width: 32px;
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
   }
 
-  /* Ajusta os botões de links */
-  .button-link {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  /* Ajusta o iframe do player */
-  iframe {
+  #musicPlayer {
     height: 180px;
   }
-
-  /* Ajusta o layout da playlist */
-  .playlist {
-    gap: 3px;
-    flex-wrap: nowrap;
-  }
-  .container {
-    padding: 15px;
-    width: 100%;
-  }
-
-  .container img {
-    max-width: 100%;
-    height: auto;
-  }
 }
 
+@media (max-width: 480px) {
+  .sidebar ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .playlist {
+    justify-content: center;
+  }
+
+  .button-music {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  #musicPlayer {
+    height: 150px;
+  }
+}
