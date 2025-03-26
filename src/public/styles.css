@@ -179,7 +179,7 @@ h3 {
   display: flex;
   flex-wrap: wrap; /* Permite que quebrem linha se necessário */
   justify-content: center; /* Alinha ao centro */
-  gap: 10px; /* Adiciona espaço entre os botões */
+  gap: 5px; /* Adiciona espaço entre os botões */
 }
 
 .button-link {
