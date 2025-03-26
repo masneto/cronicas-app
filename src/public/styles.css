@@ -1,14 +1,82 @@
-/* Estilo geral do corpo da página */
-body {
-  font-family: 'Trebuchet MS', sans-serif;
+/* Import retro gamer font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Estilo geral do corpo da página */
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  color: #1a1a1a;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #f0f0f0, #d6e4f0);
-  color: #333;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+/* Dark Theme Color Adjustments */
+body.dark-theme {
+  background: linear-gradient(135deg, #121212, #1e1e1e);
+  color: #00fff2;
+}
+
+body.dark-theme .container {
+  background: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+body.dark-theme .button-link {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-link:hover {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .button-music {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-music.active {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .theme-toggle {
+  color: #00fff2;
+}
+
+body.dark-theme h1 {
+  color: #00fff2;
+  text-shadow: 0 0 8px #00fff2;
+}
+
+body.dark-theme h2 {
+  color: #ffffff;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme h3 {
+  color: #00fff2;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme .container>img {
+  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
+}
+
+body.dark-theme #musicPlayer {
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
 }
 
 /* Estilo do contêiner principal */
