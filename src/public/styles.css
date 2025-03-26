@@ -82,14 +82,13 @@ body.dark-theme #musicPlayer {
 /* Theme Toggle */
 .theme-toggle {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
   color: #007c9e;
-  z-index: 10;
   transition: transform 0.3s ease;
 }
 
@@ -121,23 +120,31 @@ body.dark-theme #musicPlayer {
   margin-right: auto;
 }
 
-/* Estilo do título principal */
+/* Headings */
 h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+  text-shadow: none;
 }
 
-/* Estilo do subtítulo */
 h2 {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 1rem;
+  color: #1a1a1a;
   margin-bottom: 20px;
+  text-shadow: none;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin: 20px 0 15px;
+  text-shadow: none;
 }
 
 /* Estilo da barra lateral */
 .sidebar {
-  margin-top: 20px;
+  display: inline-block;
 }
 
 /* Estilo da lista na barra lateral */
@@ -152,7 +159,7 @@ h2 {
 
 /* Estilo dos itens da lista */
 .sidebar li {
-  margin: 10px 0;
+  display: inline-block;
 }
 
 /* Estilo dos links na barra lateral */
@@ -233,25 +240,26 @@ h2 {
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
   overflow: hidden;
+  font-family: 'Press Start 2P', cursive;
 }
 
 /* Estilo dos botões de seleção de música ao passar o mouse */
 .button-music:hover {
-  background-color: #00fff2;
+  background-color: #5eeffa;
   color: #333;
   transform: scale(1.05);
 }
 
 /* Estilo dos botões de seleção de música ao serem clicados */
 .button-music:active {
-  background-color: #00f2ff;
+  background-color: #5eeffa;
   color: #333;
   transform: scale(0.95);
 }
 
 /* Estilo do botão ativo de seleção de música */
 .button-music.active {
-  background-color: #00f2ff;
+  background-color: #5eeffa;
   transform: scale(1.1);
 }
 
