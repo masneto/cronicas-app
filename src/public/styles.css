@@ -1,14 +1,99 @@
-/* Estilo geral do corpo da página */
-body {
-  font-family: 'Trebuchet MS', sans-serif;
+/* Import retro gamer font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Estilo geral do corpo da página */
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  color: #1a1a1a;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #f0f0f0, #d6e4f0);
-  color: #333;
+  overflow-x: hidden;
+  padding: 5px;
+}
+
+/* Dark Theme Color Adjustments */
+body.dark-theme {
+  background: linear-gradient(135deg, #121212, #1e1e1e);
+  color: #00fff2;
+}
+
+body.dark-theme .container {
+  background: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+body.dark-theme .button-link {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-link:hover {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .button-music {
+  background: rgba(0, 255, 242, 0.2);
+  color: #ffffff;
+}
+
+body.dark-theme .button-music.active {
+  background-color: #00fff2;
+  color: #121212;
+}
+
+body.dark-theme .theme-toggle {
+  color: #00fff2;
+}
+
+body.dark-theme h1 {
+  color: #00fff2;
+  text-shadow: 0 0 8px #00fff2;
+}
+
+body.dark-theme h2 {
+  color: #ffffff;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme h3 {
+  color: #00fff2;
+  text-shadow: 0 0 5px #00fff2;
+}
+
+body.dark-theme .container>img {
+  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
+}
+
+body.dark-theme #musicPlayer {
+  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #007c9e;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.2);
 }
 
 /* Estilo do contêiner principal */
@@ -35,23 +120,31 @@ body {
   margin-right: auto;
 }
 
-/* Estilo do título principal */
+/* Headings */
 h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+  text-shadow: none;
 }
 
-/* Estilo do subtítulo */
 h2 {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 1rem;
+  color: #1a1a1a;
   margin-bottom: 20px;
+  text-shadow: none;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin: 20px 0 15px;
+  text-shadow: none;
 }
 
 /* Estilo da barra lateral */
 .sidebar {
-  margin-top: 20px;
+  display: inline-block;
 }
 
 /* Estilo da lista na barra lateral */
@@ -66,7 +159,7 @@ h2 {
 
 /* Estilo dos itens da lista */
 .sidebar li {
-  margin: 10px 0;
+  display: inline-block;
 }
 
 /* Estilo dos links na barra lateral */
@@ -78,7 +171,7 @@ h2 {
   align-items: center;
   display: flex;
   justify-content: center;
-    
+
 }
 
 /* Estilo dos links ao passar o mouse */
@@ -147,25 +240,26 @@ h2 {
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
   overflow: hidden;
+  font-family: 'Press Start 2P', cursive;
 }
 
 /* Estilo dos botões de seleção de música ao passar o mouse */
 .button-music:hover {
-  background-color: #00fff2;
+  background-color: #5eeffa;
   color: #333;
   transform: scale(1.05);
 }
 
 /* Estilo dos botões de seleção de música ao serem clicados */
 .button-music:active {
-  background-color: #00f2ff;
+  background-color: #5eeffa;
   color: #333;
   transform: scale(0.95);
 }
 
 /* Estilo do botão ativo de seleção de música */
 .button-music.active {
-  background-color: #00f2ff;
+  background-color: #5eeffa;
   transform: scale(1.1);
 }
 
@@ -226,21 +320,37 @@ iframe {
   height: 200px;
 }
 
+h1 {
+  font-size: 1rem;
+}
+
+h2 {
+  font-size: 0.9rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
 
 @media (max-width: 480px) {
+
+  .button-container {
+    flex-wrap: wrap;
+    /* Permite que os botões se ajustem se não houver espaço suficiente */
+  }
 
   /* Ajusta os botões de seleção de música */
   .button-music {
     width: 32px;
     height: 32px;
-    font-size: 0.8rem;
-    min-width: 32px;
+    font-size: 0.6rem;
   }
 
   /* Ajusta os botões de links */
   .button-link {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-size: 0.6rem;
   }
 
   /* Ajusta o iframe do player */
@@ -253,6 +363,7 @@ iframe {
     gap: 3px;
     flex-wrap: nowrap;
   }
+
   .container {
     padding: 15px;
     width: 100%;
@@ -262,5 +373,16 @@ iframe {
     max-width: 100%;
     height: auto;
   }
-}
 
+  h1 {
+    font-size: 0.8rem;
+  }
+
+  h2 {
+    font-size: 0.5rem;
+  }
+
+  h3 {
+    font-size: 0.8rem;
+  }
+}
