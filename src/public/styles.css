@@ -18,7 +18,7 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
-  padding: 0px;
+  padding: 5px;
 }
 
 /* Dark Theme Color Adjustments */
@@ -171,7 +171,7 @@ h3 {
   align-items: center;
   display: flex;
   justify-content: center;
-    
+
 }
 
 /* Estilo dos links ao passar o mouse */
@@ -320,21 +320,37 @@ iframe {
   height: 200px;
 }
 
+h1 {
+  font-size: 1rem;
+}
+
+h2 {
+  font-size: 0.9rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
 
 @media (max-width: 480px) {
+
+  .button-container {
+    flex-wrap: wrap;
+    /* Permite que os botões se ajustem se não houver espaço suficiente */
+  }
 
   /* Ajusta os botões de seleção de música */
   .button-music {
     width: 32px;
     height: 32px;
-    font-size: 0.8rem;
-    min-width: 32px;
+    font-size: 0.6rem;
   }
 
   /* Ajusta os botões de links */
   .button-link {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-size: 0.6rem;
   }
 
   /* Ajusta o iframe do player */
@@ -347,6 +363,7 @@ iframe {
     gap: 3px;
     flex-wrap: nowrap;
   }
+
   .container {
     padding: 15px;
     width: 100%;
@@ -355,5 +372,17 @@ iframe {
   .container img {
     max-width: 100%;
     height: auto;
+  }
+
+  h1 {
+    font-size: 0.8rem;
+  }
+
+  h2 {
+    font-size: 0.5rem;
+  }
+
+  h3 {
+    font-size: 0.8rem;
   }
 }
