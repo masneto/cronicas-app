@@ -349,7 +349,7 @@ h3 {
 
   /* Ajusta os botões de links */
   .button-link {
-    padding: 6px 12px;
+    padding: 4px 8px;
     font-size: 0.6rem;
   }
 
@@ -375,11 +375,11 @@ h3 {
   }
 
   h1 {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
   h2 {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
   }
 
   h3 {
