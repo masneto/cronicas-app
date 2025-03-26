@@ -18,7 +18,7 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
-  padding: 20px;
+  padding: 0px;
 }
 
 /* Dark Theme Color Adjustments */
@@ -77,6 +77,24 @@ body.dark-theme .container>img {
 
 body.dark-theme #musicPlayer {
   box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #007c9e;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.2);
 }
 
 /* Estilo do contêiner principal */
