@@ -20,8 +20,8 @@ jobs:
       with:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
         base: develop
-        branch: ${{ github.ref }}
-        title: '[DEV] PR criado | ${{ github.ref }} -> develop | by ${{ github.actor }}'
+        branch: ${{ github.ref_name }}
+        title: '[DEV] PR criado | ${{ github.ref_name }} -> develop | by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
 
