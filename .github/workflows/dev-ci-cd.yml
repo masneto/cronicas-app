@@ -167,9 +167,9 @@ jobs:
 
   notify-failure:
     name: Notify Failure
-    runs-on: ubuntu-latest
     if: failure()
-    needs: [create-pull-request]
+    needs: [bump-version, ci, cd, create-release-pr]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

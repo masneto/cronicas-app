@@ -47,7 +47,7 @@ jobs:
     name: Notify Failure
     runs-on: ubuntu-latest
     if: failure()
-    needs: [create-pull-request]
+    needs: cd
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
