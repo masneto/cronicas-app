@@ -24,6 +24,10 @@ on:
         required: false
         type: string
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   notify-failure:
     name: Send Failure Notification
