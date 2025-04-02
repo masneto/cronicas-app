@@ -56,12 +56,7 @@ jobs:
         id: get-failed-job
         run: |
           echo "JOB_NAME=$(jq -r 'to_entries[] | select(.value.result == "failure") | .key' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
-
-          ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message' <<< '${{ toJson(needs) }}')
-          if [ -z "$ERROR_MESSAGE" ] || [ "$ERROR_MESSAGE" == "null" ]; then
-            ERROR_MESSAGE="Nenhuma mensagem de erro foi fornecida."
-          fi
-          echo "ERROR_MESSAGE=$ERROR_MESSAGE" >> $GITHUB_ENV
+          echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
 
       - name: Send Email Notification
         uses: ./.github/actions/email-notification-action
