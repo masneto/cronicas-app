@@ -41,7 +41,6 @@ const core = __importStar(require("@actions/core"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 async function run() {
     try {
-        // Get inputs
         const smtpServer = core.getInput('smtp_server', { required: true });
         const smtpPort = core.getInput('smtp_port', { required: true });
         const username = core.getInput('username', { required: true });
@@ -55,34 +54,29 @@ async function run() {
         const authorEmail = core.getInput('author_email') || 'N/A';
         const runUrl = core.getInput('run_url') || `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
         const errorMessage = core.getInput('error_message') || '';
-        // Create transporter
         const transporter = nodemailer_1.default.createTransport({
             host: smtpServer,
             port: parseInt(smtpPort, 10),
-            secure: smtpPort === '465', // true for port 465, false for other ports
+            secure: smtpPort === '465',
             auth: {
                 user: username,
                 pass: password
             }
         });
-        // Create email body
         let body = `
 O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
 📌 Workflow: ${workflowName}
 📌 Repositório: ${process.env.GITHUB_REPOSITORY}
 📌 Branch: ${branch}
 📌 Autor: ${authorName}`;
-        // Add author email if available
         if (authorEmail && authorEmail !== 'N/A') {
             body += ` - ${authorEmail}`;
         }
         body += `\n🔗 Logs: ${runUrl}`;
         body += `\n⏰ Timestamp: ${new Date().toISOString()}`;
-        // Add error message if available
         if (errorMessage) {
             body += `\n\n❌ Erro: ${errorMessage}`;
         }
-        // Send email
         core.info('Sending email notification...');
         const info = await transporter.sendMail({
             from,
