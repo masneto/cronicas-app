@@ -87,6 +87,4 @@ describe('Email Notification Action', () => {
     // Check output was set
     expect(core.setOutput).toHaveBeenCalledWith('messageId', 'test-message-id');
   });
-
-  // Outros testes permanecem os mesmos...
 });

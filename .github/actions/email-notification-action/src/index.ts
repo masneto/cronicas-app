@@ -1,9 +1,8 @@
 import * as core from '@actions/core';
 import nodemailer, { Transporter, SentMessageInfo } from 'nodemailer';
 
-export async function run(): Promise<void> { // Exportando a função run
+export async function run(): Promise<void> {
   try {
-    // Get inputs
     const smtpServer: string = core.getInput('smtp_server', { required: true });
     const smtpPort: string = core.getInput('smtp_port', { required: true });
     const username: string = core.getInput('username', { required: true });
@@ -18,18 +17,16 @@ export async function run(): Promise<void> { // Exportando a função run
     const runUrl: string = core.getInput('run_url') || `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
     const errorMessage: string = core.getInput('error_message') || '';
 
-    // Create transporter
     const transporter: Transporter = nodemailer.createTransport({
       host: smtpServer,
       port: parseInt(smtpPort, 10),
-      secure: smtpPort === '465', // true for port 465, false for other ports
+      secure: smtpPort === '465', 
       auth: {
         user: username,
         pass: password
       }
     });
 
-    // Create email body
     let body: string = `
 O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
 📌 Workflow: ${workflowName}
@@ -37,7 +34,6 @@ O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
 📌 Branch: ${branch}
 📌 Autor: ${authorName}`;
 
-    // Add author email if available
     if (authorEmail && authorEmail !== 'N/A') {
       body += ` - ${authorEmail}`;
     }
@@ -45,12 +41,10 @@ O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
     body += `\n🔗 Logs: ${runUrl}`;
     body += `\n⏰ Timestamp: ${new Date().toISOString()}`;
 
-    // Add error message if available
     if (errorMessage) {
       body += `\n\n❌ Erro: ${errorMessage}`;
     }
 
-    // Send email
     core.info('Sending email notification...');
     const info: SentMessageInfo = await transporter.sendMail({
       from,
