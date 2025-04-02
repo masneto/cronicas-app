@@ -19,7 +19,7 @@ jobs:
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
-        base: develop-error
+        base: develop
         branch: ${{ github.ref }}
         title: '[DEV] PR criado automaticamente -> develop | by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
