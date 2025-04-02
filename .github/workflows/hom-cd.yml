@@ -96,7 +96,7 @@ jobs:
             console.log('Version:', version);
             const base = 'main';
             const head = `release/v${version}`;
-            const title = `[PRD] PR criado ${head} -> ${base} | by ${context.actor}`;
+            const title = `[PRD] PR criado | ${head} -> ${base} | by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
             const { data: existingPRs } = await github.rest.pulls.list({
