@@ -34,6 +34,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Get Failed Step
+        id: get-failed-step
+        run: |
+          echo "STEP_NAME=$(jq -r '.steps[] | select(.conclusion == "failure") | .name' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+          echo "ERROR_MESSAGE=$(jq -r '.steps[] | select(.conclusion == "failure") | .output' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+
       - name: Send Email Notification
         uses: ./.github/actions/email-notification-action
         with:
@@ -46,4 +52,4 @@ jobs:
           branch: ${{ github.ref_name }}
           author_name: ${{ github.actor }}
           run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          error_message: "Falha ao criar Pull Request para a branch develop."
+          error_message: "Etapa com falha: ${{ env.STEP_NAME }} - Mensagem: ${{ env.ERROR_MESSAGE }}"
