@@ -4,10 +4,10 @@ run-name: "Build Actions #${{ github.run_number }} by ${{ github.actor }} "
 
 on:
   push:
-    branches: 
-      - 'feature/*'
+    branches:
+      - "feature/*"
     paths:
-      - '.github/actions/**'
+      - ".github/actions/**"
 
 jobs:
   validate-and-build-actions:
@@ -23,8 +23,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Identify Changed Actions
         id: changed-actions
@@ -75,3 +75,18 @@ jobs:
           git commit -m "Atualização de build da(s) action(s): ${{ env.actions }}"
           git push https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }} --force
           echo "::endgroup::"
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: validate-and-build-actions
+    steps:
+      - name: Notify Failure
+        uses: ./.github/workflows/notify-failure.yml
+        with:
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.head_ref }}
+          html_url: ${{ github.run_id }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.sender.email }}

@@ -15,12 +15,12 @@ jobs:
     environment:
       name: production
     env:
-      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')       
+      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')
     steps:
       - name: Login GitHub Container Registry
         run: |
           echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-    
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -42,3 +42,18 @@ jobs:
               \"docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\"
             ]" \
             --region sa-east-1
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: cd
+    steps:
+      - name: Notify Failure
+        uses: ./.github/workflows/notify-failure.yml
+        with:
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.head_ref }}
+          html_url: ${{ github.run_id }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.sender.email }}

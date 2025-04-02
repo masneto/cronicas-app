@@ -24,3 +24,18 @@ jobs:
         title: '[DEV] PR criado automaticamente -> develop | by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [create-pull-request]
+    steps:
+      - name: Notify Failure
+        uses: ./.github/workflows/notify-failure.yml
+        with:
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.head_ref }}
+          html_url: ${{ github.run_id }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.sender.email }}

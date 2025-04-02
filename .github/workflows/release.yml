@@ -42,3 +42,18 @@ jobs:
           files: cronicas-app-image-v${{ env.version }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: release
+    steps:
+      - name: Notify Failure
+        uses: ./.github/workflows/notify-failure.yml
+        with:
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.head_ref }}
+          html_url: ${{ github.run_id }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.sender.email }}

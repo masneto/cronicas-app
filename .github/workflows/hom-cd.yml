@@ -3,7 +3,7 @@ name: "[Cronicas] Homologation CD"
 on:
   pull_request:
     branches:
-      - 'release/v*'
+      - "release/v*"
     types:
       - closed
 
@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     outputs:
-      version: ${{ steps.tag.outputs.new_version }}   
-    steps:    
+      version: ${{ steps.tag.outputs.new_version }}
+    steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
@@ -26,7 +26,7 @@ jobs:
         with:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          release_branches: 'release*'
+          release_branches: "release*"
           dry_run: false
 
       - name: Output the new version
@@ -36,7 +36,7 @@ jobs:
 
   cd:
     name: Cronicas CD
-    runs-on: ubuntu-latest          
+    runs-on: ubuntu-latest
     permissions: write-all
     needs: create-tag
     if: github.event.pull_request.merged == true
@@ -80,13 +80,13 @@ jobs:
     needs: [create-tag, cd]
     runs-on: ubuntu-latest
     if: always() && success()
-    permissions: write-all    
+    permissions: write-all
     env:
       release-version: ${{ needs.create-tag.outputs.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4      
-        
+        uses: actions/checkout@v4
+
       - name: Criar PR para main
         uses: actions/github-script@v7
         with:
@@ -120,3 +120,18 @@ jobs:
 
               console.log(`Pull Request criado com sucesso: ${pullRequest.html_url}`);
             }
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [create-tag, cd, create-prod-pr]
+    steps:
+      - name: Notify Failure
+        uses: ./.github/workflows/notify-failure.yml
+        with:
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.head_ref }}
+          html_url: ${{ github.run_id }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.sender.email }}

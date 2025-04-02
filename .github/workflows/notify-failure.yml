@@ -1,36 +1,41 @@
 name: "[Cronicas] Notify Failure"
 
 on:
-  workflow_run:
-    workflows:
-      - "[Cronicas] CI Actions"
-      - "[Cronicas] Create Pull Request"
-      - "[Cronicas] Development CI/CD"
-      - "[Cronicas] Homologation CD"
-      - "[Cronicas] Production CD"
-      - "[Cronicas] Release Tag"
-    types:
-      - completed
-
-permissions:
-  actions: read
-  contents: read
+  workflow_call:
+    inputs:
+      workflow_name:
+        description: "Nome do workflow que falhou"
+        required: true
+        type: string
+      branch:
+        description: "Branch do workflow que falhou"
+        required: true
+        type: string
+      html_url:
+        description: "URL dos logs do workflow"
+        required: true
+        type: string
+      author_name:
+        description: "Nome do autor do commit"
+        required: false
+        type: string
+      author_email:
+        description: "E-mail do autor do commit"
+        required: false
+        type: string
 
 jobs:
   notify-failure:
     name: Send Failure Notification
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'cancelled' }}
     steps:
-      - name: Debug Workflow Run Event
+      - name: Debug Workflow Inputs
         run: |
-          echo "Workflow Name: ${{ github.event.workflow_run.name }}"
-          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
-          echo "Repository: ${{ github.repository }}"
-          echo "Run ID: ${{ github.event.workflow_run.id }}"
-          echo "Event Type: ${{ github.event_name }}"
-          echo "Workflow Run Status: ${{ toJSON(github.event.workflow_run) }}"
+          echo "Workflow Name: ${{ inputs.workflow_name }}"
+          echo "Branch: ${{ inputs.branch }}"
+          echo "Logs URL: ${{ inputs.html_url }}"
+          echo "Author Name: ${{ inputs.author_name }}"
+          echo "Author Email: ${{ inputs.author_email }}"
 
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v4
@@ -39,15 +44,15 @@ jobs:
           server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ github.event.workflow_run.name }}"
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ inputs.workflow_name }}"
           body: |
 
             O pipeline de CI/CD falhou. Por favor, verifique os logs no GitHub Actions.
-            📌 Workflow: ${{ github.event.workflow_run.name }}
+            📌 Workflow: ${{ inputs.workflow_name }}
             📌 Repositório: ${{ github.repository }}
-            📌 Branch: ${{ github.event.workflow_run.head_branch }}
-            📌 Autor: ${{ github.event.workflow_run.head_commit.author.name }} - ${{ github.event.workflow_run.head_commit.author.email }}
-            🔗 Logs: ${{ github.event.workflow_run.html_url }}
+            📌 Branch: ${{ inputs.branch }}
+            📌 Autor: ${{ inputs.author_name }} - ${{ inputs.author_email }}
+            🔗 Logs: ${{ inputs.html_url }}
 
           to: ${{ secrets.MAIL_USERNAME }}
           from: ${{ secrets.MAIL_USERNAME }}
