@@ -140,7 +140,7 @@ jobs:
           script: |
             const base = `release/v${{ env.version }}`;
             const head = 'develop';
-            const title = `[HOM] PR criado automaticamente -> ${base} | by ${context.actor}`;
+            const title = `[HOM] PR criado ${head} -> ${base} | by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
             const { data: existingPRs } = await github.rest.pulls.list({
