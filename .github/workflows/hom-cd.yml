@@ -3,7 +3,7 @@ name: "[Cronicas] Homologation CD"
 on:
   pull_request:
     branches:
-      - 'release/v*'
+      - "release/v*"
     types:
       - closed
 
@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     outputs:
-      version: ${{ steps.tag.outputs.new_version }}   
-    steps:    
+      version: ${{ steps.tag.outputs.new_version }}
+    steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
@@ -26,7 +26,7 @@ jobs:
         with:
           tag_prefix: "v"
           github_token: ${{ secrets.PAT_GITHUB_TOKEN }}
-          release_branches: 'release*'
+          release_branches: "release*"
           dry_run: false
 
       - name: Output the new version
@@ -36,7 +36,7 @@ jobs:
 
   cd:
     name: Cronicas CD
-    runs-on: ubuntu-latest          
+    runs-on: ubuntu-latest
     permissions: write-all
     needs: create-tag
     if: github.event.pull_request.merged == true
@@ -80,13 +80,13 @@ jobs:
     needs: [create-tag, cd]
     runs-on: ubuntu-latest
     if: always() && success()
-    permissions: write-all    
+    permissions: write-all
     env:
       release-version: ${{ needs.create-tag.outputs.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4      
-        
+        uses: actions/checkout@v4
+
       - name: Criar PR para main
         uses: actions/github-script@v7
         with:
@@ -120,3 +120,32 @@ jobs:
 
               console.log(`Pull Request criado com sucesso: ${pullRequest.html_url}`);
             }
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [create-pull-request]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Get Failed Job
+        id: get-failed-job
+        run: |
+          echo "JOB_NAME=$(jq -r 'to_entries[] | select(.value.result == "failure") | .key' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+          echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+
+      - name: Send Email Notification
+        uses: ./.github/actions/email-notification-action
+        with:
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ github.workflow }}"
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.ref_name }}
+          author_name: ${{ github.actor }}
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          error_message: "Job com falha: ${{ env.JOB_NAME }} - Mensagem: ${{ env.ERROR_MESSAGE }}"

@@ -42,3 +42,32 @@ jobs:
           files: cronicas-app-image-v${{ env.version }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [create-pull-request]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Get Failed Job
+        id: get-failed-job
+        run: |
+          echo "JOB_NAME=$(jq -r 'to_entries[] | select(.value.result == "failure") | .key' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+          echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+
+      - name: Send Email Notification
+        uses: ./.github/actions/email-notification-action
+        with:
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ github.workflow }}"
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.ref_name }}
+          author_name: ${{ github.actor }}
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          error_message: "Job com falha: ${{ env.JOB_NAME }} - Mensagem: ${{ env.ERROR_MESSAGE }}"
