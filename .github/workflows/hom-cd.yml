@@ -125,7 +125,7 @@ jobs:
     name: Notify Failure
     runs-on: ubuntu-latest
     if: failure()
-    needs: [create-pull-request]
+    needs: [create-tag, cd, create-prod-pr]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

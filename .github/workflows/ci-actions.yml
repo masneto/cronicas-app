@@ -80,7 +80,7 @@ jobs:
     name: Notify Failure
     runs-on: ubuntu-latest
     if: failure()
-    needs: [create-pull-request]
+    needs: validate-and-build-actions
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
