@@ -26,7 +26,7 @@ jobs:
         draft: false
 
   notify-failure:
-    name: Notify Failure
+    name: Cronicas Notify Failure
     runs-on: ubuntu-latest
     if: failure()
     needs: [create-pull-request]

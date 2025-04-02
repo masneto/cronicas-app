@@ -44,7 +44,7 @@ jobs:
             --region sa-east-1
 
   notify-failure:
-    name: Notify Failure
+    name: Cronicas Notify Failure
     runs-on: ubuntu-latest
     if: failure()
     needs: cd

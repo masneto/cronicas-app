@@ -77,7 +77,7 @@ jobs:
           echo "::endgroup::"
 
   notify-failure:
-    name: Notify Failure
+    name: Cronicas Notify Failure
     runs-on: ubuntu-latest
     if: failure()
     needs: validate-and-build-actions
