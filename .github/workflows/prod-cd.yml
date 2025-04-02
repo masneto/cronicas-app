@@ -15,12 +15,12 @@ jobs:
     environment:
       name: production
     env:
-      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')       
+      version: $(echo ${{ github.head_ref }} | sed 's|release/v||')
     steps:
       - name: Login GitHub Container Registry
         run: |
           echo ${{ secrets.PAT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-    
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -42,3 +42,32 @@ jobs:
               \"docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\"
             ]" \
             --region sa-east-1
+
+  notify-failure:
+    name: Cronicas Notify Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: cd
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Get Failed Job
+        id: get-failed-job
+        run: |
+          echo "JOB_NAME=$(jq -r 'to_entries[] | select(.value.result == "failure") | .key' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+          echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
+
+      - name: Send Email Notification
+        uses: ./.github/actions/email-notification-action
+        with:
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ github.workflow }}"
+          workflow_name: ${{ github.workflow }}
+          branch: ${{ github.ref_name }}
+          author_name: ${{ github.actor }}
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          error_message: "Job com falha: ${{ env.JOB_NAME }} - Mensagem: ${{ env.ERROR_MESSAGE }}"
