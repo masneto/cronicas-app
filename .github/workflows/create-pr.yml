@@ -14,14 +14,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Create Pull Request
+      
+    - name: Create Pull Request 
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
         base: develop
-        branch: ${{ github.ref }}
-        title: '[DEV] PR criado automaticamente -> develop | by ${{ github.actor }}'
+        branch: ${{ github.ref_name }}
+        title: '[DEV] PR criado | ${{ github.ref_name }} -> develop | by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
         draft: false
 
