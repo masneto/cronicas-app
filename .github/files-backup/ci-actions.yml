@@ -92,7 +92,7 @@ jobs:
           echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
 
       - name: Send Email Notification
-        uses: ./.github/actions/email-notification-action
+        uses: masneto/cronicas-actions/.github/actions/email-notification-action@main 
         with:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
