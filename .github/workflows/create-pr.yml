@@ -19,7 +19,7 @@ jobs:
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
-        base: develop
+        base: develop-error
         branch: ${{ github.ref }}
         title: '[DEV] PR criado automaticamente -> develop | by ${{ github.actor }}'
         body: 'This PR was automatically created by GitHub Actions.'
@@ -41,7 +41,7 @@ jobs:
           echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
 
       - name: Send Email Notification
-        uses: ./.github/actions/email-notification-action
+        uses: masneto/cronicas-actions/.github/actions/email-notification-action@main 
         with:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
