@@ -1,7 +1,0 @@
-name: 'Validate Repository Structure'
-description: 'Verifica se os arquivos necessários existem no repositório'
-author: 'DevOps Engineer'
-
-runs:
-  using: 'node20'
-  main: 'dist/index.js'

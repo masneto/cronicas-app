@@ -55,7 +55,7 @@ jobs:
         run: npm ci
 
       - name: Validate Repository Structure
-        uses: ./.github/actions/validate-repo
+        uses: masneto/cronicas-actions/.github/actions/validate-repo@main
 
       - name: Run Linter
         run: npm run lint
@@ -140,7 +140,7 @@ jobs:
           script: |
             const base = `release/v${{ env.version }}`;
             const head = 'develop';
-            const title = `[HOM] PR criado automaticamente -> ${base} | by ${context.actor}`;
+            const title = `[HOM] PR criado | ${head} -> ${base} | by ${context.actor}`;
             const body = 'This PR was automatically created by GitHub Actions.';
 
             const { data: existingPRs } = await github.rest.pulls.list({
@@ -181,7 +181,7 @@ jobs:
           echo "ERROR_MESSAGE=$(jq -r 'to_entries[] | select(.value.result == "failure") | .value.outputs.error_message // "No error message provided"' <<< '${{ toJson(needs) }}')" >> $GITHUB_ENV
 
       - name: Send Email Notification
-        uses: ./.github/actions/email-notification-action
+        uses: masneto/cronicas-actions/.github/actions/email-notification-action@main 
         with:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
