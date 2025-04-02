@@ -1,0 +1,64 @@
+# action.yml
+name: 'Email Notification Action'
+description: 'Sends email notifications for workflow failures'
+author: 'Crônicas Team'
+
+inputs:
+  smtp_server:
+    description: 'SMTP server address'
+    required: true
+    default: 'smtp.gmail.com'
+  smtp_port:
+    description: 'SMTP server port'
+    required: true
+    default: '465'
+  username:
+    description: 'SMTP username'
+    required: true
+  password:
+    description: 'SMTP password'
+    required: true
+  to:
+    description: 'Email recipient'
+    required: true
+  from:
+    description: 'Email sender'
+    required: true
+  subject:
+    description: 'Email subject'
+    required: true
+  workflow_name:
+    description: 'Name of the workflow'
+    required: true
+  branch:
+    description: 'Branch name'
+    required: true
+    default: ${{ github.ref_name }}
+  author_name:
+    description: 'Name of the commit author'
+    required: false
+    default: ${{ github.actor }}
+  author_email:
+    description: 'Email of the commit author'
+    required: false
+    default: ''
+  run_url:
+    description: 'URL to the workflow run'
+    required: false
+    default: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  error_message:
+    description: 'Error message or details about the failure'
+    required: false
+    default: ''
+
+outputs:
+  messageId:
+    description: 'ID of the sent email message'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'mail'
+  color: 'red'

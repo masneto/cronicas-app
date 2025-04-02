@@ -31,11 +31,19 @@ jobs:
     if: failure()
     needs: [create-pull-request]
     steps:
-      - name: Notify Failure
-        uses: ./.github/workflows/notify-failure.yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Send Email Notification
+        uses: ./.github/actions/email-notification-action
         with:
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          subject: "[CRÔNICAS ALERTAS]🚨 Falha no Workflow ${{ github.workflow }}"
           workflow_name: ${{ github.workflow }}
-          branch: ${{ github.head_ref }}
-          html_url: ${{ github.run_id }}
+          branch: ${{ github.ref_name }}
           author_name: ${{ github.actor }}
-          author_email: ${{ github.event.sender.email }}
+          run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          error_message: "Falha ao criar Pull Request para a branch develop."
