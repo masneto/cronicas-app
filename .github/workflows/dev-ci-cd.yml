@@ -166,7 +166,7 @@ jobs:
             }
 
   notify-failure:
-    name: Notify Failure
+    name: Cronicas Notify Failure
     if: failure()
     needs: [bump-version, ci, cd, create-release-pr]
     runs-on: ubuntu-latest
