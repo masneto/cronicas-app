@@ -1,6 +1,6 @@
 export default [
   {
-    ignores: ['dist', 'node_modules'], // para substituir o .eslintignore
+    ignores: ['dist', 'node_modules', '.github/actions/*'],
   },
   {
     files: ['**/*.js'],
