@@ -89,7 +89,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      # - name: Substituir `latest` pela versão nos manifests
+      #   run: |
+      #     sed -i 's|ghcr.io/${{ github.repository_owner }}/cronicas-app:latest|ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}|g' k8s/dev/deployment.yaml
+
+      - name: Configurar credenciais da AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -109,7 +113,28 @@ jobs:
               \"docker rm cronicas-app || true\",
               \"docker run -d -p 3000:3000 --name cronicas-app ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\"
             ]" \
-            --region sa-east-1
+            --region sa-east-1          
+
+      # - name: Upload Kubernetes Manifests para S3
+      #   run: |
+      #     echo "Enviando manifestos para S3 na pasta da versão: ${{ env.version }}..."
+      #     aws s3 cp k8s/dev s3://${{ secrets.S3_BUCKET_NAME }}/dev/${{ env.version }}/ --recursive
+
+      # - name: Deploy para K8s na EC2
+      #   run: |
+      #     export VERSION=${{ env.version }}
+      #     aws ssm send-command \
+      #       --document-name "AWS-RunShellScript" \
+      #       --targets '[{"Key":"InstanceIds","Values":["${{ secrets.EC2_INSTANCE_ID }}"]}]' \
+      #       --parameters "commands=[
+      #         \"aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/dev/${{ env.version }}/ ~/k8s-deploy-dev/ --recursive\",
+      #         \"kubectl apply -f ~/k8s-deploy-dev/deployment.yaml\",
+      #         \"kubectl apply -f ~/k8s-deploy-dev/service.yaml\",
+      #         \"kubectl set image deployment/cronicas-app-dev cronicas-app-dev=ghcr.io/${{ github.repository_owner }}/cronicas-app:$VERSION\",
+      #         \"kubectl rollout restart deployment/cronicas-app-dev\",
+      #         \"kubectl rollout status deployment/cronicas-app-dev --timeout=300s\"
+      #       ]" \
+      #       --region sa-east-1
 
   create-release-pr:
     name: Cronicas PR to Release
