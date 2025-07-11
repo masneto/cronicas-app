@@ -1,6 +1,22 @@
 
 # Documentação do Projeto: Crônicas App
 
+## Índice
+
+- [Descrição do Projeto](#descrição-do-projeto)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Passo a Passo do Workflow de Criação de Pull Request (`create-pr.yml`)](#passo-a-passo-do-workflow-de-criação-de-pull-request-create-pryml)
+- [Passo a Passo do Workflow de CI/CD de Desenvolvimento (`dev-ci-cd.yml`)](#passo-a-passo-do-workflow-de-cicd-de-desenvolvimento-dev-ci-cdyml)
+- [Passo a Passo do Workflow de CD de Homologação (`hom-cd.yml`)](#passo-a-passo-do-workflow-de-cd-de-homologação-hom-cdyml)
+- [Passo a Passo do Workflow de CD de Produção (`prod-cd.yml`)](#passo-a-passo-do-workflow-de-cd-de-produção-prod-cdyml)
+- [Passo a Passo do Workflow de Release (`release.yml`)](#passo-a-passo-do-workflow-de-release-releaseyml)
+- [Como Executar Localmente](#como-executar-localmente)
+- [Como Executar os Testes](#como-executar-os-testes)
+- [Build Manual with Docker](#build-manual-with-docker)
+- [Responsáveis por Aprovações](#responsáveis-por-aprovações)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Melhorias Futuras](#melhorias-futuras)
+
 ## Descrição do Projeto
 O Crônicas App é uma aplicação web que centraliza conteúdos do projeto "Crônicas do Nada Ver". A aplicação exibe informações, links para redes sociais e outros conteúdos relacionados. O projeto utiliza uma arquitetura moderna com integração contínua (CI) e entrega contínua (CD) para garantir qualidade e automação no desenvolvimento e deploy.
 
