@@ -1,4 +1,4 @@
-# Solução de Pipeline CI/CD com GitHub Actions
+# Solução de Pipeline CI/CD com GitHub Actions (Para Desafio Técnico)
 
 Este documento apresenta uma solução completa de pipeline CI/CD usando GitHub Actions para o projeto de aplicação web "Crônicas App", atendendo a todos os requisitos especificados no desafio.
 ![Cronicas APP](images/cronicas-0.png).
