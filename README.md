@@ -61,8 +61,6 @@ cronicas-app/
 │   └── app.test.js            # Testes unitários/integrados
 └── .github/                   # Configurações e automações do GitHub
     ├── CODEOWNERS             # Responsáveis por aprovações de PR
-    ├── actions/               # Ações personalizadas do GitHub Actions
-    │   └── validate-repo/
     ├── files-backup/          # Backups de arquivos de workflow
     │   ├── ci-actions.yml
     │   ├── ci-cd-aws.yml
