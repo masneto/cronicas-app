@@ -89,7 +89,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # - name: Substituir `latest` pela versão nos manifests
+      # - name: Substitui `latest` pela versão nos manifests
       #   run: |
       #     sed -i 's|ghcr.io/${{ github.repository_owner }}/cronicas-app:latest|ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}|g' k8s/dev/deployment.yaml
 
@@ -101,7 +101,7 @@ jobs:
           aws-region: sa-east-1
 
       - name: Deploy and Run Docker Image
-        run: |
+        run: |   
           export VERSION=${{ env.version }}
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
