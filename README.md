@@ -2,14 +2,12 @@
 # Documentação do Projeto: Crônicas App
 
 ## Descrição do Projeto
-O Crônicas App é uma aplicação web que centraliza conteúdos do projeto "Crônicas do Nada Ver". A aplicação exibe informações, links para redes sociais e outros conteúdos relacionados. O projeto utiliza uma arquitetura moderna com integração contínua (CI) e entrega contínua (CD) para garantir qualidade e automação no desenvolvimento e deploy. 
+O Crônicas App é uma aplicação web que centraliza conteúdos do projeto "Crônicas do Nada Ver". A aplicação exibe informações, links para redes sociais e outros conteúdos relacionados. O projeto utiliza uma arquitetura moderna com integração contínua (CI) e entrega contínua (CD) para garantir qualidade e automação no desenvolvimento e deploy.
 
-Link para aplicação online na plataforma Cloudflare: [Cronicas APP](https://cronicas-app.pages.dev/)
+Link para aplicação online na plataforma Cloudflare: [Cronicas APP](https://cronicas-app.pages.dev/).
 
 ![Cronicas APP](images/cronicas-0.png)
 ---
-
-## Estrutura do Projeto
 
 ## Estrutura do Projeto
 
@@ -30,7 +28,7 @@ cronicas-app/
 │   ├── coverage-final.json
 │   ├── lcov.info
 │   └── lcov-report/           # Relatórios HTML detalhados
-├── images/                    # Imagens utilizadas na documentação
+├── images/                    # Imagens utilizadas na documentação do Desafio
 │   ├── cronicas-0.png
 │   ├── cronicas-1.png
 │   ├── cronicas-2.png
