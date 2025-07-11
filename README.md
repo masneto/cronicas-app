@@ -4,101 +4,228 @@
 ## Descrição do Projeto
 O Crônicas App é uma aplicação web que centraliza conteúdos do projeto "Crônicas do Nada Ver". A aplicação exibe informações, links para redes sociais e outros conteúdos relacionados. O projeto utiliza uma arquitetura moderna com integração contínua (CI) e entrega contínua (CD) para garantir qualidade e automação no desenvolvimento e deploy. 
 
+Link para aplicação online na plataforma Cloudflare: [Cronicas APP](https://cronicas-app.pages.dev/)
+
 ![Cronicas APP](images/cronicas-0.png)
 ---
 
 ## Estrutura do Projeto
 
+## Estrutura do Projeto
+
 ```
 cronicas-app/
-├── .eslintignore          # Arquivos ignorados pelo ESLint
-├── .eslintrc.json         # Configuração do ESLint
-├── .gitignore             # Arquivos ignorados pelo Git
-├── Dockerfile             # Configuração para criar a imagem Docker
-├── jest.config.js         # Configuração do Jest para testes
-├── package.json           # Gerenciamento de dependências e scripts
-├── README.md              # Documentação do projeto
-├── .github/               # Configurações e automações do GitHub
-│   ├── CODEOWNERS         # Define os responsáveis por aprovar PRs
-│   ├── actions/           # Ações personalizadas do GitHub
-│   │   └── validate-repo/ # Validação da estrutura do repositório
-│   └── workflows/         # Workflows de CI/CD
-│       ├── ci-actions.yml # Workflow para validar e buildar ações
-│       └── ci-cd.yml      # Workflow principal de CI/CD
-├── src/                   # Código-fonte da aplicação
-│   ├── app.js             # Lógica principal da aplicação
-│   ├── server.js          # Configuração do servidor
-│   └── public/            # Arquivos públicos (HTML, CSS)
-│       ├── index.html     # Página inicial
-│       └── styles.css      # Estilos da aplicação
-├── test/                  # Testes automatizados
-│   └── app.test.js        # Testes unitários/integrados
-└── coverage/              # Relatórios de cobertura de testes
-    └── lcov-report/       # Relatórios HTML detalhados
+├── .dockerignore              # Ignora arquivos para build Docker
+├── .eslintignore              # Ignora arquivos para o ESLint
+├── .eslintrc.json             # Configuração do ESLint
+├── .gitignore                 # Ignora arquivos para o Git
+├── DESAFIO.md                 # Desafio proposto/documentação extra
+├── Dockerfile                 # Configuração para criar a imagem Docker
+├── eslint.config.js           # Configuração adicional do ESLint
+├── jest.config.js             # Configuração do Jest para testes
+├── package.json               # Gerenciamento de dependências e scripts
+├── README.md                  # Documentação do projeto
+├── coverage/                  # Relatórios de cobertura de testes
+│   ├── clover.xml
+│   ├── coverage-final.json
+│   ├── lcov.info
+│   └── lcov-report/           # Relatórios HTML detalhados
+├── images/                    # Imagens utilizadas na documentação
+│   ├── cronicas-0.png
+│   ├── cronicas-1.png
+│   ├── cronicas-2.png
+│   ├── cronicas-3.png
+│   ├── cronicas-4.png
+│   ├── cronicas-5.png
+│   ├── cronicas-6.png
+│   ├── cronicas-7.png
+│   ├── cronicas-8.png
+│   ├── cronicas-9.png
+│   ├── cronicas-arquitetura.png
+│   └── cronicas-env-config.png
+├── k8s/                       # Configurações de deploy para Kubernetes
+│   ├── dev/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── hom/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   └── prod/
+│       ├── deployment.yaml
+│       └── service.yaml
+├── src/                       # Código-fonte da aplicação
+│   ├── app.js                 # Lógica principal da aplicação
+│   ├── server.js              # Configuração do servidor Express
+│   └── public/                # Arquivos públicos (HTML, CSS)
+│       ├── index.html         # Página inicial
+│       └── styles.css         # Estilos da aplicação
+├── test/                      # Testes automatizados
+│   └── app.test.js            # Testes unitários/integrados
+└── .github/                   # Configurações e automações do GitHub
+    ├── CODEOWNERS             # Responsáveis por aprovações de PR
+    ├── actions/               # Ações personalizadas do GitHub Actions
+    │   └── validate-repo/
+    ├── files-backup/          # Backups de arquivos de workflow
+    │   ├── ci-actions.yml
+    │   ├── ci-cd-aws.yml
+    │   ├── notify-failure.yml
+    └── workflows/             # Workflows de CI/CD
+        ├── create-pr.yml
+        ├── dev-ci-cd.yml
+        ├── hom-cd.yml
+        ├── prod-cd.yml
+        └── release.yml
 ```
+---
+
+## Passo a Passo do Workflow de Criação de Pull Request (`create-pr.yml`)
+
+Este workflow automatiza a criação de Pull Requests de branches `feature/*` para a branch `develop`.
+
+### Quando é disparado?
+- Sempre que houver um push em qualquer branch que siga o padrão `feature/*`.
+
+### Etapas do Workflow
+
+1. **Checkout do Repositório**
+   - Faz o checkout do código da branch `feature/*` que recebeu o push.
+
+2. **Criação do Pull Request**
+   - Usa a action `peter-evans/create-pull-request` para criar automaticamente um Pull Request da branch atual (`feature/*`) para a branch `develop`.
+   - O título e o corpo do PR são preenchidos automaticamente.
+   - O PR não é criado como rascunho (`draft: false`).
+
+3. **Notificação de Falha**
+   - Se algum passo falhar, executa um job que:
+     - Identifica o job com falha.
+     - Envia um e-mail de alerta para os responsáveis, com detalhes do erro.
 
 ---
 
-## Fluxo de Trabalho (CI/CD)
+## Passo a Passo do Workflow de CI/CD de Desenvolvimento (`dev-ci-cd.yml`)
 
-### 1. Integração Contínua (CI)
-O workflow de CI é definido no arquivo `ci-cd.yml` e executa as seguintes etapas:
+Este workflow automatiza o processo de integração e entrega contínua para o ambiente de desenvolvimento do Crônicas App. Ele é disparado **quando um Pull Request para a branch `develop` é fechado e mergeado**.
 
-- **Checkout do Código**: Faz o download do código do repositório.
-- **Setup do Ambiente**: Configura o Node.js (versão 20) e instala dependências.
-- **Validação do Repositório**: Usa a action interna `validate-repo` para verificar se os arquivos obrigatórios estão presentes.
-- **Linting**: Executa o ESLint para garantir a padronização do código.
-- **Testes Automatizados**: Executa os testes com Jest e gera relatórios de cobertura.
+### 1. Bump de Versão
+- **Ação:** Usa a action `mathieudutour/github-tag-action` para calcular a próxima versão do projeto (sem criar o tag de fato, pois está em `dry_run`).
+- **Saída:** A nova versão é salva para ser usada nos próximos jobs.
 
-### 2. Entrega Contínua (CD)
-O workflow de CD realiza o deploy da aplicação na AWS. As etapas incluem:
+### 2. Integração Contínua (CI)
+- **Checkout do Código:** Baixa o código do repositório.
+- **Setup do Node.js:** Prepara o ambiente Node.js na versão 20.
+- **Instala Dependências:** Executa `npm ci` para instalar as dependências.
+- **Valida Estrutura do Repositório:** Usa a action interna `validate-repo` para garantir que a estrutura está correta.
+- **Lint:** Executa o linter (`npm run lint`) para padronização do código.
+- **Testes:** Executa os testes automatizados (`npm test`).
+- **Login no GHCR:** Faz login no GitHub Container Registry usando o token do GitHub.
+- **Build e Push da Imagem:** 
+  - Constrói a imagem Docker com a nova versão e também com a tag `latest`.
+  - Faz push das duas tags para o GHCR.
 
-- **Login no Amazon ECR**: Faz login no repositório de contêineres da AWS.
-- **Build e Push da Imagem Docker**: Constrói a imagem Docker da aplicação e envia para o Amazon ECR.
-- **Deploy na Instância EC2**: Usa o AWS SSM para:
-  - Parar e remover o container existente.
-  - Baixar a última imagem Docker.
-  - Iniciar um novo container com a aplicação.
-- **Notificação de Falha**: Em caso de erro, envia um e-mail para os responsáveis.
+### 3. Entrega Contínua (CD)
+- **Configura Credenciais AWS:** Usa as credenciais do GitHub Secrets para acessar a AWS.
+- **Deploy via AWS SSM:** 
+  - Envia comandos para a instância EC2 de desenvolvimento via SSM para:
+    - Fazer login no GHCR.
+    - Baixar a imagem Docker da nova versão.
+    - Parar e remover o container antigo.
+    - Subir o novo container com a imagem atualizada.
 
-### 3. Validação e Build das Actions
+### 4. Criação de Pull Request para Release
+- **Checkout do Código:** Baixa o código da branch `main`.
+- **Cria Branch de Release:** Cria uma nova branch `release/vX.Y.Z` baseada na versão calculada.
+- **Cria Pull Request:** Abre um PR automaticamente de `develop` para `release/vX.Y.Z` para iniciar o fluxo de homologação.
 
-O workflow `ci-actions.yml` é responsável por validar e buildar as actions personalizadas do repositório. Ele executa as seguintes etapas:
-
-- **Identificar Actions Alteradas**: Verifica quais diretórios de actions foram modificados.
-- **Instalar Dependências**: Instala as dependências de cada action alterada.
-- **Executar Linter e Testes**: Garante que o código das actions segue os padrões e está funcionando corretamente.
-- **Build das Actions**: Gera os arquivos necessários para execução das actions.
-- **Commit e Push**: Atualiza os arquivos de build no repositório.
-- **Notificação de Falha**: Em caso de erro, envia um e-mail para os responsáveis.
-
----
-
-### 4. Criação Automática de Pull Requests
-
-O workflow `create-pr.yml` cria automaticamente pull requests para a branch `main` quando há alterações em branches `feature/*`. Ele executa as seguintes etapas:
-
-- **Checkout do Repositório**: Faz o download do código da branch atual.
-- **Criação do Pull Request**: Usa a action `peter-evans/create-pull-request` para criar um PR com título e descrição predefinidos.
+### 5. Notificação de Falha
+- **Detecção de Falha:** Se qualquer job falhar, executa este job.
+- **Envia E-mail:** Usa uma action personalizada para enviar um e-mail de alerta com detalhes do erro para os responsáveis.
 
 ---
 
-### 5. Tipos de Commits
+## Passo a Passo do Workflow de CD de Homologação (`hom-cd.yml`)
 
-Aqui estão 3 padrões de commit que devem ser utilizados com o prefixo cnv-*:
+Este workflow automatiza o deploy do Crônicas App no ambiente de homologação. Ele é disparado **quando um Pull Request para uma branch `release/v*` é fechado e mergeado**.
 
-- `cnv-upd`: Commit para atualização de arquivos e documentações em conjunto.
-- `cnv-deploy`: Commit para iniciar workflow CI/CD.
-- `cnv-docs`: Commit para somente atualização de documentação.
-> `cnv-commit`: Será somente utilizado para quando o commit não conter algum dos 3 anteriores.
+### 1. Criação de Tag de Versão
+- **Ação:** Usa a action `mathieudutour/github-tag-action` para criar uma nova tag de versão baseada na branch `release/v*`.
+- **Saída:** A nova versão é salva para ser usada nos próximos jobs.
+
+### 2. Deploy na EC2 de Homologação (CD)
+- **Checkout do Código:** Baixa o código do repositório.
+- **Login no GHCR:** Faz login no GitHub Container Registry usando o token do GitHub.
+- **Configura Credenciais AWS:** Usa as credenciais do GitHub Secrets para acessar a AWS.
+- **Deploy via AWS SSM:** 
+  - Envia comandos para a instância EC2 de homologação via SSM para:
+    - Fazer login no GHCR.
+    - Baixar a imagem Docker da nova versão.
+    - Parar e remover o container antigo.
+    - Subir o novo container com a imagem atualizada.
+
+### 3. Criação de Pull Request para Produção
+- **Checkout do Código:** Baixa o código do repositório.
+- **Cria Pull Request:** Abre um PR automaticamente de `release/vX.Y.Z` para `main` para iniciar o fluxo de produção.
+
+### 4. Notificação de Falha
+- **Detecção de Falha:** Se qualquer job falhar, executa este job.
+- **Envia E-mail:** Usa uma action personalizada para enviar um e-mail de alerta com detalhes do erro para os responsáveis.
+
+---
+
+## Passo a Passo do Workflow de CD de Produção (`prod-cd.yml`)
+
+Este workflow automatiza o deploy do Crônicas App no ambiente de produção. Ele é disparado **quando um Pull Request para a branch `main` é editado** e o nome da branch de origem contém `release/v`.
+
+### 1. Deploy na EC2 de Produção (CD)
+- **Login no GHCR:** Faz login no GitHub Container Registry usando o token do GitHub.
+- **Configura Credenciais AWS:** Usa as credenciais do GitHub Secrets para acessar a AWS.
+- **Deploy via AWS SSM:** 
+  - Envia comandos para a instância EC2 de produção via SSM para:
+    - Fazer login no GHCR.
+    - Baixar a imagem Docker da versão release.
+    - Parar e remover o container antigo.
+    - Subir o novo container com a imagem atualizada.
+
+### 2. Notificação de Falha
+- **Detecção de Falha:** Se o job de deploy falhar, executa este job.
+- **Envia E-mail:** Usa uma action personalizada para enviar um e-mail de alerta com detalhes do erro para os responsáveis.
+
+---
+
+## Passo a Passo do Workflow de Release (`release.yml`)
+
+Este workflow automatiza a criação de uma release no GitHub e o upload da imagem Docker correspondente. Ele é disparado **quando um Pull Request para a branch `main` é fechado e mergeado**.
+
+### Etapas do Workflow
+
+1. **Checkout do Código**
+   - Faz o checkout do repositório para obter o código-fonte.
+
+2. **Obter Versão**
+   - Extrai a versão a partir do nome da branch de origem (`release/vX.Y.Z`).
+
+3. **Login no GHCR**
+   - Faz login no GitHub Container Registry usando o token do GitHub.
+
+4. **Salvar Imagem Docker**
+   - Baixa a imagem Docker da versão correspondente do GHCR.
+   - Salva a imagem em um arquivo `.tar`.
+
+5. **Criar Release no GitHub**
+   - Cria uma release no GitHub com a tag `vX.Y.Z`.
+   - Anexa o arquivo da imagem Docker à release.
+
+6. **Notificação de Falha**
+   - Se algum passo falhar, executa um job que:
+     - Identifica o job com falha.
+     - Envia um e-mail de alerta para os responsáveis, com detalhes do erro.
+
+---
+
 ## Como Executar Localmente
 
 ### Pré-requisitos
-- Node.js (>= 16)
-- Instância EC2
-- Docker instalado na EC2
-- AWS CLI configurado na EC2
-- Repositório no ECR
+- Node.js (>= 20)
+- Docker instalado no PC
 - Git
 
 ### Passos
@@ -136,20 +263,13 @@ Aqui estão 3 padrões de commit que devem ser utilizados com o prefixo cnv-*:
    npm test
    ```
 
-2. **Executar Testes das Actions**:
-
-   ```bash
-   cd .github/actions/NAME
-   npm test
-   ```
-
-3. **Gerar Relatório de Cobertura**:
+2. **Gerar Relatório de Cobertura**:
 
    Após os testes, o relatório estará disponível no diretório `coverage/lcov-report/index.html`.
 
 ---
 
-## Deploy Manual
+## Build Manual with Docker
 
 1. **Build da Imagem Docker**:
 
@@ -178,6 +298,7 @@ Somente os usuários abaixo podem aprovar pull requests para Main e o Deploy em 
 ---
 
 ## Tecnologias Utilizadas
+- JavaScript: Linguagem utilizada na aplicação.
 - Node.js: Backend da aplicação.
 - Express: Framework para o servidor.
 - Docker: Contêinerização da aplicação.
