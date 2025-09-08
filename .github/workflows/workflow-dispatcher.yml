@@ -1,0 +1,17 @@
+name: "Chamar workflow-child em outro repositório"
+
+on:
+  push:
+    branches:
+      - feat/teste-workflow
+
+jobs:
+  call-child-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar workflow-child.yml no repositório remoto
+        uses: masneto/cronicas-monitor/.github/workflows/workflow-child.yml@feature/teste-workflow
+        with:
+          input1: "valor1"
+          input2: "valor2"
+          input3: '{"var1":"abc","var2":"xyz"}'
