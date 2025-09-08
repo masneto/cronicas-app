@@ -12,5 +12,4 @@ jobs:
       input1: "valor1"
       input2: "valor2"
       input3: '{"var1":"abc","var2":"xyz"}'
-    secrets:
-      PAT_GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+    secrets: inherit
