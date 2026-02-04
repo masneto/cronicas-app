@@ -11,18 +11,30 @@
 <body>
   <div class="container">
     <button id="themeToggle" class="theme-toggle">🌞</button>
-    <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
-    <h1>Crônicas do Nada Ver</h1>
-    <h2>O que é engraçado, é o que não faz sentido!!!</h2>
-    <div class="sidebar">
-      <ul>
-        <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button-link">YouTube</a></li>
-        <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button-link">TikTok</a></li>
-        <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button-link">Instagram</a></li>
-      </ul>
+    
+    <!-- Card de Links Sociais -->
+    <div class="card social-card">
+      <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
+      <h1>Crônicas do Nada Ver</h1>
+      <h2 style="margin-bottom: 30px;">O que é engraçado, é o que não faz sentido!!!</h2>
+      <div class="sidebar">
+        <ul>
+          <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button-link">YouTube</a></li>
+          <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button-link">TikTok</a></li>
+          <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button-link">Instagram</a></li>
+        </ul>
+      </div>
     </div>
 
-    <h3>Top 10 músicas</h3>
+    <!-- Card de Músicas -->
+    <div class="card music-card">
+    <div class="tabs-container">
+      <button class="tab-button active" onclick="changeTab('top10')">Top 10</button>
+      <button class="tab-button" onclick="changeTab('novas')">Novas</button>
+      <button class="tab-button" onclick="changeTab('todas')">Todas</button>
+    </div>
+
+    <h3 id="playlist-title">Top 10 Músicas</h3>
     <div class="playlist">
       <button class="button-music" onclick="playSong(0)">1</button>
       <button class="button-music" onclick="playSong(1)">2</button>
@@ -43,22 +55,125 @@
       <button class="button-link" onclick="nextSong()">⏭</button>
     </div>
 
-    <script>
-      // Lista de URLs das músicas
-      const songs = [
-        "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
-        "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
-        "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
-        "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
-        "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
-        "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
-        "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
-        "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
-        "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
-        "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
-      ];
+    <!-- Paginação -->
+    <div class="pagination">
+      <button id="prev-page" class="button-link" onclick="changePage(-1)">◀ Anterior</button>
+      <span id="page-info">Página 1 de 1</span>
+      <button id="next-page" class="button-link" onclick="changePage(1)">Próxima ▶</button>
+    </div>
+    </div>
 
+    <script>
+      // Listas de músicas por categoria
+      const musicDatabase = {
+        'top10': [
+          "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
+          "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
+          "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
+          "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
+          "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
+          "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
+          "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
+          "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
+          "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
+          "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
+        ],
+        'novas': [
+          "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
+          "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
+          "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
+          "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
+          "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
+          "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
+          "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
+          "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
+          "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
+          "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
+        ]
+      };
+
+      // Gera "todas" automaticamente combinando top10 e novas
+      musicDatabase.todas = [...musicDatabase.top10, ...musicDatabase.novas];
+
+      let currentCategory = 'top10';
+      let currentPage = 0;
+      let songsPerPage = 10;
+      let songs = musicDatabase[currentCategory];
       let currentSongIndex = 0;
+
+      // Função para mudar de aba
+      function changeTab(category) {
+        currentCategory = category;
+        currentPage = 0;
+        songs = musicDatabase[category];
+        
+        // Atualiza título
+        const titles = {
+          'top10': 'Top 10 Músicas',
+          'novas': 'Músicas Novas',
+          'todas': 'Todas as Músicas'
+        };
+        document.getElementById('playlist-title').textContent = titles[category];
+        
+        // Atualiza botões de aba
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Renderiza a playlist
+        renderPlaylist();
+        
+        // Toca a primeira música da nova categoria
+        currentSongIndex = 0;
+        playSong(0);
+      }
+
+      // Função para renderizar a playlist
+      function renderPlaylist() {
+        const playlistDiv = document.querySelector('.playlist');
+        const startIndex = currentPage * songsPerPage;
+        const endIndex = Math.min(startIndex + songsPerPage, songs.length);
+        const currentPageSongs = songs.slice(startIndex, endIndex);
+        
+        // Limpa playlist atual
+        playlistDiv.innerHTML = '';
+        
+        // Adiciona botões de música
+        currentPageSongs.forEach((song, index) => {
+          const button = document.createElement('button');
+          button.className = 'button-music';
+          button.textContent = startIndex + index + 1;
+          button.onclick = () => playSong(startIndex + index);
+          playlistDiv.appendChild(button);
+        });
+        
+        // Atualiza paginação
+        updatePagination();
+        updateActiveButton(currentSongIndex);
+      }
+
+      // Função para atualizar paginação
+      function updatePagination() {
+        const paginationDiv = document.querySelector('.pagination');
+        const totalPages = Math.ceil(songs.length / songsPerPage);
+        
+        if (totalPages <= 1) {
+          paginationDiv.style.display = 'none';
+          return;
+        }
+        
+        paginationDiv.style.display = 'flex';
+        document.getElementById('page-info').textContent = `Página ${currentPage + 1} de ${totalPages}`;
+        document.getElementById('prev-page').disabled = currentPage === 0;
+        document.getElementById('next-page').disabled = currentPage === totalPages - 1;
+      }
+
+      // Função para mudar de página
+      function changePage(direction) {
+        const totalPages = Math.ceil(songs.length / songsPerPage);
+        currentPage += direction;
+        currentPage = Math.max(0, Math.min(currentPage, totalPages - 1));
+        renderPlaylist();
+      }
 
       // Função para tocar uma música específica
       function playSong(index) {
@@ -72,12 +187,15 @@
 
       function updateActiveButton(index) {
         const buttons = document.querySelectorAll(".playlist .button-music");
+        const startIndex = currentPage * songsPerPage;
+        
         buttons.forEach((button, i) => {
+          const absoluteIndex = startIndex + i;
           // Remove a imagem de todos os botões
-          button.innerHTML = i + 1;
+          button.innerHTML = absoluteIndex + 1;
 
           // Adiciona a classe "active" ao botão correspondente
-          if (i === index) {
+          if (absoluteIndex === index) {
             button.classList.add("active");
 
             // Substitui o número pela imagem no botão ativo
@@ -103,7 +221,8 @@
         playSong(currentSongIndex);
       }
 
-      // Inicializar o botão ativo na primeira música
+      // Inicializar a aplicação
+      renderPlaylist();
       updateActiveButton(0);
 
       // Alternância de tema claro e escuro

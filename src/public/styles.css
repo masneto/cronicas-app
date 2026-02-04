@@ -109,6 +109,30 @@ body.dark-theme #musicPlayer {
   margin: 0 auto;
 }
 
+/* Cards/Balões para separar seções */
+.card {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e0e0e0;
+}
+
+body.dark-theme .card {
+  background: rgba(30, 30, 30, 0.6);
+  border-color: rgba(0, 255, 242, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 255, 242, 0.1);
+}
+
+.social-card {
+  margin-top: 0;
+}
+
+.music-card {
+  margin-bottom: 0;
+}
+
 /* Estilo das imagens dentro do contêiner */
 .container img {
   max-width: 100%;
@@ -122,29 +146,33 @@ body.dark-theme #musicPlayer {
 
 /* Headings */
 h1 {
-  font-size: 1.5rem;
-  color: #1a1a1a;
-  margin-bottom: 15px;
-  text-shadow: none;
-}
-
-h2 {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #1a1a1a;
   margin-bottom: 20px;
   text-shadow: none;
+  line-height: 1.6;
+}
+
+h2 {
+  font-size: 0.8rem;
+  color: #1a1a1a;
+  margin-bottom: 25px;
+  text-shadow: none;
+  line-height: 1.5;
 }
 
 h3 {
   font-size: 1.2rem;
   color: #1a1a1a;
-  margin: 20px 0 15px;
+  margin: 25px 0 20px;
   text-shadow: none;
+  line-height: 1.5;
 }
 
 /* Estilo da barra lateral */
 .sidebar {
   display: inline-block;
+  margin-bottom: 25px;
 }
 
 /* Estilo da lista na barra lateral */
@@ -155,6 +183,93 @@ h3 {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+/* Estilo do contêiner de abas */
+.tabs-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+/* Estilo dos botões de aba */
+.tab-button {
+  padding: 10px 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #6c757d;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tab-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+/* Dark theme para abas */
+body.dark-theme .tab-button {
+  background-color: rgba(108, 117, 125, 0.3);
+  color: #ffffff;
+}
+
+body.dark-theme .tab-button:hover {
+  background-color: rgba(90, 98, 104, 0.5);
+}
+
+body.dark-theme .tab-button.active {
+  background-color: rgba(0, 255, 242, 0.3);
+  color: #00fff2;
+  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
+}
+
+/* Estilo da paginação */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination .button-link {
+  font-size: 0.5rem;
+  padding: 6px 12px;
+}
+
+.pagination span {
+  font-size: 0.6rem;
+  color: #1a1a1a;
+}
+
+body.dark-theme .pagination span {
+  color: #00fff2;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button:disabled:hover {
+  transform: none;
+  background-color: #007bff;
+}
+
+body.dark-theme .pagination button:disabled:hover {
+  background-color: rgba(0, 255, 242, 0.2);
 }
 
 /* Estilo dos itens da lista */
@@ -194,6 +309,7 @@ h3 {
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
 }
 
 /* Estilo dos botões de links ao passar o mouse */
@@ -208,6 +324,12 @@ h3 {
   background-color: #00f2ff;
   color: #333;
   transform: scale(0.95);
+}
+
+/* Estilo específico para controles de navegação */
+.controls .button-link {
+  font-size: 0.7rem;
+  padding: 8px 15px;
 }
 
 /* Estilo do contêiner de botões de seleção de música */
@@ -289,7 +411,6 @@ iframe {
 
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
-
   /* Ajusta o contêiner principal */
   .container {
     padding: 20px;
@@ -300,44 +421,54 @@ iframe {
     max-width: 100%;
     height: auto;
   }
-}
 
-/* Ajusta os botões de seleção de música */
-.button-music {
-  width: 40px;
-  height: 40px;
-  font-size: 0.9rem;
-}
+  /* Ajusta os botões de seleção de música */
+  .button-music {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
 
-/* Ajusta os botões de links */
-.button-link {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-}
+  /* Ajusta os botões de links */
+  .button-link {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 
-/* Ajusta o iframe do player */
-iframe {
-  height: 200px;
-}
+  /* Ajusta o iframe do player */
+  iframe {
+    height: 200px;
+  }
 
-h1 {
-  font-size: 1rem;
-}
+  h1 {
+    font-size: 1rem;
+  }
 
-h2 {
-  font-size: 0.9rem;
-}
+  h2 {
+    font-size: 0.9rem;
+  }
 
-h3 {
-  font-size: 1rem;
-}
+  h3 {
+    font-size: 1rem;
+  }
 
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 0.7rem;
+  }
+
+  .pagination {
+    gap: 10px;
+  }
+
+  .pagination span {
+    font-size: 0.7rem;
+  }
+}
 
 @media (max-width: 480px) {
-
   .button-container {
     flex-wrap: wrap;
-    /* Permite que os botões se ajustem se não houver espaço suficiente */
   }
 
   /* Ajusta os botões de seleção de música */
@@ -384,5 +515,23 @@ h3 {
 
   h3 {
     font-size: 0.8rem;
+  }
+
+  .tab-button {
+    padding: 6px 10px;
+    font-size: 0.5rem;
+  }
+
+  .pagination {
+    gap: 5px;
+  }
+
+  .pagination span {
+    font-size: 0.6rem;
+  }
+
+  .pagination .button-link {
+    padding: 6px 10px;
+    font-size: 0.5rem;
   }
 }
