@@ -103,7 +103,7 @@ body.dark-theme #musicPlayer {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 700px;
   width: 90%;
   overflow: hidden;
   margin: 0 auto;
@@ -113,7 +113,7 @@ body.dark-theme #musicPlayer {
 .card {
   background: #f8f9fa;
   border-radius: 15px;
-  padding: 25px;
+  padding: clamp(15px, 4vw, 25px);
   margin-bottom: 30px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   border: 2px solid #e0e0e0;
@@ -146,7 +146,7 @@ body.dark-theme .card {
 
 /* Headings */
 h1 {
-  font-size: 1.2rem;
+  font-size: clamp(0.8rem, 2.5vw, 1.2rem);
   color: #1a1a1a;
   margin-bottom: 20px;
   text-shadow: none;
@@ -154,7 +154,7 @@ h1 {
 }
 
 h2 {
-  font-size: 0.8rem;
+  font-size: clamp(0.5rem, 2vw, 0.8rem);
   color: #1a1a1a;
   margin-bottom: 25px;
   text-shadow: none;
@@ -162,7 +162,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: clamp(0.8rem, 2.5vw, 1.2rem);
   color: #1a1a1a;
   margin: 25px 0 20px;
   text-shadow: none;
@@ -339,7 +339,6 @@ body.dark-theme .pagination button:disabled:hover {
   gap: 5px;
   margin-top: 20px;
   flex-wrap: nowrap;
-  overflow-x: auto;
   padding-bottom: 10px;
   width: 100%;
 }
@@ -349,7 +348,8 @@ body.dark-theme .pagination button:disabled:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
+  flex: 1 1 auto;
+  max-width: 50px;
   height: 50px;
   font-size: 1rem;
   font-weight: bold;
@@ -409,6 +409,35 @@ iframe {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Responsividade para tablets */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .container {
+    padding: 25px;
+    width: 92%;
+    max-width: 650px;
+  }
+
+  .button-music {
+    max-width: 45px;
+    height: 45px;
+    font-size: 0.95rem;
+  }
+
+  .button-link {
+    padding: 9px 18px;
+    font-size: 0.95rem;
+  }
+
+  .tab-button {
+    padding: 9px 14px;
+    font-size: 0.75rem;
+  }
+
+  iframe {
+    height: 220px;
+  }
+}
+
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
   /* Ajusta o contêiner principal */
@@ -424,9 +453,9 @@ iframe {
 
   /* Ajusta os botões de seleção de música */
   .button-music {
-    width: 40px;
+    max-width: 40px;
     height: 40px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   /* Ajusta os botões de links */
@@ -438,18 +467,6 @@ iframe {
   /* Ajusta o iframe do player */
   iframe {
     height: 200px;
-  }
-
-  h1 {
-    font-size: 1rem;
-  }
-
-  h2 {
-    font-size: 0.9rem;
-  }
-
-  h3 {
-    font-size: 1rem;
   }
 
   .tab-button {
@@ -473,7 +490,7 @@ iframe {
 
   /* Ajusta os botões de seleção de música */
   .button-music {
-    width: 32px;
+    max-width: 32px;
     height: 32px;
     font-size: 0.6rem;
   }
@@ -492,7 +509,6 @@ iframe {
   /* Ajusta o layout da playlist */
   .playlist {
     gap: 3px;
-    flex-wrap: nowrap;
   }
 
   .container {
@@ -503,18 +519,6 @@ iframe {
   .container img {
     max-width: 100%;
     height: auto;
-  }
-
-  h1 {
-    font-size: 0.8rem;
-  }
-
-  h2 {
-    font-size: 0.5rem;
-  }
-
-  h3 {
-    font-size: 0.8rem;
   }
 
   .tab-button {
