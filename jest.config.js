@@ -1,16 +1,15 @@
 export default {
-  preset: "ts-jest",
   testEnvironment: "node",
   testPathIgnorePatterns: [
     "/node_modules/",
     "/.github/actions/",
   ],
   transform: {
-    "^.+\\.ts$": ["ts-jest", { tsconfig: "tsconfig.json" }],
+    "^.+\\.js$": "babel-jest",
   },
-  moduleFileExtensions: ["ts", "js"],
+  moduleFileExtensions: ["js"],
   testMatch: [
-    "**/__tests__/**/*.test.{ts,js}",
-    "**/test/**/*.test.{ts,js}",
+    "**/__tests__/**/*.test.js",
+    "**/test/**/*.test.js",
   ],
 };
