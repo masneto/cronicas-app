@@ -9,32 +9,36 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="theme-buttons-container">
     <button id="themeToggle" class="theme-toggle">🌞</button>
-    <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
-    <h1>Crônicas do Nada Ver</h1>
-    <h2>O que é engraçado, é o que não faz sentido!!!</h2>
-    <div class="sidebar">
-      <ul>
-        <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button-link">YouTube</a></li>
-        <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button-link">TikTok</a></li>
-        <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button-link">Instagram</a></li>
-      </ul>
+    <button id="reloadBtn" class="theme-toggle" onclick="location.reload()">🔄</button>
+  </div>
+  
+  <div class="container">
+    <!-- Card de Links Sociais -->
+    <div class="card social-card">
+      <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
+      <h1>Crônicas do Nada Ver</h1>
+      <h2 style="margin-bottom: 30px;">O que é engraçado, é o que não faz sentido!!!</h2>
+      <div class="sidebar">
+        <ul>
+          <li><a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" class="button-link">YouTube</a></li>
+          <li><a href="https://www.tiktok.com/@cronicasdonadaver" target="_blank" class="button-link">TikTok</a></li>
+          <li><a href="https://www.instagram.com/cronicasdonadaver" target="_blank" class="button-link">Instagram</a></li>
+        </ul>
+      </div>
     </div>
 
-    <h3>Top 10 músicas</h3>
-    <div class="playlist">
-      <button class="button-music" onclick="playSong(0)">1</button>
-      <button class="button-music" onclick="playSong(1)">2</button>
-      <button class="button-music" onclick="playSong(2)">3</button>
-      <button class="button-music" onclick="playSong(3)">4</button>
-      <button class="button-music" onclick="playSong(4)">5</button>
-      <button class="button-music" onclick="playSong(5)">6</button>
-      <button class="button-music" onclick="playSong(6)">7</button>
-      <button class="button-music" onclick="playSong(7)">8</button>
-      <button class="button-music" onclick="playSong(8)">9</button>
-      <button class="button-music" onclick="playSong(9)">10</button>
+    <!-- Card de Músicas -->
+    <div class="card music-card">
+    <div class="tabs-container">
+      <button class="tab-button active" onclick="changeTab('top10')">Top 10</button>
+      <button class="tab-button" onclick="changeTab('novas')">Novas</button>
+      <button class="tab-button" onclick="changeTab('todas')">Todas</button>
     </div>
+
+    <h3 id="playlist-title">Top 10 Músicas</h3>
+    <div class="playlist"></div>
 
     <iframe id="musicPlayer" src="https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628"></iframe>
 
@@ -43,22 +47,131 @@
       <button class="button-link" onclick="nextSong()">⏭</button>
     </div>
 
-    <script>
-      // Lista de URLs das músicas
-      const songs = [
-        "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
-        "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
-        "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
-        "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
-        "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
-        "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
-        "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
-        "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
-        "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
-        "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
-      ];
+    <!-- Paginação -->
+    <div class="pagination">
+      <button id="prev-page" class="button-link" onclick="changePage(-1)">◀ Anterior</button>
+      <span id="page-info">Página 1 de 1</span>
+      <button id="next-page" class="button-link" onclick="changePage(1)">Próxima ▶</button>
+    </div>
+    </div>
 
+    <script>
+      // Listas de músicas por categoria
+      const musicDatabase = {
+        'top10': [
+          "https://suno.com/embed/9a3cd9ef-bbc6-4a0b-80ad-7e21fd1e7217",
+          "https://suno.com/embed/f3efb3ff-d999-4604-83c4-318fe97975b8",
+          "https://suno.com/embed/1717289c-3793-4b1e-b283-57d23e274628",
+          "https://suno.com/embed/8fbd2ee3-0bdf-4d89-9985-7e87342fa17b",
+          "https://suno.com/embed/295b0222-e301-49e7-9b6c-8e288fc4a674",
+          "https://suno.com/embed/4733e9b5-57d5-4e3a-90f9-1151827e8237",
+          "https://suno.com/embed/dd712acc-e08f-40c8-a87c-487218890cb8",
+          "https://suno.com/embed/58104e50-de45-4a7d-83d9-67e089757511",
+          "https://suno.com/embed/154a5244-5d41-4513-a2b2-36573c74a909",
+          "https://suno.com/embed/aa3be1b0-4639-41c3-b169-7fea446d09da",
+        ],
+        'novas': [
+          "https://suno.com/embed/a8c4edec-8198-4435-b944-70e28969e4c4",
+          "https://suno.com/embed/7c2a78f6-48ab-469f-9cf5-d7c38c188591",
+          "https://suno.com/embed/ca5fbac1-e10f-407a-a2cf-6e0ee290b1ce",
+          "https://suno.com/embed/9750a7ad-544e-44c8-b5d6-6e8e174d2622",
+          "https://suno.com/embed/ce98f9d0-af2c-47ab-9dc8-425ce3678fe9",
+          "https://suno.com/embed/98216740-a4b6-4fe9-91fd-3a8b9261a909",
+          "https://suno.com/embed/224c126e-d898-42b5-b637-28a4cc9ffda3",
+        ]
+      };
+
+      // Gera "todas" automaticamente combinando top10 e novas
+      musicDatabase.todas = [...musicDatabase.top10, ...musicDatabase.novas];
+
+      let currentCategory = 'top10';
+      let currentPage = 0;
+      let songsPerPage = 10;
+      let songs = musicDatabase[currentCategory];
       let currentSongIndex = 0;
+
+      // Função para mudar de aba
+      function changeTab(category) {
+        currentCategory = category;
+        currentPage = 0;
+        songs = musicDatabase[category];
+        
+        // Atualiza título
+        const titles = {
+          'top10': 'Top 10 Músicas',
+          'novas': 'Músicas Novas',
+          'todas': 'Todas as Músicas'
+        };
+        document.getElementById('playlist-title').textContent = titles[category];
+        
+        // Atualiza botões de aba
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Renderiza a playlist
+        renderPlaylist();
+        
+        // Toca a primeira música da nova categoria
+        currentSongIndex = 0;
+        playSong(0);
+      }
+
+      // Função para renderizar a playlist
+      function renderPlaylist() {
+        const playlistDiv = document.querySelector('.playlist');
+        const startIndex = currentPage * songsPerPage;
+        const endIndex = Math.min(startIndex + songsPerPage, songs.length);
+        const currentPageSongs = songs.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(songs.length / songsPerPage);
+        
+        // Limpa playlist atual
+        playlistDiv.innerHTML = '';
+        
+        // Adiciona botão de página anterior se existir
+        if (currentPage > 0) {
+          const prevBtn = document.createElement('button');
+          prevBtn.className = 'button-music nav-button';
+          prevBtn.textContent = '◀';
+          prevBtn.onclick = () => changePage(-1);
+          playlistDiv.appendChild(prevBtn);
+        }
+        
+        // Adiciona botões de música
+        currentPageSongs.forEach((song, index) => {
+          const button = document.createElement('button');
+          button.className = 'button-music';
+          button.textContent = startIndex + index + 1;
+          button.onclick = () => playSong(startIndex + index);
+          playlistDiv.appendChild(button);
+        });
+        
+        // Adiciona botão de próxima página se existir
+        if (currentPage < totalPages - 1) {
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'button-music nav-button';
+          nextBtn.textContent = '▶';
+          nextBtn.onclick = () => changePage(1);
+          playlistDiv.appendChild(nextBtn);
+        }
+        
+        // Esconde a paginação separada
+        document.querySelector('.pagination').style.display = 'none';
+        
+        updateActiveButton(currentSongIndex);
+      }
+
+      // Função para atualizar paginação (não mais usada, mas mantida por compatibilidade)
+      function updatePagination() {
+        // Paginação agora é inline na playlist
+      }
+
+      // Função para mudar de página
+      function changePage(direction) {
+        const totalPages = Math.ceil(songs.length / songsPerPage);
+        currentPage += direction;
+        currentPage = Math.max(0, Math.min(currentPage, totalPages - 1));
+        renderPlaylist();
+      }
 
       // Função para tocar uma música específica
       function playSong(index) {
@@ -71,13 +184,16 @@
       }
 
       function updateActiveButton(index) {
-        const buttons = document.querySelectorAll(".playlist .button-music");
+        const buttons = document.querySelectorAll(".playlist .button-music:not(.nav-button)");
+        const startIndex = currentPage * songsPerPage;
+        
         buttons.forEach((button, i) => {
+          const absoluteIndex = startIndex + i;
           // Remove a imagem de todos os botões
-          button.innerHTML = i + 1;
+          button.innerHTML = absoluteIndex + 1;
 
           // Adiciona a classe "active" ao botão correspondente
-          if (i === index) {
+          if (absoluteIndex === index) {
             button.classList.add("active");
 
             // Substitui o número pela imagem no botão ativo
@@ -103,7 +219,8 @@
         playSong(currentSongIndex);
       }
 
-      // Inicializar o botão ativo na primeira música
+      // Inicializar a aplicação
+      renderPlaylist();
       updateActiveButton(0);
 
       // Alternância de tema claro e escuro
