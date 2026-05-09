@@ -1,599 +1,406 @@
-/* Import retro gamer font */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* ============================================================
+   CRÔNICAS DO NADA VER — styles.css (refatorado)
+   Mobile-first. Grid 5 colunas para playlist.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
-/* Reset and base styles */
-* {
+/* Reset */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Estilo geral do corpo da página */
+/* ========================
+   BASE / BODY
+   ======================== */
 body {
-  font-family: 'Press Start 2P', cursive;
-  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(145deg, #ddeeff 0%, #ede8ff 50%, #d8fff6 100%);
   color: #1a1a1a;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  padding: 5px;
+  align-items: flex-start;
+  padding: 56px 12px 48px;
+  overflow-x: hidden;
 }
 
-/* Dark Theme Color Adjustments */
+/* ========================
+   DARK THEME
+   ======================== */
 body.dark-theme {
-  background: linear-gradient(135deg, #121212, #1e1e1e);
-  color: #00fff2;
+  background: linear-gradient(145deg, #04080f 0%, #0a0a18 55%, #030d0d 100%);
+  color: #d0f8ff;
 }
 
-body.dark-theme .container {
-  background: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
-}
-
-body.dark-theme .button-link {
-  background: rgba(0, 255, 242, 0.2);
-  color: #ffffff;
-}
-
-body.dark-theme .button-link:hover {
-  background-color: #00fff2;
-  color: #121212;
-}
-
-body.dark-theme .button-music {
-  background: rgba(0, 255, 242, 0.2);
-  color: #ffffff;
-}
-
-body.dark-theme .button-music.active {
-  background-color: #00fff2;
-  color: #121212;
-}
-
-body.dark-theme .theme-toggle {
-  color: #00fff2;
+body.dark-theme .card {
+  background: rgba(6, 14, 34, 0.93);
+  border-color: rgba(0, 255, 242, 0.1);
+  box-shadow: 0 6px 24px rgba(0, 80, 200, 0.14);
 }
 
 body.dark-theme h1 {
   color: #00fff2;
-  text-shadow: 0 0 8px #00fff2;
+  text-shadow: 0 0 14px rgba(0, 255, 242, 0.55);
 }
 
-body.dark-theme h2 {
-  color: #ffffff;
-  text-shadow: 0 0 5px #00fff2;
-}
+body.dark-theme .tagline { color: #7ab8d4; }
 
-body.dark-theme h3 {
+body.dark-theme .playlist-title {
   color: #00fff2;
-  text-shadow: 0 0 5px #00fff2;
+  text-shadow: 0 0 8px rgba(0, 255, 242, 0.4);
 }
 
-body.dark-theme .container>img {
-  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
-}
-
-body.dark-theme #musicPlayer {
-  box-shadow: 0 0 15px rgba(0, 255, 242, 0.8);
-}
-
-/* Theme Toggle Container */
-.theme-buttons-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  gap: 10px;
-  z-index: 1000;
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  position: relative;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #007c9e;
-  transition: transform 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-body.dark-theme .theme-toggle {
+body.dark-theme .theme-btn {
+  background: rgba(0, 20, 45, 0.88);
+  border-color: rgba(0, 255, 242, 0.3);
   color: #00fff2;
+  box-shadow: 0 0 10px rgba(0, 255, 242, 0.18);
 }
 
-.theme-toggle:hover {
-  transform: scale(1.2);
+body.dark-theme .btn {
+  background: linear-gradient(135deg, rgba(0, 80, 180, 0.5), rgba(0, 180, 242, 0.25));
+  border: 1px solid rgba(0, 255, 242, 0.2);
+  color: #e8feff;
 }
 
-/* Estilo do contêiner principal */
-.container {
-  text-align: center;
-  background: #ffffff;
-  padding: 45px 20px 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
-  max-height: 95vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin: 0 auto;
-  position: relative;
+body.dark-theme .btn:hover {
+  background: linear-gradient(135deg, #00fff2, #007bff);
+  color: #040f1e;
+  border-color: #00fff2;
+  box-shadow: 0 6px 18px rgba(0, 255, 242, 0.38);
 }
 
-/* Cards/Balões para separar seções */
-.card {
-  background: #f8f9fa;
-  border-radius: 15px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  border: 2px solid #e0e0e0;
+body.dark-theme .tab {
+  background: transparent;
+  color: #a8ccdf;
 }
 
-body.dark-theme .card {
-  background: rgba(30, 30, 30, 0.6);
-  border-color: rgba(0, 255, 242, 0.2);
-  box-shadow: 0 3px 10px rgba(0, 255, 242, 0.1);
+body.dark-theme .tab:hover { background: rgba(255, 255, 255, 0.08); color: #d0f8ff; }
+
+body.dark-theme .tab.active {
+  background: linear-gradient(135deg, rgba(0, 150, 240, 0.45), rgba(0, 90, 200, 0.55));
+  color: #00fff2;
+  box-shadow: 0 0 12px rgba(0, 255, 242, 0.3);
 }
 
-.social-card {
-  margin-top: 0;
+body.dark-theme .track-btn {
+  background: linear-gradient(135deg, rgba(0, 70, 180, 0.5), rgba(0, 55, 150, 0.45));
+  border: 1px solid rgba(0, 200, 255, 0.14);
+  color: #cff8ff;
 }
 
-.music-card {
-  margin-bottom: 0;
+body.dark-theme .track-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 200, 230, 0.4), rgba(0, 110, 200, 0.5));
+  box-shadow: 0 0 12px rgba(0, 255, 242, 0.28);
 }
 
-/* Estilo das imagens dentro do contêiner */
-.container img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+body.dark-theme .track-btn.active {
+  background: linear-gradient(135deg, #00d4f0, #0066cc);
+  color: #040f1e;
+  box-shadow: 0 0 16px rgba(0, 255, 242, 0.5);
+  border-color: #00fff2;
 }
 
-/* Headings */
-h1 {
-  font-size: clamp(0.7rem, 2vw, 1rem);
-  color: #1a1a1a;
-  margin-bottom: 8px;
-  text-shadow: none;
-  line-height: 1.3;
+body.dark-theme iframe {
+  box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
+  border: 1px solid rgba(0, 255, 242, 0.15);
 }
 
-h2 {
-  font-size: clamp(0.45rem, 1.5vw, 0.65rem);
-  color: #1a1a1a;
-  margin-bottom: 12px;
-  text-shadow: none;
-  line-height: 1.2;
-}
-
-h3 {
-  font-size: clamp(0.7rem, 2vw, 1rem);
-  color: #1a1a1a;
-  margin: 8px 0;
-  text-shadow: none;
-  line-height: 1.2;
-}
-
-/* Estilo da barra lateral */
-.sidebar {
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-/* Estilo da lista na barra lateral */
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* Estilo do contêiner de abas */
-.tabs-container {
+/* ========================
+   THEME BUTTONS (fixo)
+   ======================== */
+.theme-btns {
+  position: fixed;
+  top: 12px;
+  right: 12px;
   display: flex;
   gap: 8px;
-  justify-content: center;
-  margin: 10px 0;
-  flex-wrap: wrap;
+  z-index: 100;
 }
 
-/* Estilo dos botões de aba */
-.tab-button {
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #6c757d;
-  border: none;
-  border-radius: 5px;
+.theme-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 123, 255, 0.22);
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Press Start 2P', cursive;
-}
-
-.tab-button:hover {
-  background-color: #5a6268;
-  transform: translateY(-2px);
-}
-
-.tab-button.active {
-  background-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-}
-
-/* Dark theme para abas */
-body.dark-theme .tab-button {
-  background-color: rgba(108, 117, 125, 0.3);
-  color: #ffffff;
-}
-
-body.dark-theme .tab-button:hover {
-  background-color: rgba(90, 98, 104, 0.5);
-}
-
-body.dark-theme .tab-button.active {
-  background-color: rgba(0, 255, 242, 0.3);
-  color: #00fff2;
-  box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
-}
-
-/* Estilo da paginação */
-.pagination {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.pagination .button-link {
-  font-size: 0.5rem;
-  padding: 6px 12px;
-}
-
-.pagination span {
-  font-size: 0.6rem;
-  color: #1a1a1a;
-}
-
-body.dark-theme .pagination span {
-  color: #00fff2;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pagination button:disabled:hover {
-  transform: none;
-  background-color: #007bff;
-}
-
-body.dark-theme .pagination button:disabled:hover {
-  background-color: rgba(0, 255, 242, 0.2);
-}
-
-/* Estilo dos itens da lista */
-.sidebar li {
-  display: inline-block;
-}
-
-/* Estilo dos links na barra lateral */
-.sidebar a {
-  text-decoration: none;
-  color: #ffffff;
-  font-weight: bold;
-  transition: color 0.3s ease;
-  align-items: center;
-  display: flex;
   justify-content: center;
-
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 
-/* Estilo dos links ao passar o mouse */
-.sidebar a:hover {
-  background-color: #00fff2;
-  color: #333;
-}
+.theme-btn:hover { transform: scale(1.12) rotate(8deg); }
 
-/* Estilo dos botões de links */
-.button-link {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  cursor: pointer;
-  font-family: 'Press Start 2P', cursive;
-}
-
-/* Estilo dos botões de links ao passar o mouse */
-.button-link:hover {
-  background-color: #00fff2;
-  color: #333;
-  transform: scale(1.05);
-}
-
-/* Estilo dos botões de links ao serem clicados */
-.button-link:active {
-  background-color: #00f2ff;
-  color: #333;
-  transform: scale(0.95);
-}
-
-/* Estilo específico para controles de navegação */
-.controls .button-link {
-  font-size: 0.6rem;
-  padding: 6px 12px;
-}
-
-/* Estilo do contêiner de botões de seleção de música */
-.playlist {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin: 8px 0;
-  flex-wrap: nowrap;
-  padding-bottom: 5px;
+/* ========================
+   CONTAINER
+   ======================== */
+.container {
   width: 100%;
-}
-
-/* Estilo dos botões de seleção de música */
-.button-music {
+  max-width: 480px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1 1 auto;
-  max-width: 35px;
-  height: 35px;
-  font-size: 0.7rem;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========================
+   CARDS
+   ======================== */
+.card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  padding: 18px 16px;
+  border: 1px solid rgba(0, 120, 255, 0.09);
+  box-shadow: 0 6px 24px rgba(0, 100, 200, 0.09);
+  backdrop-filter: blur(10px);
+}
+
+/* ========================
+   PROFILE CARD
+   ======================== */
+.profile-card { text-align: center; }
+
+.profile-card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  display: block;
+}
+
+h1 {
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  line-height: 1.55;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.tagline {
+  font-size: clamp(0.6rem, 2vw, 0.8rem);
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ========================
+   SOCIAL LINKS
+   ======================== */
+.social-links {
+  display: flex;
+  gap: 8px;
+}
+
+/* ========================
+   BOTÕES BASE (.btn)
+   ======================== */
+.btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.5rem, 1.8vw, 0.75rem);
   font-weight: bold;
-  color: #ffffff;
-  background-color: #007bff;
+  color: #fff;
+  background: linear-gradient(135deg, #0d85ff, #0052cc);
   border: none;
-  border-radius: 5px;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  border-radius: 10px;
+  padding: 10px 12px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0, 100, 200, 0.25);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #00d4f0, #0099c0);
+  color: #05111f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 200, 240, 0.35);
+}
+
+.btn:active { transform: translateY(0) scale(0.97); }
+
+.btn-social { flex: 1; gap: 6px; }
+
+.btn-control,
+.btn-page {
+  font-size: 0.7rem;
+  padding: 6px 14px;
+}
+
+/* ========================
+   PLAYER CARD
+   ======================== */
+.player-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========================
+   TABS (barra segmentada)
+   ======================== */
+.tabs {
+  display: flex;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.5rem, 1.8vw, 0.72rem);
+  color: #666;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.tab:hover { background: rgba(0, 0, 0, 0.06); color: #333; }
+
+.tab.active {
+  background: linear-gradient(135deg, #0d85ff, #0052cc);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 100, 200, 0.3);
+}
+
+body.dark-theme .tabs {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ========================
+   PLAYLIST GRID (5 colunas fixas)
+   ======================== */
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 44px);
+  gap: 6px;
+  justify-content: center;
+}
+
+/* ========================
+   TRACK BUTTONS
+   ======================== */
+.track-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.55rem, 1.6vw, 0.72rem);
+  color: #fff;
+  background: linear-gradient(135deg, #0d85ff, #0052cc);
+  border: none;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  font-family: 'Press Start 2P', cursive;
   position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 100, 200, 0.2);
 }
 
-/* Estilo dos botões de seleção de música ao passar o mouse */
-.button-music:hover {
-  background-color: #5eeffa;
-  color: #333;
-  transform: scale(1.05);
+.track-btn:hover {
+  background: linear-gradient(135deg, #00d4f0, #0099c0);
+  color: #05111f;
+  transform: scale(1.07);
+  box-shadow: 0 4px 14px rgba(0, 200, 240, 0.35);
 }
 
-/* Estilo dos botões de seleção de música ao serem clicados */
-.button-music:active {
-  background-color: #5eeffa;
-  color: #333;
-  transform: scale(0.95);
+.track-btn:active { transform: scale(0.95); }
+
+.track-btn.active {
+  background: linear-gradient(135deg, #00d4f0, #0077cc);
+  box-shadow: 0 0 14px rgba(0, 200, 240, 0.5);
 }
 
-/* Estilo do botão ativo de seleção de música */
-.button-music.active {
-  background-color: #5eeffa;
-}
-
-/* Estilo dos botões de navegação (anterior/próxima página) */
-.button-music.nav-button {
-  background-color: #5eeffa;
-  color: #333;
-  font-size: 0.85rem;
-}
-
-.button-music.nav-button:hover {
-  background-color: #007bff;
-  color: #ffffff;
-}
-
-.button-music.nav-button:active {
-  background-color: #007bff;
-  color: #ffffff;
-}
-
-/* Estilo para a imagem no botão ativo de seleção de música */
-.button-music img {
-  position: absolute;
-  width: 28px;
-  height: 28px;
+.track-btn img {
+  width: 78%;
+  height: 78%;
   object-fit: contain;
   border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
-/* Estilo do iframe */
+/* ========================
+   IFRAME PLAYER
+   ======================== */
 iframe {
   width: 100%;
-  max-width: 560px;
-  height: 150px;
+  height: 155px;
   border: none;
-  margin: 10px auto;
+  border-radius: 14px;
   display: block;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsividade para tablets */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .container {
-    padding: 25px;
-    width: 92%;
-    max-width: 650px;
-  }
-
-  .button-music {
-    max-width: 45px;
-    height: 45px;
-    font-size: 0.95rem;
-  }
-
-  .button-link {
-    padding: 9px 18px;
-    font-size: 0.95rem;
-  }
-
-  .tab-button {
-    padding: 9px 14px;
-    font-size: 0.75rem;
-  }
-
-  iframe {
-    height: 220px;
-  }
+/* ========================
+   PLAYER CONTROLS
+   ======================== */
+.player-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
 
-/* Responsividade para dispositivos móveis */
-@media (max-width: 768px) {
-  /* Ajusta o contêiner principal */
-  .container {
-    padding: 20px;
-    width: 95%;
-  }
-
-  .container img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Ajusta os botões de seleção de música */
-  .button-music {
-    max-width: 40px;
-    height: 40px;
-    font-size: 0.8rem;
-  }
-
-  /* Ajusta os botões de links */
-  .button-link {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  /* Ajusta o iframe do player */
-  iframe {
-    height: 200px;
-  }
-
-  .tab-button {
-    padding: 8px 12px;
-    font-size: 0.7rem;
-  }
-
-  .pagination {
-    gap: 10px;
-  }
-
-  .pagination span {
-    font-size: 0.7rem;
-  }
-
-  /* Ajusta botões de tema e reload */
-  .theme-buttons-container {
-    top: 8px;
-  }
-  
-  .theme-toggle {
-    font-size: 1.2rem;
-  }
+/* ========================
+   PAGINATION
+   ======================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-@media (max-width: 480px) {
-  .button-container {
-    flex-wrap: wrap;
-  }
+.page-info {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  color: #555;
+  min-width: 40px;
+  text-align: center;
+}
 
-  /* Ajusta os botões de seleção de música */
-  .button-music {
-    max-width: 32px;
-    height: 32px;
-    font-size: 0.6rem;
-  }
+body.dark-theme .page-info { color: #7ab8d4; }
 
-  /* Ajusta os botões de links */
-  .button-link {
-    padding: 4px 8px;
-    font-size: 0.6rem;
-  }
+/* ========================
+   SOCIAL ICON
+   ======================== */
+.social-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
 
-  /* Ajusta o iframe do player */
-  iframe {
-    height: 180px;
-  }
+/* ========================
+   TAB ICON
+   ======================== */
+.tab-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
 
-  /* Ajusta o layout da playlist */
-  .playlist {
-    gap: 3px;
-  }
-
-  .container {
-    padding: 15px;
-    width: 100%;
-  }
-
-  .container img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .tab-button {
-    padding: 6px 10px;
-    font-size: 0.5rem;
-  }
-
-  .pagination {
-    gap: 5px;
-  }
-
-  .pagination span {
-    font-size: 0.6rem;
-  }
-
-  .pagination .button-link {
-    padding: 6px 10px;
-    font-size: 0.5rem;
-  }
-
-  /* Ajusta botões de tema e reload para telas pequenas */
-  .theme-buttons-container {
-    top: 5px;
-    gap: 8px;
-  }
-  
-  .theme-toggle {
-    font-size: 1rem;
-  }
-
-  .theme-toggle:hover {
-    transform: scale(1.15);
-  }
+/* ========================
+   DESKTOP (≥ 520px)
+   ======================== */
+@media (min-width: 520px) {
+  body { padding-top: 60px; }
+  iframe { height: 170px; }
+  .track-btn { height: 42px; }
 }
