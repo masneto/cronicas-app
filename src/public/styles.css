@@ -72,35 +72,30 @@ body.dark-theme .btn:hover {
   box-shadow: 0 6px 18px rgba(0, 255, 242, 0.38);
 }
 
-body.dark-theme .tab {
-  background: transparent;
-  color: #a8ccdf;
+
+
+body.dark-theme .playlist-item {
+  border-color: rgba(0, 200, 255, 0.1);
 }
 
-body.dark-theme .tab:hover { background: rgba(255, 255, 255, 0.08); color: #d0f8ff; }
+body.dark-theme .playlist-item:hover {
+  background: rgba(0, 200, 255, 0.08);
+  border-color: rgba(0, 255, 242, 0.2);
+}
 
-body.dark-theme .tab.active {
-  background: linear-gradient(135deg, rgba(0, 150, 240, 0.45), rgba(0, 90, 200, 0.55));
+body.dark-theme .playlist-item.active {
+  background: linear-gradient(135deg, rgba(0, 150, 240, 0.18), rgba(0, 90, 200, 0.15));
+  border-color: rgba(0, 255, 242, 0.35);
+}
+
+body.dark-theme .playlist-label { color: #a8ccdf; }
+
+body.dark-theme .playlist-item.active .playlist-label {
   color: #00fff2;
-  box-shadow: 0 0 12px rgba(0, 255, 242, 0.3);
 }
 
-body.dark-theme .track-btn {
-  background: linear-gradient(135deg, rgba(0, 70, 180, 0.5), rgba(0, 55, 150, 0.45));
-  border: 1px solid rgba(0, 200, 255, 0.14);
-  color: #cff8ff;
-}
-
-body.dark-theme .track-btn:hover {
-  background: linear-gradient(135deg, rgba(0, 200, 230, 0.4), rgba(0, 110, 200, 0.5));
-  box-shadow: 0 0 12px rgba(0, 255, 242, 0.28);
-}
-
-body.dark-theme .track-btn.active {
-  background: linear-gradient(135deg, #00d4f0, #0066cc);
-  color: #040f1e;
-  box-shadow: 0 0 16px rgba(0, 255, 242, 0.5);
-  border-color: #00fff2;
+body.dark-theme .playlist-list {
+  scrollbar-color: rgba(0, 255, 242, 0.3) transparent;
 }
 
 body.dark-theme iframe {
@@ -243,98 +238,90 @@ h1 {
   gap: 12px;
 }
 
+
+
 /* ========================
-   TABS (barra segmentada)
+   PLAYLIST LIST
    ======================== */
-.tabs {
+.playlist-list {
   display: flex;
-  gap: 3px;
-  background: rgba(0, 0, 0, 0.07);
-  border-radius: 12px;
-  padding: 4px;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 100, 200, 0.3) transparent;
 }
 
-.tab {
-  flex: 1;
+.playlist-list::-webkit-scrollbar {
+  width: 4px;
+}
+.playlist-list::-webkit-scrollbar-track { background: transparent; }
+.playlist-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 100, 200, 0.3);
+  border-radius: 4px;
+}
+
+.playlist-item {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(0.5rem, 1.8vw, 0.72rem);
-  color: #666;
-  background: transparent;
-  border: none;
-  border-radius: 9px;
-  padding: 10px 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.tab:hover { background: rgba(0, 0, 0, 0.06); color: #333; }
-
-.tab.active {
-  background: linear-gradient(135deg, #0d85ff, #0052cc);
-  color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 100, 200, 0.3);
-}
-
-body.dark-theme .tabs {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-/* ========================
-   PLAYLIST GRID (5 colunas fixas)
-   ======================== */
-.playlist-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 44px);
-  gap: 6px;
-  justify-content: center;
-}
-
-/* ========================
-   TRACK BUTTONS
-   ======================== */
-.track-btn {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(0.55rem, 1.6vw, 0.72rem);
-  color: #fff;
-  background: linear-gradient(135deg, #0d85ff, #0052cc);
-  border: none;
-  border-radius: 8px;
-  aspect-ratio: 1 / 1;
-  height: 36px;
+  gap: 10px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(0, 100, 200, 0.1);
+  border-radius: 10px;
+  padding: 7px 10px;
   cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+
+.playlist-item:hover {
+  background: rgba(0, 100, 200, 0.08);
+  border-color: rgba(0, 150, 240, 0.25);
+}
+
+.playlist-item.active {
+  background: linear-gradient(135deg, rgba(13, 133, 255, 0.15), rgba(0, 82, 204, 0.12));
+  border-color: rgba(0, 150, 240, 0.45);
+}
+
+.playlist-num {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d85ff, #0052cc);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  position: relative;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 100, 200, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 100, 200, 0.3);
 }
 
-.track-btn:hover {
-  background: linear-gradient(135deg, #00d4f0, #0099c0);
-  color: #05111f;
-  transform: scale(1.07);
-  box-shadow: 0 4px 14px rgba(0, 200, 240, 0.35);
-}
-
-.track-btn:active { transform: scale(0.95); }
-
-.track-btn.active {
-  background: linear-gradient(135deg, #00d4f0, #0077cc);
-  box-shadow: 0 0 14px rgba(0, 200, 240, 0.5);
-}
-
-.track-btn img {
-  width: 78%;
-  height: 78%;
-  object-fit: contain;
+.playlist-num img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 50%;
+}
+
+.playlist-label {
+  font-size: clamp(0.55rem, 1.8vw, 0.7rem);
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-item.active .playlist-label {
+  color: #0052cc;
+  font-weight: bold;
 }
 
 /* ========================
@@ -358,25 +345,7 @@ iframe {
   justify-content: center;
 }
 
-/* ========================
-   PAGINATION
-   ======================== */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
 
-.page-info {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.58rem;
-  color: #555;
-  min-width: 40px;
-  text-align: center;
-}
-
-body.dark-theme .page-info { color: #7ab8d4; }
 
 /* ========================
    SOCIAL ICON
@@ -387,14 +356,7 @@ body.dark-theme .page-info { color: #7ab8d4; }
   flex-shrink: 0;
 }
 
-/* ========================
-   TAB ICON
-   ======================== */
-.tab-icon {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
-}
+
 
 /* ========================
    DESKTOP (≥ 520px)
@@ -402,5 +364,5 @@ body.dark-theme .page-info { color: #7ab8d4; }
 @media (min-width: 520px) {
   body { padding-top: 60px; }
   iframe { height: 170px; }
-  .track-btn { height: 42px; }
+  .playlist-list { max-height: 300px; }
 }
