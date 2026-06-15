@@ -11,6 +11,7 @@
 <body>
 
   <div class="theme-btns">
+    <span class="theme-btn counter-btn" aria-label="Visitas">👁 <span id="visitCount">...</span></span>
     <button id="themeToggle" class="theme-btn" aria-label="Alternar tema">🌞</button>
     <button class="theme-btn" onclick="location.reload()" aria-label="Recarregar">🔄</button>
   </div>
@@ -22,6 +23,7 @@
       <img src="./images/cnv-img.png" alt="Crônicas do Nada Ver" />
       <h1>Crônicas do Nada Ver</h1>
       <p class="tagline">O que é engraçado, é o que não faz sentido!!!</p>
+
       <div class="social-links">
         <a href="https://www.youtube.com/@CronicasdoNadaVer" target="_blank" rel="noopener" class="btn btn-social">
           <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2A3 3 0 0 0 21.4 4C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8A3 3 0 0 0 2.6 20c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.2C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
@@ -128,6 +130,16 @@
     }
 
     renderPlaylist();
+
+    // Contador de visitas
+    fetch('/api/visitas')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('visitCount').textContent = data.count.toLocaleString('pt-BR');
+      })
+      .catch(() => {
+        document.getElementById('visitCount').textContent = '—';
+      });
 
     document.getElementById('themeToggle').addEventListener('click', function () {
       document.body.classList.toggle('dark-theme');

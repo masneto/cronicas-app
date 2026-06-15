@@ -12,7 +12,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint de health check
 app.get('/health', (req, res) => {
-    res.status(200).send('OK'); // Retornar 200 se o serviço estiver OK
+    res.status(200).send('OK');
   });
+
+// Proxy contador de visitas (evita CORS no browser)
+app.get('/api/visitas', async (req, res) => {
+  try {
+    const response = await fetch('https://api.counterapi.dev/v1/cronicas-nadaver/visitas/up');
+    const data = await response.json();
+    res.json({ count: data.count });
+  } catch {
+    res.status(500).json({ count: null });
+  }
+});
 
 export default app;

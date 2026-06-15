@@ -133,6 +133,22 @@ body.dark-theme iframe {
 
 .theme-btn:hover { transform: scale(1.12) rotate(8deg); }
 
+.counter-btn {
+  font-size: 0.6rem;
+  padding: 0 10px;
+  width: auto;
+  border-radius: 20px;
+  cursor: default;
+  gap: 4px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+body.dark-theme .counter-btn {
+  color: #00fff2;
+  border-color: rgba(0, 255, 242, 0.3);
+}
+
 /* ========================
    CONTAINER
    ======================== */
