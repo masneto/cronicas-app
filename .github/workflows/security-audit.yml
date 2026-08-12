@@ -65,6 +65,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.audit.outputs.had_vulns == 'true' && steps.changes.outputs.has_changes == 'true'
+        id: pr
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'fix(security): npm audit fixes'
@@ -97,3 +98,15 @@ jobs:
             automated
           reviewers: |
             masneto
+
+      - name: Merge Pull Request
+        if: steps.pr.outputs.pull-request-number != ''
+        run: |
+          curl -s -X PUT \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.pull-request-number }}/merge \
+            -d "{
+              \"commit_title\": \"fix(security): npm audit fixes\",
+              \"merge_method\": \"squash\"
+            }"
