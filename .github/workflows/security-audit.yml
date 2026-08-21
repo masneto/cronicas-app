@@ -4,6 +4,11 @@ on:
   schedule:
     # Roda todo dia às 2 da manhã
     - cron: '0 2 * * *'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
   # Permite rodar manualmente
   workflow_dispatch:
 
