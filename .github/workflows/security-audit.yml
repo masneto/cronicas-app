@@ -54,6 +54,31 @@ jobs:
             echo "had_vulns=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Append to security fixes changelog
+        if: steps.frontend.outputs.had_vulns == 'true' || steps.backend.outputs.had_vulns == 'true'
+        run: |
+          DATE=$(date -u '+%Y-%m-%d')
+          PIPELINE="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          # Coleta detalhes de cada vulnerabilidade corrigida por camada
+          build_entries() {
+            local DIR=$1 LABEL=$2
+            cd "$DIR"
+            npm audit --json 2>/dev/null | jq -r --arg label "$LABEL" '
+              .vulnerabilities | to_entries[]
+              | "- **\($label):** \(.key) `\(.value.via[0].range // "?")` → `\(.value.fixAvailable.version // "fixed")` — _\(.value.via[0].title // .value.via[0])_ (\(.value.severity))"
+            ' 2>/dev/null || true
+            cd - > /dev/null
+          }
+
+          FE_ENTRIES=$(build_entries frontend Frontend)
+          BE_ENTRIES=$(build_entries backend Backend)
+
+          # Monta o bloco da entrada
+          printf "\n## %s\n%s\n%s\n- Pipeline: %s\n" \
+            "$DATE" "$FE_ENTRIES" "$BE_ENTRIES" "$PIPELINE" \
+            | sed -i "3r /dev/stdin" SECURITY_FIXES.md
+
       - name: Check for changes
         id: changes
         run: |
