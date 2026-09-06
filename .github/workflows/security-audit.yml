@@ -34,7 +34,7 @@ jobs:
         uses: masneto/cronicas-actions/.github/actions/npm-security-audit@main
         with:
           working-directory: .
-          package-label: cronicas-app
+          package-label: Cronicas App
 
       - name: Update security changelog
         if: steps.app.outputs.had-vulnerabilities == 'true'
