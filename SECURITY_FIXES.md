@@ -5,6 +5,12 @@ _Gerado automaticamente pelo workflow de segurança._
 ## 2026-09-06
 
 - **Cronicas App:** body-parser `>=2.0.0 <2.3.0` → `disponivel` — _body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement_ (low)
+- **Cronicas App:** express `?` → `disponivel` — _body-parser_ (low)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/34061359551
+
+## 2026-09-06
+
+- **Cronicas App:** body-parser `>=2.0.0 <2.3.0` → `disponivel` — _body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement_ (low)
 - Pipeline: https://github.com/masneto/cronicas-app/actions/runs/34061153322
 
 ## 2026-09-06
