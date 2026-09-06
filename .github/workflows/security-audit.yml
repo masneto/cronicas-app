@@ -1,4 +1,5 @@
 name: "[Cronicas] Security Audit - cronicas-app"
+run-name: "[Cronicas] Security Audit - cronicas-app #${{ github.run_id }}"
 
 on:
   schedule:
