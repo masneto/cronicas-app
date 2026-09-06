@@ -16,7 +16,7 @@ jobs:
       version: ${{ steps.tag.outputs.new_version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -43,12 +43,12 @@ jobs:
       version: ${{ needs.bump-version.outputs.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install Dependencies
@@ -87,14 +87,14 @@ jobs:
       version: ${{ needs.bump-version.outputs.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # - name: Substitui `latest` pela versão nos manifests
       #   run: |
       #     sed -i 's|ghcr.io/${{ github.repository_owner }}/cronicas-app:latest|ghcr.io/${{ github.repository_owner }}/cronicas-app:${{ env.version }}|g' k8s/dev/deployment.yaml
 
       - name: Configurar credenciais da AWS
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -146,7 +146,7 @@ jobs:
       version: ${{ needs.bump-version.outputs.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: main
@@ -197,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       
       - name: Get Failed Job
         id: get-failed-job

@@ -10,6 +10,7 @@
 - [Passo a Passo do Workflow de CD de Homologação (`hom-cd.yml`)](#passo-a-passo-do-workflow-de-cd-de-homologação-hom-cdyml)
 - [Passo a Passo do Workflow de CD de Produção (`prod-cd.yml`)](#passo-a-passo-do-workflow-de-cd-de-produção-prod-cdyml)
 - [Passo a Passo do Workflow de Release (`release.yml`)](#passo-a-passo-do-workflow-de-release-releaseyml)
+- [Passo a Passo do Workflow de Segurança (`security-audit.yml`)](#passo-a-passo-do-workflow-de-segurança-security-audityml)
 - [Como Executar Localmente](#como-executar-localmente)
 - [Como Executar os Testes](#como-executar-os-testes)
 - [Build Manual with Docker](#build-manual-with-docker)
@@ -39,6 +40,7 @@ cronicas-app/
 ├── jest.config.js             # Configuração do Jest para testes
 ├── package.json               # Gerenciamento de dependências e scripts
 ├── README.md                  # Documentação do projeto
+├── SECURITY_FIXES.md          # Changelog de correções de segurança (automático)
 ├── coverage/                  # Relatórios de cobertura de testes
 │   ├── clover.xml
 │   ├── coverage-final.json
@@ -86,7 +88,8 @@ cronicas-app/
         ├── dev-ci-cd.yml
         ├── hom-cd.yml
         ├── prod-cd.yml
-        └── release.yml
+        ├── release.yml
+        └── security-audit.yml
 ```
 ---
 
@@ -230,6 +233,41 @@ Este workflow automatiza a criação de uma release no GitHub e o upload da imag
    - Se algum passo falhar, executa um job que:
      - Identifica o job com falha.
      - Envia um e-mail de alerta para os responsáveis, com detalhes do erro.
+
+---
+
+## Passo a Passo do Workflow de Segurança (`security-audit.yml`)
+
+Este workflow automatiza a auditoria de segurança das dependências npm do Crônicas App. Ele é disparado **diariamente (02:00 UTC)**, **a cada push na branch `main`** (ignorando alterações em `.github/workflows/**`) ou **manualmente** (`workflow_dispatch`).
+
+### Etapas do Workflow
+
+1. **Checkout do Código**
+   - Baixa o repositório com histórico completo (`fetch-depth: 0`) para permitir a detecção de mudanças.
+
+2. **Setup do Node.js**
+   - Prepara o ambiente Node.js na versão 22 com cache do npm baseado no `package-lock.json`.
+
+3. **Auditoria e Correção**
+   - Usa a action compartilhada `masneto/cronicas-actions` (`npm-security-audit`) para:
+     - Executar `npm audit` considerando **todas as severidades** (info, low, moderate, high, critical).
+     - Aplicar correções automáticas (`npm audit fix --force`) e, quando necessário, atualizar pins em `overrides` (`fixOverridePins`) e aplicar fallbacks.
+     - Expor outputs como `had-vulnerabilities`, `before`, `after` e `changelog-entries`.
+
+4. **Atualização do Changelog de Segurança**
+   - Se houver vulnerabilidades, registra as correções no arquivo `SECURITY_FIXES.md` (modo `changelog-only`), incluindo pacote, severidade, range afetado, correção disponível e link do pipeline.
+
+5. **Verificação de Mudanças**
+   - Detecta se a correção gerou alterações no repositório (`git diff`).
+
+6. **Criação de Pull Request**
+   - Se houver correções, cria automaticamente um PR de `security/npm-audit-fixes` para `main` com:
+     - Título `Security: npm audit fixes (<run_id>)` e commit `fix(security): npm audit fixes`.
+     - Labels `security`, `dependencies` e `automated`.
+     - Revisor definido como `masneto`.
+
+7. **Merge do Pull Request**
+   - Se o PR foi criado, faz o merge automático via API do GitHub com `merge_method: squash`.
 
 ---
 
