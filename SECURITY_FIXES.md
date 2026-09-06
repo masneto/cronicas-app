@@ -5,6 +5,11 @@ _Gerado automaticamente pelo workflow de segurança._
 ## 2026-09-06
 
 - **Cronicas App:** body-parser `>=2.0.0 <2.3.0` → `disponivel` — _body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement_ (low)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/34061153322
+
+## 2026-09-06
+
+- **Cronicas App:** body-parser `>=2.0.0 <2.3.0` → `disponivel` — _body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement_ (low)
 - **Cronicas App:** lodash `<4.17.21` → `4.18.1` — _Command Injection in lodash_ (high)
 - **Cronicas App:** minimist `>=1.0.0 <1.2.6` → `1.2.8` — _Prototype Pollution in minimist_ (critical)
 - **Cronicas App:** xml2js `<0.5.0` → `0.6.2` — _xml2js is vulnerable to prototype pollution_ (moderate)
