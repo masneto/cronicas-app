@@ -10,8 +10,11 @@
         "test": "jest --coverage",
         "lint": "eslint ."
     },
-    "dependencies": {
-        "express": "^5.2.1"
+"dependencies": {
+        "express": "^5.2.1",
+        "lodash": "4.17.20",
+        "minimist": "1.2.5",
+        "xml2js": "0.4.23"
     },
     "devDependencies": {
         "@babel/core": "^7.29.6",
@@ -28,6 +31,7 @@
         "node": ">=16.0.0"
     },
     "overrides": {
+        "body-parser": "2.2.1",
         "brace-expansion": "5.0.9"
     }
 }
