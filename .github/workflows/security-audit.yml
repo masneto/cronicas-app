@@ -1,15 +1,13 @@
-name: Security Audit - cronicas-app
+name: "[Cronicas] Security Audit - cronicas-app"
 
 on:
   schedule:
-    # Roda todo dia às 2 da manhã
     - cron: '0 2 * * *'
   push:
     branches:
       - main
     paths-ignore:
       - '.github/workflows/**'
-  # Permite rodar manualmente
   workflow_dispatch:
 
 jobs:
@@ -19,7 +17,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-
     steps:
       - uses: actions/checkout@v7
         with:
@@ -29,114 +26,71 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Audit cronicas-app
+        id: app
+        uses: masneto/cronicas-actions/.github/actions/npm-security-audit@main
+        with:
+          working-directory: .
+          package-label: cronicas-app
 
-      - name: Fix vulnerabilities and report details
-        id: audit
-        run: |
-          echo "## 🔍 Antes do fix" >> $GITHUB_STEP_SUMMARY
-          BEFORE=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities | .moderate + .high + .critical' 2>/dev/null || echo 0)
-          npm audit --json 2>/dev/null | jq -r '.vulnerabilities | to_entries[] | "- **\(.key)** (\(.value.severity)): \(.value.via[0].title // .value.via[0])"' >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
-
-          npm audit fix --force || true
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## ✅ Depois do fix" >> $GITHUB_STEP_SUMMARY
-          AFTER=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities | .moderate + .high + .critical' 2>/dev/null || echo 0)
-          FIXED=$((BEFORE - AFTER))
-          echo "- Vulnerabilidades antes: **$BEFORE**" >> $GITHUB_STEP_SUMMARY
-          echo "- Vulnerabilidades depois: **$AFTER**" >> $GITHUB_STEP_SUMMARY
-          echo "- Corrigidas automaticamente: **$FIXED** ✅" >> $GITHUB_STEP_SUMMARY
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📦 Packages atualizados" >> $GITHUB_STEP_SUMMARY
-          PKGS=$(git diff -- package-lock.json | grep -E '^\+\s+"version"' | awk -F'"' '{print "- " $4}' | sort -u)
-          [ -n "$PKGS" ] && echo "$PKGS" >> $GITHUB_STEP_SUMMARY || echo "_Nenhuma mudança_" >> $GITHUB_STEP_SUMMARY
-
-          if [ "$BEFORE" -gt 0 ] 2>/dev/null; then
-            echo "had_vulns=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Append to security fixes changelog
-        if: steps.frontend.outputs.had_vulns == 'true' || steps.backend.outputs.had_vulns == 'true'
-        run: |
-          DATE=$(date -u '+%Y-%m-%d')
-          PIPELINE="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-          # Coleta detalhes de cada vulnerabilidade corrigida por camada
-          build_entries() {
-            local DIR=$1 LABEL=$2
-            cd "$DIR"
-            npm audit --json 2>/dev/null | jq -r --arg label "$LABEL" '
-              .vulnerabilities | to_entries[]
-              | "- **\($label):** \(.key) `\(.value.via[0].range // "?")` → `\(.value.fixAvailable.version // "fixed")` — _\(.value.via[0].title // .value.via[0])_ (\(.value.severity))"
-            ' 2>/dev/null || true
-            cd - > /dev/null
-          }
-
-          FE_ENTRIES=$(build_entries frontend Frontend)
-          BE_ENTRIES=$(build_entries backend Backend)
-
-          # Monta o bloco da entrada
-          printf "\n## %s\n%s\n%s\n- Pipeline: %s\n" \
-            "$DATE" "$FE_ENTRIES" "$BE_ENTRIES" "$PIPELINE" \
-            | sed -i "3r /dev/stdin" SECURITY_FIXES.md
+      - name: Update security changelog
+        if: steps.app.outputs.had-vulnerabilities == 'true'
+        uses: masneto/cronicas-actions/.github/actions/npm-security-audit@main
+        with:
+          changelog-only: true
+          changelog-file: SECURITY_FIXES.md
+          changelog-entries: |-
+            ${{ steps.app.outputs.changelog-entries }}
 
       - name: Check for changes
         id: changes
+        shell: bash
         run: |
           if git diff --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
-        if: steps.audit.outputs.had_vulns == 'true' && steps.changes.outputs.has_changes == 'true'
+        if: steps.app.outputs.had-vulnerabilities == 'true' && steps.changes.outputs.has_changes == 'true'
         id: pr
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'fix(security): npm audit fixes'
           title: 'Security: npm audit fixes (${{ github.run_id }})'
           body: |
-            ## 🔒 Automatic Security Update
+            ## Automatic Security Update
 
-            This PR contains security fixes detected by `npm audit`.
+            This PR contains npm security fixes for the cronicas-app.
 
-            📊 **[Ver relatório completo com antes/depois e packages atualizados](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})**
+            See the workflow summary for package names, severities, affected ranges,
+            available fixes, before/after counts, and updated versions.
 
-            **What changed:**
-            - Ran `npm audit fix --force` to resolve vulnerabilities
-            - Updated package-lock.json with patched versions
-
-            ⚠️ **Important:**
-            > Se ainda restarem vulnerabilidades após o fix, será necessário corrigir manualmente via `overrides` no package.json.
-
-            ### Next Steps
-            - [ ] Revisar o relatório completo no link acima
-            - [ ] Verificar se ainda há vulnerabilidades restantes
-            - [ ] Merge quando estiver ok
-
-            **Auto-generated by Security Audit workflow**
+            The detailed history is also recorded in `SECURITY_FIXES.md`.
           branch: security/npm-audit-fixes
           delete-branch: true
           labels: |
             security
             dependencies
             automated
-          reviewers: |
-            masneto
+          reviewers: masneto
 
       - name: Merge Pull Request
         if: steps.pr.outputs.pull-request-number != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.pull-request-number }}
         run: |
-          curl -s -X PUT \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.pull-request-number }}/merge \
-            -d "{
-              \"commit_title\": \"fix(security): npm audit fixes\",
-              \"merge_method\": \"squash\"
-            }"
+          set -euo pipefail
+
+          curl --fail-with-body -sS -X PUT \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge" \
+            -d '{"commit_title":"fix(security): npm audit fixes","merge_method":"squash"}'
