@@ -11,7 +11,8 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "express": "^5.2.1"
+        "express": "^5.2.1",
+        "lodash": "4.17.20"
     },
     "devDependencies": {
         "@babel/core": "^7.29.6",
