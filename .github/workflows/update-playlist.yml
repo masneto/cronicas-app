@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   update-playlist:
+    name: Atualizar Playlist CNV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
