@@ -1,0 +1,59 @@
+name: "[Cronicas] Atualizar Playlist"
+
+on:
+  workflow_dispatch:
+    inputs:
+      link:
+        description: 'Link(s) do Suno ou UUID(s) das músicas (para adicionar). Separe vários por vírgula ou quebra de linha'
+        required: false
+        type: string
+      music-name:
+        description: 'Nome da música (opcional; deixe vazio para buscar na Suno automaticamente)'
+        required: false
+        type: string
+      music-number:
+        description: 'Número da música a remover'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Atualizar músicas
+        run: node .github/scripts/update-playlist.mjs --link "${{ github.event.inputs.link }}" --title "${{ github.event.inputs.music-name }}" --number "${{ github.event.inputs.music-number }}"
+
+      - name: Commit e push
+        env:
+          LINK: ${{ github.event.inputs.link }}
+          NAME: ${{ github.event.inputs.music-name }}
+          NUMBER: ${{ github.event.inputs.music-number }}
+          TOKEN: ${{ secrets.PAT_GITHUB_TOKEN || github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/public/index.html
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração na playlist."
+            exit 0
+          fi
+          if [ -n "$NUMBER" ] && [ -n "$LINK" ]; then
+            MSG="playlist: atualizar músicas"
+          elif [ -n "$NUMBER" ]; then
+            MSG="playlist: remover música #$NUMBER"
+          else
+            MSG="playlist: adicionar ${NAME:-música}"
+          fi
+          git commit -m "$MSG"
+          git push "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main

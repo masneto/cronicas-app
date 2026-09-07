@@ -11,6 +11,7 @@
 - [Passo a Passo do Workflow de CD de Produção (`prod-cd.yml`)](#passo-a-passo-do-workflow-de-cd-de-produção-prod-cdyml)
 - [Passo a Passo do Workflow de Release (`release.yml`)](#passo-a-passo-do-workflow-de-release-releaseyml)
 - [Passo a Passo do Workflow de Segurança (`security-audit.yml`)](#passo-a-passo-do-workflow-de-segurança-security-audityml)
+- [Passo a Passo do Workflow de Playlist (`update-playlist.yml`)](#passo-a-passo-do-workflow-de-playlist-update-playlistyml)
 - [Como Executar Localmente](#como-executar-localmente)
 - [Build Manual with Docker](#build-manual-with-docker)
 - [Responsáveis por Aprovações](#responsáveis-por-aprovações)
@@ -260,6 +261,38 @@ Este workflow automatiza a auditoria de segurança das dependências npm do Crô
    - Se o PR foi criado, faz o merge automático via API do GitHub com `merge_method: squash`.
 
 ---
+
+## Passo a Passo do Workflow de Playlist (`update-playlist.yml`)
+
+Este workflow gerencia as músicas da playlist do site, editando diretamente o array `songs` em `src/public/index.html` e enviando a alteração para a branch `main` (a aplicação pública é servida pelo Cloudflare Pages a partir de `src/public`). Ele é disparado **manualmente** (`workflow_dispatch`).
+
+### Como usar
+
+1. **Adicionar música(s)**
+   - `link`: link do Suno (`https://suno.com/embed/<uuid>`) ou apenas o UUID da música. Para adicionar **várias de uma vez**, separe cada link/UUID por vírgula ou quebra de linha.
+   - `music-name`: nome da música (ex.: `Eclipse Lunar`). **Opcional** — se deixado em branco, o workflow busca o nome automaticamente na Suno a partir do link. Quando há vários links, esse campo é ignorado (os títulos são todos buscados na Suno).
+   - A playlist passa a exibir `N - Eclipse Lunar`.
+
+2. **Remover música**
+   - `music-number`: número atual da música a remover
+   - As músicas seguintes são renumeradas automaticamente.
+
+3. **Adicionar e remover na mesma execução**
+   - Preencha `link` (e opcionalmente `music-name`) **e** `music-number` juntos: a remoção é aplicada primeiro (pela numeração atual) e depois a música é adicionada ao final.
+
+### Etapas do Workflow
+
+1. **Checkout do Código**
+   - Baixa o repositório na branch `main`.
+
+2. **Setup do Node.js**
+   - Prepara o ambiente Node.js na versão 24.
+
+3. **Atualizar músicas**
+   - Executa `node .github/scripts/update-playlist.mjs` com as entradas informadas, validando os UUIDs, impedindo duplicidades e reescrevendo o array `songs`. Links inválidos são ignorados com um aviso. Se `music-name` estiver vazio, o script consulta a Suno automaticamente para descobrir o título de cada música (formato `NOME by ARTISTA` da tag `<title>`).
+
+4. **Commit e push**
+   - Cria o commit (`playlist: adicionar <nome>`, `playlist: remover música #N` ou `playlist: atualizar músicas` quando faz as duas coisas) e envia direto para `main`, usando `PAT_GITHUB_TOKEN` (com fallback para o token padrão do GitHub Actions). Se nada mudou, o workflow encerra sem commit.
 
 ## Como Executar Localmente
 
