@@ -1,6 +1,6 @@
 export default [
   {
-    ignores: ['dist', 'node_modules', '.github/actions/*', 'coverage/**'],
+    ignores: ['dist', 'node_modules', '.github/actions/*'],
   },
   {
     files: ['**/*.js'],

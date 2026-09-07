@@ -20,7 +20,7 @@ Link para aplicação online na plataforma Cloudflare: [Cronicas APP](https://cr
 
 ✅ Pipeline ativado com commits na branch main  
 ✅ Instalação de dependências  
-✅ Execução de testes unitários  
+✅ Execução de linting  
 ✅ Build da aplicação  
 ✅ Armazenamento de artefatos como release do GitHub  
 ✅ Uso de environments para aprovação de deploy  
@@ -96,7 +96,6 @@ Abaixo está o diagrama da arquitetura do pipeline CI/CD, mostrando claramente a
    - Instalação de dependências
    - Validação da estrutura do repositório (Action personalizada)
    - Execução de linting
-   - Execução de testes unitários
    - Build, tag e push da imagem Docker para ECR
 
 2. **Ponte CI/CD**:

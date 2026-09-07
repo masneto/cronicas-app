@@ -12,7 +12,6 @@
 - [Passo a Passo do Workflow de Release (`release.yml`)](#passo-a-passo-do-workflow-de-release-releaseyml)
 - [Passo a Passo do Workflow de Segurança (`security-audit.yml`)](#passo-a-passo-do-workflow-de-segurança-security-audityml)
 - [Como Executar Localmente](#como-executar-localmente)
-- [Como Executar os Testes](#como-executar-os-testes)
 - [Build Manual with Docker](#build-manual-with-docker)
 - [Responsáveis por Aprovações](#responsáveis-por-aprovações)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -37,15 +36,9 @@ cronicas-app/
 ├── DESAFIO.md                 # Desafio proposto/documentação extra
 ├── Dockerfile                 # Configuração para criar a imagem Docker
 ├── eslint.config.js           # Configuração adicional do ESLint
-├── jest.config.js             # Configuração do Jest para testes
 ├── package.json               # Gerenciamento de dependências e scripts
 ├── README.md                  # Documentação do projeto
 ├── SECURITY_FIXES.md          # Changelog de correções de segurança (automático)
-├── coverage/                  # Relatórios de cobertura de testes
-│   ├── clover.xml
-│   ├── coverage-final.json
-│   ├── lcov.info
-│   └── lcov-report/           # Relatórios HTML detalhados
 ├── images/                    # Imagens utilizadas na documentação do Desafio
 │   ├── cronicas-0.png
 │   ├── cronicas-1.png
@@ -75,8 +68,6 @@ cronicas-app/
 │   └── public/                # Arquivos públicos (HTML, CSS)
 │       ├── index.html         # Página inicial
 │       └── styles.css         # Estilos da aplicação
-├── test/                      # Testes automatizados
-│   └── app.test.js            # Testes unitários/integrados
 └── .github/                   # Configurações e automações do GitHub
     ├── CODEOWNERS             # Responsáveis por aprovações de PR
     ├── files-backup/          # Backups de arquivos de workflow
@@ -131,7 +122,6 @@ Este workflow automatiza o processo de integração e entrega contínua para o a
 - **Instala Dependências:** Executa `npm ci` para instalar as dependências.
 - **Valida Estrutura do Repositório:** Usa a action interna `validate-repo` para garantir que a estrutura está correta.
 - **Lint:** Executa o linter (`npm run lint`) para padronização do código.
-- **Testes:** Executa os testes automatizados (`npm test`).
 - **Login no GHCR:** Faz login no GitHub Container Registry usando o token do GitHub.
 - **Build e Push da Imagem:** 
   - Constrói a imagem Docker com a nova versão e também com a tag `latest`.
@@ -305,20 +295,6 @@ Este workflow automatiza a auditoria de segurança das dependências npm do Crô
 
 ---
 
-## Como Executar os Testes
-
-1. **Executar Testes da Aplicação**:
-
-   ```bash
-   npm test
-   ```
-
-2. **Gerar Relatório de Cobertura**:
-
-   Após os testes, o relatório estará disponível no diretório `coverage/lcov-report/index.html`.
-
----
-
 ## Build Manual with Docker
 
 1. **Build da Imagem Docker**:
@@ -354,15 +330,13 @@ Somente os usuários abaixo podem aprovar pull requests para Main e o Deploy em 
 - Docker: Contêinerização da aplicação.
 - AWS (ECR, EC2, SSM): Infraestrutura de deploy.
 - GitHub Actions: Automação de CI/CD.
-- Jest: Testes automatizados.
 - ESLint: Padronização de código.
 
 ---
 
 ## Melhorias Futuras
 1. **Adicionar Monitoramento**: Integrar ferramentas como CloudWatch ou Prometheus para monitorar a aplicação.
-2. **Expandir Testes**: Adicionar testes de integração e end-to-end.
-3. **Documentação Avançada**: Criar uma documentação detalhada para desenvolvedores e usuários finais.
-4. **Criação de Fluxos**: Criar workflows que entreguem em etapas anteriores a produção, permitindo a realização de testes necessários para os desenvolvedores conseguirem subir com qualidade e segurança.
-5. **Observabilidade e Monitoramento**: Implementar ferramentas como Grafana e Prometheus, Datadog para a observabilidade e monitoramento da aplicação.
-6. **Gerenciamento via Kubernetes**: Gerenciar a imagem via Kubernetes garantindo a escabilidade e segurança da aplicação dentro da EC2.
+2. **Documentação Avançada**: Criar uma documentação detalhada para desenvolvedores e usuários finais.
+3. **Criação de Fluxos**: Criar workflows que entreguem em etapas anteriores a produção, permitindo a realização de testes necessários para os desenvolvedores conseguirem subir com qualidade e segurança.
+4. **Observabilidade e Monitoramento**: Implementar ferramentas como Grafana e Prometheus, Datadog para a observabilidade e monitoramento da aplicação.
+5. **Gerenciamento via Kubernetes**: Gerenciar a imagem via Kubernetes garantindo a escabilidade e segurança da aplicação dentro da EC2.
