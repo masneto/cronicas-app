@@ -66,9 +66,15 @@ cronicas-app/
 ├── src/                       # Código-fonte da aplicação
 │   ├── app.js                 # Lógica principal da aplicação
 │   ├── server.js              # Configuração do servidor Express
-│   └── public/                # Arquivos públicos (HTML, CSS)
+│   └── public/                # Arquivos públicos servidos (raiz das rotas)
+│       ├── _headers           # Cabeçalhos HTTP (CSP, HSTS, etc.)
 │       ├── index.html         # Página inicial
-│       └── styles.css         # Estilos da aplicação
+│       ├── script.js          # Lógica da playlist e do player (array `songs`)
+│       ├── styles.css         # Estilos da aplicação
+│       ├── robots.txt         # Regras para crawlers
+│       └── images/            # Imagens otimizadas (WebP)
+│           ├── cnv-img.webp   # Imagem principal (LCP)
+│           └── cnv-logo.webp  # Logo do item ativo da playlist
 └── .github/                   # Configurações e automações do GitHub
     ├── CODEOWNERS             # Responsáveis por aprovações de PR
     ├── files-backup/          # Backups de arquivos de workflow
@@ -81,7 +87,8 @@ cronicas-app/
         ├── hom-cd.yml
         ├── prod-cd.yml
         ├── release.yml
-        └── security-audit.yml
+        ├── security-audit.yml
+        └── update-playlist.yml
 ```
 ---
 
@@ -264,7 +271,7 @@ Este workflow automatiza a auditoria de segurança das dependências npm do Crô
 
 ## Passo a Passo do Workflow de Playlist (`update-playlist.yml`)
 
-Este workflow gerencia as músicas da playlist do site, editando diretamente o array `songs` em `src/public/index.html` e enviando a alteração para a branch `main` (a aplicação pública é servida pelo Cloudflare Pages a partir de `src/public`). Ele é disparado **manualmente** (`workflow_dispatch`).
+Este workflow gerencia as músicas da playlist do site, editando diretamente o array `songs` em `src/public/script.js` e enviando a alteração para a branch `main` (a aplicação pública é servida pelo Cloudflare Pages a partir de `src/public`). Ele é disparado **manualmente** (`workflow_dispatch`).
 
 ### Como usar
 
@@ -289,7 +296,7 @@ Este workflow gerencia as músicas da playlist do site, editando diretamente o a
    - Prepara o ambiente Node.js na versão 24.
 
 3. **Atualizar músicas**
-   - Executa `node .github/scripts/update-playlist.mjs` com as entradas informadas, validando os UUIDs, impedindo duplicidades e reescrevendo o array `songs`. Links inválidos são ignorados com um aviso. Se `music-name` estiver vazio, o script consulta a Suno automaticamente para descobrir o título de cada música (formato `NOME by ARTISTA` da tag `<title>`).
+   - Executa `node .github/scripts/update-playlist.mjs --file src/public/script.js` com as entradas informadas, validando os UUIDs, impedindo duplicidades e reescrevendo o array `songs`. Links inválidos são ignorados com um aviso. Se `music-name` estiver vazio, o script consulta a Suno automaticamente para descobrir o título de cada música (formato `NOME by ARTISTA` da tag `<title>`).
 
 4. **Commit e push**
    - Cria o commit (`playlist: adicionar <nome>`, `playlist: remover música #N` ou `playlist: atualizar músicas` quando faz as duas coisas) e envia direto para `main`, usando `PAT_GITHUB_TOKEN` (com fallback para o token padrão do GitHub Actions). Se nada mudou, o workflow encerra sem commit.

@@ -32,7 +32,7 @@ async function fetchTitle(uuid) {
 }
 
 async function main() {
-  const file = arg('file') || 'src/public/index.html';
+  const file = arg('file') || 'src/public/script.js';
   const action = arg('action');
   const link = arg('link').trim();
   const id = arg('id').trim();

@@ -33,7 +33,7 @@ jobs:
           node-version: 24
 
       - name: Atualizar músicas
-        run: node .github/scripts/update-playlist.mjs --link "${{ github.event.inputs.link }}" --title "${{ github.event.inputs.music-name }}" --number "${{ github.event.inputs.music-number }}"
+        run: node .github/scripts/update-playlist.mjs --file src/public/script.js --link "${{ github.event.inputs.link }}" --title "${{ github.event.inputs.music-name }}" --number "${{ github.event.inputs.music-number }}"
 
       - name: Commit e push
         env:
@@ -44,7 +44,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/public/index.html
+          git add src/public/script.js
           if git diff --cached --quiet; then
             echo "Nenhuma alteração na playlist."
             exit 0
