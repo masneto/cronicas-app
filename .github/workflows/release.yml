@@ -13,7 +13,11 @@ jobs:
   release:
     name: Cronicas Release Tag
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: >-
+      github.event.pull_request.merged == true &&
+      !startsWith(github.event.pull_request.head.ref, 'security/') &&
+      !startsWith(github.event.pull_request.title, 'Security:') &&
+      !contains(toJSON(github.event.pull_request.labels.*.name), '"security"')
     permissions: write-all
     steps:
       - name: Checkout Code
