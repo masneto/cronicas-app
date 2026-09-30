@@ -2,6 +2,11 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-09-30
+
+- **Cronicas App:** brace-expansion `5.0.9` → `5.0.12` — _brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service_ (high, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/36687374694
+
 ## 2026-09-06
 
 - **Cronicas App:** body-parser `>=2.0.0 <2.3.0` → `disponivel` — _body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement_ (low)
