@@ -2,6 +2,13 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-10-03
+
+- **Cronicas App:** braces `3.0.3` → `não informado` — _braces vulnerable to stack-exhaustion denial of service through deeply nested patterns_ (high, corrigida)
+- **Cronicas App:** chokidar `3.6.0` → `5.0.0` — _braces_ (high, corrigida)
+- **Cronicas App:** nodemon `3.1.14` → `1.19.4` — _chokidar_ (high, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/37107036768
+
 ## 2026-09-30
 
 - **Cronicas App:** brace-expansion `5.0.9` → `5.0.12` — _brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service_ (high, corrigida)
