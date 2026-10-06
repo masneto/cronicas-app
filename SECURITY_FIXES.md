@@ -2,6 +2,11 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-10-06
+
+- **Cronicas App:** proxy-addr `2.0.7` → `2.0.8` — _proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet_ (critical, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/37437225251
+
 ## 2026-10-03
 
 - **Cronicas App:** braces `3.0.3` → `não informado` — _braces vulnerable to stack-exhaustion denial of service through deeply nested patterns_ (high, corrigida)
