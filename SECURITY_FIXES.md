@@ -2,6 +2,11 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-10-24
+
+- **Cronicas App:** body-parser `2.3.0` → `2.4.0` — _body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body_ (high, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/40071983558
+
 ## 2026-10-06
 
 - **Cronicas App:** proxy-addr `2.0.7` → `2.0.8` — _proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet_ (critical, corrigida)
