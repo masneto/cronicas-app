@@ -2,6 +2,16 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-10-31
+
+- **Cronicas App:** @eslint-community/eslint-utils `?` → `4.0.0` — _eslint_ (moderate, remanescente)
+- **Cronicas App:** @eslint/config-array `?` → `4.0.0` — _minimatch_ (moderate, remanescente)
+- **Cronicas App:** eslint `?` → `4.0.0` — _@eslint-community/eslint-utils_ (moderate, remanescente)
+- **Cronicas App:** minimatch `<11.0.1` → `4.0.0` — _minimatch has potential denial of service via globparts amplification_ (moderate, remanescente)
+- **Cronicas App:** @eslint/js `10.0.1` → `10.0.0` — _eslint_ (moderate, corrigida)
+- **Cronicas App:** nodemon `1.19.4` → `1.0.2` — _minimatch_ (moderate, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/41158743893
+
 ## 2026-10-24
 
 - **Cronicas App:** body-parser `2.3.0` → `2.4.0` — _body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body_ (high, corrigida)
