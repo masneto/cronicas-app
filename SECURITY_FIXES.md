@@ -2,6 +2,14 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-11-03
+
+- **Cronicas App:** @eslint-community/eslint-utils `?` → `4.0.0` — _eslint_ (moderate, remanescente)
+- **Cronicas App:** @eslint/config-array `?` → `4.0.0` — _minimatch_ (moderate, remanescente)
+- **Cronicas App:** eslint `?` → `4.0.0` — _@eslint-community/eslint-utils_ (moderate, remanescente)
+- **Cronicas App:** minimatch `<11.0.1` → `4.0.0` — _minimatch has potential denial of service via globparts amplification_ (moderate, remanescente)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/41564481533
+
 ## 2026-11-01
 
 - **Cronicas App:** @eslint-community/eslint-utils `?` → `4.0.0` — _eslint_ (moderate, remanescente)
