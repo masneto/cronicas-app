@@ -2,6 +2,13 @@
 
 _Gerado automaticamente pelo workflow de segurança._
 
+## 2026-11-05
+
+- **Cronicas App:** @eslint/config-array `0.23.5` → `0.21.2` — _minimatch_ (moderate, corrigida)
+- **Cronicas App:** eslint `10.14.0` → `9.39.5` — _@eslint/config-array_ (moderate, corrigida)
+- **Cronicas App:** minimatch `10.2.6` → `3.1.5` — _minimatch has potential denial of service via globparts amplification_ (moderate, corrigida)
+- Pipeline: https://github.com/masneto/cronicas-app/actions/runs/41953451038
+
 ## 2026-11-04
 
 - **Cronicas App:** @eslint-community/eslint-utils `?` → `4.0.0` — _eslint_ (moderate, remanescente)
